@@ -1,0 +1,13 @@
+﻿{
+        "maxFlows": [
+
+                { "source": 0, "target": 2, "weight": "100" },
+                { "source": 5, "target": 6, "weight": "200" },
+                { "source": 4, "target": 8, "weight": "400" },
+                { "source": 7, "target": 8, "weight": "500" },
+                { "source": 2, "target": 10, "weight": "8000" },
+                { "source": 11, "target": 12, "weight": "8946" }
+
+        ]
+
+}

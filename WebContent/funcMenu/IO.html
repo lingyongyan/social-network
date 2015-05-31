@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+        <title>UCAS Network Analysis Project</title>
+        <!-- Bootstrap -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script src="../js/d3.min.js" charset="utf-8"></script>
+</head>
+<body>
+        <div class="container container-fluid">
+                <!--导航栏-->
+                <div class="row">
+                        <div class="col-md-12">
+                                <div class="btn-group btn-group-justified" role="group">
+                                        <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
+                                        <button type="button" class="btn btn-default" onclick='(function(){window.location="IO.html";})()'>I/O</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph.html"; })()'>Graph</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Network<br />Measures</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Network<br />Models</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Data<br />Mining</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Community</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Information<br />Diffusion<br />Models</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Influence<br />&<br />Homophily</button>
+                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Behavior</button>
+                                </div>
+                        </div>
+                </div>
+                <!--图画布区-->
+                <div class="row">
+                        <div class="page-header">
+                                <h3>
+                                        上传
+                                </h3>
+                        </div>
+                        <div class="col-md-10">
+                                <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                                60%
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="col-md-2">
+                                <button type="button" class="btn btn-default" onclick='(function (){ })()'>上传</button>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="jumbotron">
+                                <h1>
+                                        请上传您要分析的数据
+                                </h1>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="page-header">
+                                <h3>
+                                        下载
+                                </h3>
+                        </div>
+                        <div class="col-md-10">
+                                <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                                60%
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="col-md-1">
+                                <button type="button" class="btn btn-default">下载</button>
+                        </div>
+                </div>
+
+                <!--上传数据格式说明-->
+                <div class="row">
+
+                        <div class="page-header">
+                                <h3>
+                                        数据格式说明：
+                                </h3>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-md-4">
+                                <h3>无向图</h3>
+                                <p>结点数</p>
+                                <p>边数</p>
+                                <p>起点  终点</p>
+                                <p>起点  终点</p>
+                                <p>起点  终点</p>
+                                <p>……</p>
+                        </div>
+                        <div class="col-md-4">
+                                <h3>有向图</h3>
+                                <p>结点数</p>
+                                <p>边数</p>
+                                <p>起点  终点</p>
+                                <p>起点  终点</p>
+                                <p>起点  终点</p>
+                                <p>……</p>
+                        </div>
+                        <div class="col-md-4">
+                                <h3>有权图</h3>
+                                <p>结点数</p>
+                                <p>边数</p>
+                                <p>起点  终点  权重</p>
+                                <p>起点  终点  权重</p>
+                                <p>起点  终点  权重</p>
+                                <p>……</p>
+                        </div>
+                </div>
+        </div>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="../js/jquery-2.1.4.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="../js/bootstrap.min.js"></script>
+</body>
+</html>
