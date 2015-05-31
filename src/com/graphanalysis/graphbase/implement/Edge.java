@@ -3,10 +3,10 @@ package com.graphanalysis.graphbase.implement;
 import com.graphanalysis.graphbase.interfaces.EdgeInterface;
 
 public class Edge implements EdgeInterface{
-	private int fromID;
-	private int toID;
-	private double weight = 0;
-	private double flow = 0;
+	private int fromID;//边的始节点
+	private int toID;//边的终节点
+	private double weight = 0;//边的权重
+	private double flow = 0;//边的流
 	/**
 	 * @param fromID
 	 * @param toID

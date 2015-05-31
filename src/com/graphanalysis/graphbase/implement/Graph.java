@@ -19,16 +19,25 @@ import com.graphanalysis.graphbase.implement.Node;
 import com.graphanalysis.graphbase.interfaces.GraphInterface;
 import com.graphanalysis.web.json.JsonDeal;
 
+/**
+ * @author young
+ *
+ */
 public class Graph implements GraphInterface{
-	protected GraphType type =GraphType. UNDirectedGraph;
+	protected GraphType type =GraphType. UNDirectedGraph;//图类型
 	protected double [][] adjMatrix;//邻接矩阵
-	protected HashMap<Integer,Vector<Integer>>adjList = new HashMap<Integer,Vector<Integer>>();
-	protected Set<Node> nodes = new HashSet<Node>();
-	protected Vector<Edge> edges = new Vector<Edge>();;
+	protected HashMap<Integer,Vector<Integer>>adjList = new HashMap<Integer,Vector<Integer>>();//邻接链表
+	protected Set<Node> nodes = new HashSet<Node>();//点集
+	protected Vector<Edge> edges = new Vector<Edge>();//边集
 	
 	public Graph(){
 	}
 	
+	/**
+	 * @param adjMatrix
+	 * @throws Exception
+	 * 根据已有的邻接矩阵建立图
+	 */
 	public Graph(double[][] adjMatrix) throws Exception{
 		int rows = adjMatrix.length;
 		int columns = 0;
@@ -50,6 +59,10 @@ public class Graph implements GraphInterface{
 		constructAdjMatrixFromAdjList();
 	}
 	
+	/**
+	 * @param edges
+	 * 根据已有的边集构建图
+	 */
 	public Graph(Vector<Edge> edges) {
 		setEdges(edges);
 		constructNodeSetFromEdges();
@@ -57,22 +70,29 @@ public class Graph implements GraphInterface{
 		constructAdjMatrixFromAdjList();
 	}
 	
+	/**
+	 * @param edges
+	 * 根据边集构建邻接链表
+	 */
 	protected void constructAdjList(Vector<Edge> edges){
 		int size = edges.size();
 		for(int i=0;i<size;i++){
 			Edge edge = edges.get(i);
 			int fromID = edge.getFromID();
-			if(this.adjList.containsKey(fromID)){
-				Vector<Integer> hasin = this.adjList.get(fromID);
-				hasin.add(edge.getToID());
+			if(this.adjList.containsKey(fromID)){//如果邻接链表中已有该节点项则在该项后追加新的链接节点ID
+				Vector<Integer> alreadyin = this.adjList.get(fromID);
+				alreadyin.add(edge.getToID());
 			}else{
-				Vector<Integer> newedge = new Vector<Integer>();
-				newedge.add(edge.getToID());
-				this.adjList.put(fromID, newedge);
+				Vector<Integer> newitem = new Vector<Integer>();
+				newitem.add(edge.getToID());
+				this.adjList.put(fromID, newitem);
 			}
 		}
 	}
 	
+	/**
+	 * 根据邻接链表构建邻接矩阵
+	 */
 	protected int constructAdjMatrixFromAdjList(){
 		if(this.adjList.size()<=0)
 			return -1;
@@ -97,6 +117,9 @@ public class Graph implements GraphInterface{
 		return 0;
 	}
 	
+	/**
+	 * 根据边集构建点集
+	 */
 	protected void constructNodeSetFromEdges(){
 		if(this.nodes.size()!=0)
 			return;
@@ -113,6 +136,7 @@ public class Graph implements GraphInterface{
 			}
 		}
 	}
+	
 	
 	private int getBiggestNode(){
 		int max = -1;
@@ -161,18 +185,6 @@ public class Graph implements GraphInterface{
 		this.edges = edges;
 	}
 	
-	public void printGraph(){
-		int rows = adjMatrix.length;
-		int columns = 0;
-		for(int i=0;i<rows;i++){
-			columns = adjMatrix[i].length;
-			for(int j=0;j<columns;j++){
-				System.out.print("\t"+this.adjMatrix[i][j]);
-			}
-			System.out.print("\n");
-		}
-	}
-	
 	public GraphType getType(){
 		return this.type;
 	}
@@ -193,12 +205,10 @@ public class Graph implements GraphInterface{
 	
 	@Override
 	public Set<Node> getNodeSet() {
-		// TODO 自动生成的方法存根
 		return this.nodes;
 	}
 	@Override
 	public Vector<Edge> getEdgeSet() {
-		// TODO 自动生成的方法存根
 		return this.edges;
 	}
 	
@@ -206,6 +216,18 @@ public class Graph implements GraphInterface{
 		return this.adjMatrix.length;
 	}
 
+	public void printGraph(){
+		int rows = adjMatrix.length;
+		int columns = 0;
+		for(int i=0;i<rows;i++){
+			columns = adjMatrix[i].length;
+			for(int j=0;j<columns;j++){
+				System.out.print("\t"+this.adjMatrix[i][j]);
+			}
+			System.out.print("\n");
+		}
+	}
+	
 	@Override
 	public void writeToJson(String fileName) throws JSONException {
 		// TODO 自动生成的方法存根
