@@ -1,0 +1,101 @@
+{
+"name":"no",
+"children":
+[
+{
+  "name":"cuba",
+  "children":
+  [	
+	{ 
+		"name":"hlj",
+		"children":
+		[
+			{ 
+		     "name":"xj" , 
+		     "children":
+		     [
+			  {"name":"wlmq"}
+		     ]
+	        }
+		] 
+	}
+		
+  ]
+},
+
+{
+  "name":"canada",
+  "children":
+  [	
+	{ 
+		"name":"hlj",
+		"children":
+		[
+			{ 
+		     "name":"xj" , 
+		     "children":
+		     [
+			  {"name":"wlmq"}
+		     ]
+	        }
+		] 
+	}
+		
+  ]
+},
+
+{
+  "name":"china",
+  "children":
+  [	
+	{ 
+		"name":"hlj",
+		"weight":"2",
+		"children":
+		[
+			{ 
+		     "name":"xj" ,
+             "weight":"2",			 
+		     "children":
+		     [
+			  {"name":"wlmq",
+			   "weight":"2",
+			   "children":
+		      [
+			   {"name":"wlmq",
+			    "weight":"2"
+			   }
+			  
+		      ]
+			  }
+			  
+		     ]
+	        }
+		] 
+	}		
+  ]
+},
+
+{
+  "name":"china",
+  "children":
+  [	
+	{ 
+		"name":"hlj",
+		"children":
+		[
+			{ 
+		     "name":"xj" , 
+		     "children":
+		     [
+			  {"name":"wlmq"}
+		     ]
+	        }
+		] 
+	}		
+  ]
+}
+
+
+]
+}
