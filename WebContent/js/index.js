@@ -5,6 +5,10 @@ var height = parseInt(svg.attr("height"));
 var img_w = 100;
 var img_h = 100;
 
+
+
+
+
 d3.json("../json/demo.json", function (error, root) {
 
         if (error) {
@@ -47,6 +51,22 @@ d3.json("../json/demo.json", function (error, root) {
                                                 .attr("xlink:href", function (d) {
                                                         return d.img;
                                                 })
+                                                //.on("mouseover", function (d, i) {
+                                                //        //显示连接线上的文字
+                                                //        edges_text.style("fill-opacity", function (edge) {
+                                                //                if (edge.source === d || edge.target === d) {
+                                                //                        return 1.0;
+                                                //                }
+                                                //        });
+                                                //})
+                                                //.on("mouseout", function (d, i) {
+                                                //        //隐去连接线上的文字
+                                                //        edges_text.style("fill-opacity", function (edge) {
+                                                //                if (edge.source === d || edge.target === d) {
+                                                //                        return 0.0;
+                                                //                }
+                                                //        });
+                                                //})
                                                 .call(drag);
 
         var text_dx = -20;
