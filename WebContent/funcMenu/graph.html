@@ -15,7 +15,7 @@
           <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
         <script src="../js/d3.min.js" charset="utf-8"></script>
-        
+
         <!--自定义JavaScript-->
         <link href="../css/graph.css" rel="stylesheet">
 </head>
@@ -46,7 +46,12 @@
                 </div>
                 <div class="row">
                         <div class="col-md-10 col-md-offset-1">
-                                <svg id="graph" width="1000px" height="600px" viewBox="0 0 1000 600">
+                                <!--<defs>
+                                        <marker id="arrow" markerunits="strokeWidth" markerwidth="6" markerheight="6" viewbox="0 0 12 12" refx="27" refy="6" orient="auto">
+                                                <path d="M0,0 L12,6 L0,12 L12,6" fill="#ccc"></path>
+                                        </marker>
+                                </defs>-->
+                                <svg id="graph" width=1000 height=600 viewBox="0 0 1000 600">
                                 </svg>
                         </div>
                 </div>
@@ -75,7 +80,8 @@
                 <!--出度入度图区-->
                 <div class="row">
                         <div id="canvas-holder2">
-                                <canvas id="chart2" width="700" height="600" />
+                                <canvas id="chart2" width="700" height="600" ></canvas>
+
                         </div>
 
                         <div id="chartjs-tooltip"></div>
@@ -98,7 +104,7 @@
                 </div>
                 <!--邻居图区-->
                 <div class="row">
-                        <div id="divTable"class="col-md-10 col-md-offset-1">
+                        <div id="divTable" class="col-md-10 col-md-offset-1">
                                 <svg id="table" width="1000px" height="600px" viewBox="0 0 1000 600">
                                 </svg>
                         </div>
@@ -107,23 +113,23 @@
                 <div class="row">
                         <div class="col-md-6 col-md-offset-3">
                                 <div class="btn-group btn-group-justified" role="group">
-                                        <button type="button" class="btn btn-default"onclick = "drawLinklist()">链表</button>
-                                        <button type="button" class="btn btn-default"onclick = "matrix()">矩阵</button>
+                                        <button type="button" class="btn btn-default" onclick="drawLinklist()">链表</button>
+                                        <button type="button" class="btn btn-default" onclick="matrix()">矩阵</button>
                                 </div>
                         </div>
                 </div>
         </div>
-       
+
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="../js/jquery-2.1.4.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="../js/bootstrap.min.js"></script>            
+        <script src="../js/bootstrap.min.js"></script>
         <!--自定义JavaScript-->
         <script src="../js/loadDataSet.js"></script><!--加载数据集-->
         <script src="../js/graph8.js"></script><!--图算法 随旭东-->
-        <script src="../js/degree.js"></script>  <!--度分布 孙家栋-->      
+        <script src="../js/degree.js"></script>  <!--度分布 孙家栋-->
         <script src="../js/table.js"> </script>  <!--表和矩阵 王庆全-->
         <script src="../js/DBP.js"></script>
-        
+
 </body>
 </html>
