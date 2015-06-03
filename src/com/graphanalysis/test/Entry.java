@@ -27,7 +27,7 @@ public class Entry {
 			System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
 			if(br!=null)
 				br.printBridge();
-			//br.packToJSON();
+			br.packetToJSON();
 		}
 		catch(Exception e){
 			System.out.println(e);

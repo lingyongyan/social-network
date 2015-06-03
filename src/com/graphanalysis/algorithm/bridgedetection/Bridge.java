@@ -1,5 +1,5 @@
 /*FileName:Bridge.java
- * Date:2015,05.13
+ * Date:2015.05.13
  * Author:Yan Lingyong
  * Description: Class used to store the bridge detected in a graph
  * */
@@ -10,25 +10,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.web.json.JsonDeal;
 
 public class  Bridge{
-	private Vector<int[]> vbridge = new Vector<int[]>();;
+	private Vector<int[]> vbridge = new Vector<int[]>();//桥边集合
 	public Bridge(){
-		init();
 	}
 	
-	private void init(){
-		this.vbridge = new Vector<int[]>();
-	}
-	
+	/**
+	 * 添加一个桥边,其中a,b分别是桥边连接节点的ID,按照ID大小从小到大依次放入数组中
+	 */
 	public void AddBridge(int a, int b){
 		int[] s = new int[2];
-		s[0] = a;
-		s[1] = b;
+		s[0] = a<=b?a:b;
+		s[1] = a>b?a:b;
 		vbridge.add(s);
 	}
 	
@@ -43,29 +43,27 @@ public class  Bridge{
 		}
 	}
 	
-	public int packToJSON() throws JSONException, IOException{
-		String json = "{'name':'reiz'}";
-		JSONObject jsonObj = new JSONObject(json);
-		String name = jsonObj.getString("name");
-		 
-		System.out.println(jsonObj);
-		 
-		jsonObj.put("initial", name.substring(0, 1).toUpperCase());
-		 
-		String[] likes = new String[] { "JavaScript", "Skiing", "Apple Pie" };
-		jsonObj.put("likes", likes);
-		 
-		System.out.println(jsonObj);
-		 
-		Map <String, String> ingredients = new HashMap <String, String>();
-		ingredients.put("apples", "3kg");
-		ingredients.put("sugar", "1kg");
-		ingredients.put("pastry", "2.4kg");
-		ingredients.put("bestEaten", "outdoors");
-		jsonObj.put("ingredients", ingredients);
-		JsonDeal.writeFile("/tmp/jason.txt",jsonObj.toString() );
-		System.out.println(jsonObj);
-		return 0;
-		 
+	/**
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 * 将桥边打包成json对象
+	 */
+	public JSONObject packetToJSON() throws JSONException, IOException{
+		JSONObject jsObj = new JSONObject();
+		try {
+			JSONArray jsedges = new JSONArray(); 
+			for(int i=0;i<this.vbridge.size();i++){
+				int[] tmp = this.vbridge.get(i);
+				JSONObject jsedge = new JSONObject();
+				jsedge.put("source", tmp[0]).put("target", tmp[1]);
+				jsedges.put(jsedge);
+			}
+			jsObj.put("edges", jsedges);
+		} catch (JSONException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return jsObj;
 		}
 }

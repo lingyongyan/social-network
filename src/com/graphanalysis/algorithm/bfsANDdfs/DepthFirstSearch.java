@@ -1,44 +1,37 @@
 package com.graphanalysis.algorithm.bfsANDdfs;
 import java.io.*;
+import java.util.Iterator;
+import java.util.Vector;
 
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.Graph;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.In;
+import com.graphanalysis.graphBase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.Path;
 
-public class DepthFirstSearch {
+public class DepthFirstSearch  implements DFSImpl{
     private boolean[] marked;    // marked[v] = is there an s-v path?
     private int count;           // number of vertices connected to s
     File file = new File("dfsResult");
     String content="";
     public DepthFirstSearch(Graph G, int s) {
-        marked = new boolean[G.V()];
-        dfs(G, s);
+        marked = new boolean[G.getNodeNum()];
     }
 
     // depth first search from v
-    public void dfs(Graph G, int v) {
-        count++;
+    public Path dfs(Graph G, int v) {
+        Path result = new Path();
+    	count++;
         marked[v] = true;
-        for (int w : G.adj(v)) {
+        Iterator<Integer> it = G.getAdjList(v).iterator();
+        while(it.hasNext()){
+        	int w = it.next();
             if (!marked[w]) {
-            		   content =content + v + " "+ w + "\r\n";
-                       dfs(G, w);
+            		   result.addPath(new Edge(v,w));
+                       result.append(dfs(G, w));
             	}
             	//System.out.print(v + " "+ w + "\n");
             }
-        try {
-        	   File file = new File("dfsResult.txt");
-        	   // if file doesnt exists, then create it
-        	   if (!file.exists()) {
-        	    file.createNewFile();
-        	   }
-
-        	   FileWriter fw = new FileWriter(file.getAbsoluteFile());
-        	   BufferedWriter bw = new BufferedWriter(fw);
-        	   bw.write(content);
-        	   bw.close();
-        	  } catch (IOException e) {
-        	   e.printStackTrace();
-        	  }     
+        return result;
         }
 
     public boolean marked(int v) {
@@ -51,10 +44,12 @@ public class DepthFirstSearch {
 
     public static void main(String[] args) {
         //In in = new In(args[0]);
-    	In in = new In("tinyG.txt");
-        Graph G = new Graph(in);
+		Vector<Edge> edges = GraphReader.readFromFile("/tmp/tinyG.txt",2);
+		Graph G = new Graph(edges);
         int s = Integer.parseInt("1");
         DepthFirstSearch search = new DepthFirstSearch(G, s);
+        Path res = search.dfs(G, s);
+        res.packetToJson();
         //System.out.print("success!");
     }
 }

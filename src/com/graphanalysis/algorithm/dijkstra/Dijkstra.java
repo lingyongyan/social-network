@@ -15,7 +15,7 @@ import com.graphanalysis.graphbase.implement.Node;
 public class Dijkstra {
 
 	public ArrayList<Integer> exec(String fileName, int src, int dst) {
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, false);
+		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
 		// System.out.println(edges.size());
 		DijkstraGraph graph = new DijkstraGraph(edges);
 		HashMap<Integer, Double> dist = new HashMap<Integer, Double>();

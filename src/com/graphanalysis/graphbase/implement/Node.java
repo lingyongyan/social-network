@@ -36,7 +36,6 @@ public class Node implements NodeInterface{
 	}
 	public void setInDegree(int degree){
 		this.indegree = degree;
-		this.outdegree = degree;
 	}
 	public void setOutDegree(int degree){
 		this.outdegree = degree;

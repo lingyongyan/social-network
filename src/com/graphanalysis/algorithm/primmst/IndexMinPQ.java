@@ -1,4 +1,4 @@
-package com.graphanalysis.algorithm.bfsANDdfs.invokClass;
+package com.graphanalysis.algorithm.primmst;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 

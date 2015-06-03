@@ -230,7 +230,7 @@ public class RandomWalk implements RandomWalkInterface {
 		// TODO Auto-generated method stub
 		//GraphReader reader = new GraphReader("test.txt", 1);
 		//System.out.println(GraphReader.readFromFile("test.txt", true).toString());
-		GraphInterface g = new RandomWalkGraph(GraphReader.readFromFile("tinyG.txt", false));
+		GraphInterface g = new RandomWalkGraph(GraphReader.readFromFile("tinyG.txt", 3));
 		RandomWalk r = new RandomWalk(g);
 		List<Integer> path = r.walk(1,6,10000);
 		System.out.println(path.toString());

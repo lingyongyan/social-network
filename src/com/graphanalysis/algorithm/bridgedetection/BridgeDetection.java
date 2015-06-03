@@ -82,8 +82,7 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 	}
 	
 	public int exec(Bridge br,String fileName) throws Exception {
-		// TODO 自动生成的方法存根
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, true);
+		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
 		Graph myGraph = new Graph(edges);
 		myGraph.writeToJson("/tmp/graph.json");
 		br.set(detectBridge(myGraph));
@@ -91,7 +90,6 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 	}
 	@Override
 	public int exec(String fileName) {
-		// TODO 自动生成的方法存根
 		return -1;
 	}
 }

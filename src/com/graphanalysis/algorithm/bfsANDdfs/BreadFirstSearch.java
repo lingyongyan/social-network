@@ -1,45 +1,63 @@
 package com.graphanalysis.algorithm.bfsANDdfs;
-import java.io.*;
 
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.Graph;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.In;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.Queue;
-public class BreadFirstSearch {
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Vector;
+
+import com.graphanalysis.graphBase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.Path;
+
+public class BreadFirstSearch implements BFSImpl {
     private boolean[] marked;    // marked[v] = is there an s-v path?
     private int count;           // number of vertices connected to s
-    String content="";
     private static final int INFINITY = Integer.MAX_VALUE;
     private int[] edgeTo;      // edgeTo[v] = previous edge on shortest s-v path
     private int[] distTo;      // distTo[v] = number of edges shortest s-v path
 
-    public BreadFirstSearch(Graph G, int s) {
-    	 marked = new boolean[G.V()];
-         distTo = new int[G.V()];
-         edgeTo = new int[G.V()];
-         bfs(G, s);
+    public BreadFirstSearch(Graph G) {
+    	int num = G.getNodeNum();
+    	 marked = new boolean[num];
+         distTo = new int[num];
+         edgeTo = new int[num];
     }
 
     // depth first search from v
-    public void bfs(Graph G, int s) {
-        Queue<Integer> q = new Queue<Integer>();
-        for (int v = 0; v < G.V(); v++) distTo[v] = INFINITY;
+    /**
+     * @param G
+     * @param s
+     * @return
+     */
+    public Path bfs(Graph G, int s) {
+    	Path result = new Path();
+        Queue<Integer> q = new LinkedList<Integer>();
+        for (int v = 0; v < G.getNodeNum(); v++) {
+        	distTo[v] = INFINITY;
+        	marked[v] = false;
+        }
         distTo[s] = 0;
         marked[s] = true;
-        q.enqueue(s);
+        q.offer(s);
 
         while (!q.isEmpty()) {
-            int v = q.dequeue();
-            for (int w : G.adj(v)) {
+            int v = q.poll();
+            Iterator<Integer> it = G.getAdjList(v).iterator();
+            while(it.hasNext()){
+            	int w = it.next();
                 if (!marked[w]) {
                     edgeTo[w] = v;
                     distTo[w] = distTo[v] + 1;
                     marked[w] = true;
-                    q.enqueue(w);
-                    content=content + v+ " " + w + "\r\n";
+                    q.offer(w);
+                    //content=content + v+ " " + w + "\r\n";
+                    Edge tmp = new Edge(v,w);
+                    result.addPath(tmp);
                 }
             }
         }
-        try {
+/*        try {
      	   File file = new File("bfsResult.txt");
      	   // if file doesnt exists, then create it
      	   if (!file.exists()) {
@@ -52,7 +70,8 @@ public class BreadFirstSearch {
      	   bw.close();
      	  } catch (IOException e) {
      	   e.printStackTrace();
-     	  }     
+     	  }   */  
+        return result;
      }
 
     public boolean marked(int v) {
@@ -65,11 +84,15 @@ public class BreadFirstSearch {
 
     public static void main(String[] args) {
         //In in = new In(args[0]);
-    	In in = new In("tinyG.txt");
-        Graph G = new Graph(in);
+    	//In in = new In("tinyG.txt");
+		Vector<Edge> edges = GraphReader.readFromFile("/tmp/tinyG.txt",2);
+		Graph G = new Graph(edges);
+        //Graph G = new Graph(in);
         //int s = Integer.parseInt(args[1]);
         int s = Integer.parseInt("1");
-        BreadFirstSearch search = new BreadFirstSearch(G, s);
+        BreadFirstSearch search = new BreadFirstSearch(G);
+       Path res = search.bfs(G, s);
+       res.packetToJson();
         //System.out.print("success!");
     }
 }
