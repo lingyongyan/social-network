@@ -1,0 +1,38 @@
+﻿/*.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 12px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #aaa;
+  stroke-width: 1.5px;
+}*/
+
+/*有向图1普通状态0*/
+/*.line10 {
+        stroke: #ccc;
+        stroke-width: 2px;
+        /*marker-end:url(#arrow);*/
+}*/
+/*有向图1高亮状态1*/
+/*.line11 {
+        stroke: #f33;
+        stroke-width: 2.5px;
+        /*marker-end:url('#arrow');*/
+}*/
+/*无向图0普通状态0*/
+/*.line00 {
+        stroke: #ccc;
+        stroke-width: 2px;
+}*/
+/*无向图0高亮状态1*/
+/*.line01 {
+        stroke: #f33;
+        stroke-width: 2.5px;
+}*/
