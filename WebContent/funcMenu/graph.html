@@ -7,7 +7,9 @@
         <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
         <title>UCAS Network Analysis Project</title>
         <!-- Bootstrap -->
-        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        
+        <link href="../css/bootstrap.css" rel="stylesheet">
+        <link href="../css/bootstrap-theme.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -20,28 +22,41 @@
         <link href="../css/graph.css" rel="stylesheet">
 </head>
 <body>
-        <div class="container">
+        
+        <div class="container-fluid">
                 <!--导航栏-->
                 <div class="row">
                         <div class="col-md-12">
-                                <div class="btn-group btn-group-justified" role="group">
-                                        <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
-                                        <button type="button" class="btn btn-default" onclick='(function(){window.location="IO.html";})()'>I/O</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph.html"; })()'>图秀</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Network<br />Measures</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Network<br />Models</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Data<br />Mining</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Community</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Information<br />Diffusion<br />Models</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Influence<br />&<br />Homophily</button>
-                                        <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>Behavior</button>
+                        <style>
+                                .btn-group .btn {
+                                        width:128px;
+                                        height:64px;
+                                }
+                        </style>
+                                <!--<div class="btn-group" role="group">-->
+                                <div class="btn-group" ><!--role="group"-->
+                                <!--<div class="btn-group-xs" role="group">-->
+                                                <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
+
+                                                <button type="button" class="btn btn-default" onclick='(function(){window.location="IO.html";})()'>数据上传</button>
+
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph.html"; })()'>图秀</button>
+
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络测量<!--Network<br />Measures--></button>
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络模型<!--Network<br />Models--></button>
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>数据挖掘<!--Data<br />Mining--></button>
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>社区<!--Community--></button>
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>信息扩散模型<!--Information<br />Diffusion<br />Models--></button>
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>影响力<!--Influence<br />&<br />Homophily--></button>
+                                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>行为<!--Behavior--></button>
+                                        </div>
                                 </div>
                         </div>
-                </div>
+                
                 <!--图画布区-->
                 <div class="row">
                         <div class="page-header">
-                                <h2>图</h2>
+                                <h2>图</h2>                               
                         </div>
                 </div>
                 <div class="row">
@@ -80,7 +95,7 @@
                 <!--出度入度图区-->
                 <div class="row">
                         <div id="canvas-holder2">
-                                <canvas id="chart2" width="700" height="600" ></canvas>
+                                <canvas id="chart2" width="700" height="600"></canvas>
 
                         </div>
 
@@ -125,8 +140,10 @@
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="../js/bootstrap.min.js"></script>
         <!--自定义JavaScript-->
+        <script src="../js/graph.js"></script><!--主图区绘制-->
         <script src="../js/loadDataSet.js"></script><!--加载数据集-->
-        <script src="../js/graph8.js"></script><!--图算法 随旭东-->
+
+        <script src="../js/graph8.js"></script><!--8个图算法功能函数 随旭东-->
         <script src="../js/degree.js"></script>  <!--度分布 孙家栋-->
         <script src="../js/table.js"> </script>  <!--表和矩阵 王庆全-->
         <script src="../js/DBP.js"></script>

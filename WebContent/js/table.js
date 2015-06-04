@@ -27,15 +27,15 @@ function zoomed() {
 			 "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 }
 
-$("#divTable").ready(function () { drawLinklist(); });
+//$("#divTable").ready(function () { drawLinklist(); });
 
 
 function matrix() {
 
         var svgdiv = document.getElementById("divTable");
         svgdiv.innerHTML = "";
-
-        $.get("../json/graph.json", function populate(data) {
+        populate(tableData);
+        /*$.get("../json/graph.json", */function populate(data) {
 
                 //是否有向
                 var isdirected = 1;
@@ -232,7 +232,7 @@ function matrix() {
                     .datum(dataset)
                     .call(table);
 
-        });
+        }/*);*/
 
 }
 
@@ -339,6 +339,7 @@ function list() {
 
 //canvas 画链表
 function drawLinklist() {
+        
         // 获取上下文 
         //var matrix = document.getElementById('matrix'); 
         //matrix.style.display = "none";
@@ -385,8 +386,8 @@ function drawLinklist() {
         a_canvas.width = tWidth - 10;
         a_canvas.height = tHeight - 15;
 
-
-        $.get("../json/graph.json", function populate(data) {
+        populate(tableData);
+        /*$.get("../json/graph.json", */function populate(data) {
 
                 //节点个数      
                 var n = data.nodes.length;
@@ -565,7 +566,7 @@ function drawLinklist() {
                         context.closePath();
                         context.stroke();
                 }
-        });
+        }/*);*/
 }
 
 function drawRectangle(context, x, y, width, height, n) {
