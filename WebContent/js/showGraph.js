@@ -10,7 +10,8 @@ var gEdgeTexts = undefined; // 权重集
 var gNodes = undefined; // 结点集
 var color = d3.scale.category20(); // 颜色集
 var constMaxRadius = 25; // 最大结点圆半径
-
+var gWidth = undefined;
+var gHeight = undefined;
 // 画图
 function paintGraph(graphData, status) {
         if (status != "success") {
@@ -23,8 +24,8 @@ function paintGraph(graphData, status) {
         // 1 选择id为graph的SVG元素
         var svg = d3.select("#graph");
         // 获取graph SVG的宽高
-        var gWidth = parseInt(svg.attr("width"));
-        var gHeight = parseInt(svg.attr("height"));
+        gWidth = parseInt(svg.attr("width"));
+        gHeight = parseInt(svg.attr("height"));
 
         gType = graphData.type; // 有向无向
         gWeight = graphData.weight; // 有权无权
@@ -55,7 +56,9 @@ function paintGraph(graphData, status) {
                 .size([gWidth, gHeight])
                 .linkDistance(40)
                 .charge(-400)
-                .on("tick", baseTick)
+                .on("tick", function () {
+                        tickBase();
+                })
                 .start();
 
         // 定义交互事件
@@ -164,34 +167,30 @@ function paintGraph(graphData, status) {
                 d3.select(this).classed("fixed", d.fixed = false);
         }
         
-        function baseTick() {
-                //限制结点的边界
-                gNodes.forEach(function (d, i) {
-                        d.x = d.x - constMaxRadius < 0 ? constMaxRadius : d.x;
-                        d.x = d.x + constMaxRadius > gWidth ? gWidth - constMaxRadius : d.x;
-                        d.y = d.y - constMaxRadius < 0 ? constMaxRadius : d.y;
-                        d.y = d.y + constMaxRadius > gHeight ? gHeight - constMaxRadius : d.y;
-                });
-                //更新连接线的位置
-                gEdges.attr("x1", function (d) { return d.source.x; })
-                        .attr("y1", function (d) { return d.source.y; })
-                        .attr("x2", function (d) { return d.target.x; })
-                        .attr("y2", function (d) { return d.target.y; });
 
-                gNodes.attr("cx", function (d) { return d.x; })
-                        .attr("cy", function (d) { return d.y; });
-
-                if (gWeight) {
-                        //更新连接线上文字的位置
-                        gEdgeTexts.attr("x", function (d) { return (d.source.x + d.target.x) / 2; })
-                                .attr("y", function (d) { return (d.source.y + d.target.y) / 2; });
-                }
-
-                //更新结点的文字
-                //gNodeTexts.attr("x", function (d) { return d.x })
-                //        .attr("y", function (d) { return d.y });
-
-        }
         gReady = true;
 }
 
+function tickBase() {
+        //限制结点的边界
+        gNodes.forEach(function (d, i) {
+                d.x = d.x - constMaxRadius < 0 ? constMaxRadius : d.x;
+                d.x = d.x + constMaxRadius > gWidth ? gWidth - constMaxRadius : d.x;
+                d.y = d.y - constMaxRadius < 0 ? constMaxRadius : d.y;
+                d.y = d.y + constMaxRadius > gHeight ? gHeight - constMaxRadius : d.y;
+        });
+        //更新连接线的位置
+        gEdges.attr("x1", function (d) { return d.source.x; })
+                .attr("y1", function (d) { return d.source.y; })
+                .attr("x2", function (d) { return d.target.x; })
+                .attr("y2", function (d) { return d.target.y; });
+
+        gNodes.attr("cx", function (d) { return d.x; })
+                .attr("cy", function (d) { return d.y; });
+
+        if (gWeight) {
+                //更新连接线上文字的位置
+                gEdgeTexts.attr("x", function (d) { return (d.source.x + d.target.x) / 2; })
+                        .attr("y", function (d) { return (d.source.y + d.target.y) / 2; });
+        }
+}

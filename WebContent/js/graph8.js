@@ -3,6 +3,12 @@
 var index0 = -1;
 // 终点索引
 var index1 = -1;
+
+var nodes2draw = undefined;
+var edges2draw = undefined;
+var weight2draw = undefined;
+
+
 // 重置结点
 function resetNodes() {
 
@@ -28,13 +34,23 @@ function resetEdges() {
 function resetWeight() {
         gEdgeTexts.text(function (d) { return d.weight; });
 }
-// 重绘边集
-function reDrawEdges(subEdges) {
+//
+function resetTick() {
+        force.on("tick", function () {
+                tickBase();
+        })
+}
+// 重绘边集，条数
+function reDrawEdges(subEdges, ne) {
         gEdges.style("stroke", function (d, i) {
-                for (var edgeIndex in subEdges) {
+                for (var edgeIndex = 0; edgeIndex < ne; edgeIndex++) {
                         if (d.source.index == subEdges[edgeIndex].source && d.target.index == subEdges[edgeIndex].target)
                                 return "#d22";
                 }
+                //for (var edgeIndex in subEdges) {
+                //        if (d.source.index == subEdges[edgeIndex].source && d.target.index == subEdges[edgeIndex].target)
+                //                return "#d22";
+                //}
                 return "#ccc";
         })
 }
@@ -77,6 +93,7 @@ function Random() {
         resetNodes();
         resetEdges();
         resetWeight();
+        resetTick();
 
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
@@ -91,13 +108,35 @@ function Random() {
                                 ///////////////////////////////////////////////////////
                                 return console.log(status);
                         }
-                        reDrawEdges(subEdges);
+                        reDrawEdges(subEdges, subEdges.length);
                 });
         });
 
         // 重新绑定动画函数
 
 }
+
+var cnt = 0;
+var loop = true;
+function tickPlus() {
+        setTimeout(tickPlus, 1000);
+        //tickBase();        
+        if (cnt < edges2draw.length) {
+                cnt++;
+                reDrawEdges(edges2draw, cnt);
+                //return;
+        }
+        else {
+                if(loop)
+                        cnt = 0;
+                return;
+        }
+                //reDrawEdges(subEdges, cnt);
+                //cnt = 0;
+                //return;
+}
+
+
 // 广度优先搜索
 function BFS() {
         if (!gReady) {
@@ -108,10 +147,13 @@ function BFS() {
         }
         // BFS功能初始化
         index0 = -1;
+        nodes2draw = undefined;
+        edges2draw = undefined;
+        weight2draw = undefined;
         resetNodes();
         resetEdges();
         resetWeight();   
-
+        resetTick();
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
@@ -125,7 +167,15 @@ function BFS() {
                                 ///////////////////////////////////////////////////////
                                 return console.log(status);
                         }
-                        reDrawEdges(subEdges);
+                        //for (var tms = 0; tms < subEdges.length; tms++)
+                        //{
+
+                        //}
+                        edges2draw = subEdges;
+                        cnt = 0;
+                        //force.on("tick", tickPlus);
+                        tickPlus();
+                        //reDrawEdges(subEdges, subEdges.length);
                 });
         });
 
@@ -143,7 +193,7 @@ function DFS() {
         resetNodes();
         resetEdges();
         resetWeight();
-
+        resetTick();
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
@@ -157,7 +207,7 @@ function DFS() {
                                 ///////////////////////////////////////////////////////
                                 return console.log(status);
                         }
-                        reDrawEdges(subEdges);
+                        reDrawEdges(subEdges, subEdges.length);
                 });
         });
 
@@ -175,7 +225,7 @@ function Dijkstra() {
         resetNodes();
         resetEdges();
         resetWeight();
-
+        resetTick();
         // 重新为结点绑定点击事件
         gNodes.on("click", function (node0data, n0i) {
                 if (d3.event.defaultPrevented) return;
@@ -202,7 +252,7 @@ function Dijkstra() {
                                 index1 = node1data.index;
                                 var path = data[index1];
                                 // 先把符合条件的边找出来放到一个集合中
-                                reDrawEdges(path);
+                                reDrawEdges(path, path.length);
                                 //gEdges.style("stroke", function (ed, ei) {
                                 //        for (var e in path) {
                                 //                if (ed.source.index == path[e].source && ed.target.index == path[e].target)
@@ -234,7 +284,7 @@ function Prim() {
         resetNodes();
         resetEdges();
         resetWeight();
-
+        resetTick();
         // 为结点绑定独有的事件响应函数
         gNodes/*.on("mouseover", null)
                 .on("mouseout", null)*/
@@ -250,28 +300,28 @@ function Prim() {
                                         ///////////////////////////////////////////////////////
                                         return console.log(status);
                                 }
-                                reDrawEdges(subEdges);
+                                reDrawEdges(subEdges, subEdges.length);
                         });
                 });
 }
-function reDrawP2P(max2match) {
+//function reDrawP2P(max2match) {
 
-        // 边集高亮
-        reDrawEdges(max2match);
+//        // 边集高亮
+//        reDrawEdges(max2match);
 
-        //gEdges.style("stroke", function (d, i) {
-        //        for (var p in max2match) {
-        //                if (d.source.index == max2match[p].source && d.target.index == max2match[p].target)
-        //                        return "#d22";
-        //        }
-        //        return "#ccc";
-        //})
+//        //gEdges.style("stroke", function (d, i) {
+//        //        for (var p in max2match) {
+//        //                if (d.source.index == max2match[p].source && d.target.index == max2match[p].target)
+//        //                        return "#d22";
+//        //        }
+//        //        return "#ccc";
+//        //})
 
-        // 画两个结点集
-        reDrawNodes(max2match);
+//        // 画两个结点集
+//        reDrawNodes(max2match);
         
 
-}
+//}
 // 响应Bipartite功能
 function Bipartite() {
         if (!gReady) {
@@ -285,7 +335,7 @@ function Bipartite() {
         resetNodes();
         resetEdges();
         resetWeight();
-
+        resetTick();
         // 为结点绑定独有的事件响应函数
         $.get("../json/P2P.json", { whichDataSet: crntDataSet, filename: "P2P.json", id: index0 }, function (max2match, status) {
                 if (status != "success") {
@@ -294,7 +344,20 @@ function Bipartite() {
                         ///////////////////////////////////////////////////////
                         return console.log(status);
                 }
-                reDrawP2P(max2match);
+                // 边集高亮
+                reDrawEdges(max2match, max2match.length);
+
+                //gEdges.style("stroke", function (d, i) {
+                //        for (var p in max2match) {
+                //                if (d.source.index == max2match[p].source && d.target.index == max2match[p].target)
+                //                        return "#d22";
+                //        }
+                //        return "#ccc";
+                //})
+
+                // 画两个结点集
+                reDrawNodes(max2match);
+                //reDrawP2P(max2match);
         });
 
 
@@ -309,6 +372,7 @@ function FordFulkerson() {
         resetNodes();
         resetEdges();
         resetWeight();
+        resetTick();
         // 重新为结点绑定点击事件
         // 给结点绑定点击事件
         // 当选中两个不同结点时，
@@ -337,7 +401,7 @@ function FordFulkerson() {
                         //})
                         $.get("../json/FordFulkerson.json", function (maxFlow, status) {
                                 // 取回结果后，修改边上的文字
-                                reDrawEdges(maxFlow);
+                                reDrawEdges(maxFlow, maxFlow.length);
                                 //gEdges.style("stroke", function (ed, ei) {
                                 //        for (var e in maxFlow) {
                                 //                if (ed.source.index == maxFlow[e].source && ed.target.index == maxFlow[e].target)
@@ -364,7 +428,7 @@ function Bridge() {
         resetNodes();
         resetEdges();
         resetWeight();       
-
+        resetTick();
         // 为结点绑定独有的事件响应函数
         $.get("../json/Bridge.json", { whichDataSet: crntDataSet, filename: "Bridge.json"}, function (bridges, status) {
                 if (status != "success") {
@@ -373,7 +437,7 @@ function Bridge() {
                         ///////////////////////////////////////////////////////
                         return console.log(status);
                 }
-                reDrawEdges(bridges);
+                reDrawEdges(bridges, bridges.length);
         });
         // 重新绑定动画函数
 
