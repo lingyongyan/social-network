@@ -3,36 +3,64 @@
 var index0 = -1;
 // 终点索引
 var index1 = -1;
+// 重置结点
+function resetNodes() {
 
-function resetG(resetNodes, resetEdges, resetWeight) {
-        index0 = -1;
-        index1 = -1;
-        if (resetNodes) {
-                gNodes.attr("r", function (d, i) {
-                        return Math.log(d.group) + 10;
+        gNodes/*.attr("r", function (d, i) {
+                return Math.log(d.group) + 10;
+        })*/
+                .style("fill", function (d, i) {
+                        return color(d.group);
                 })
-                        .style("fill", function (d, i) {
-                                return color(d.group);
-                        })
-                        .on("mouseover", null)
-                        .on("mouseout", null)
-                        .on("click", null);
-        }
-        if (resetEdges) {
-                gEdges.style("stroke", "#ccc")
-                        .style("stroke-width", function (d) {
-                                return Math.log(d.weight)+2;
-                        });
-        }
-        if (resetWeight) {
-                if (gWeight) {
-                        gEdgeTexts.text(function (d) { return d.weight; });
-                }
-        }
-
-
+                .on("mouseover", null)
+                .on("mouseout", null)
+                .on("click", null);
 }
+// 重置边
+function resetEdges() {
 
+        gEdges.style("stroke", "#ccc");
+                //.style("stroke-width", function (d) {
+                //        return Math.log(d.weight) + 2;
+                //});
+}
+//重置权重
+function resetWeight() {
+        gEdgeTexts.text(function (d) { return d.weight; });
+}
+// 重绘边集
+function reDrawEdges(subEdges) {
+        gEdges.style("stroke", function (d, i) {
+                for (var edgeIndex in subEdges) {
+                        if (d.source.index == subEdges[edgeIndex].source && d.target.index == subEdges[edgeIndex].target)
+                                return "#d22";
+                }
+                return "#ccc";
+        })
+}
+// 重绘结点 只有最大二分图匹配需要
+function reDrawNodes(max2match) {
+        gNodes.style("fill", function (d, i) {
+                for (var pair in max2match) {
+                        if (d.index == max2match[pair].source)
+                                return "#d22";
+                        if (d.index == max2match[pair].target)
+                                return "#22d";
+                }
+                return color(d.group);
+                //return "#eee";
+        })
+}
+// 重绘权重 只有网络最大流需要
+function reDrawWeights(maxFlow) {
+        gEdgeTexts.text(function (textData) {
+                for (var weightIndex in maxFlow) {
+                        if (textData.source.index == maxFlow[weightIndex].source && textData.target.index == maxFlow[weightIndex].target)
+                                return maxFlow[weightIndex].weight + "/" + textData.weight;
+                }
+                return textData.weight;
+        });
+}
 
 
 // 响应Random功能
@@ -44,35 +72,33 @@ function Random() {
                 ///////////////////////////////////////////////////////
                 return;
         }
-        resetG(true, true, true);
-        // BFS功能初始化
+        // Random功能初始化
+        index0 = -1;
+        resetNodes();
+        resetEdges();
+        resetWeight();
 
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
-                        if (d3.event.defaultPrevented) return;
-                        index0 = d.index;
-                        $.get("../json/RanDom.json", { whichDataSet: crntDataSet, filename: "RanDom.json", id: index0 }, reDraw);
+                if (d3.event.defaultPrevented) return;
+                if (index0 >= 0)
+                        resetEdges();
+                index0 = d.index;
+                $.get("../json/Random.json", { whichDataSet: crntDataSet, filename: "Random.json", id: index0 }, function (subEdges, status) {
+                        if (status != "success") {
+                                ///////////////////////////////////////////////////////
+                                //                  提醒用户没有加载成功                      //
+                                ///////////////////////////////////////////////////////
+                                return console.log(status);
+                        }
+                        reDrawEdges(subEdges);
                 });
+        });
 
         // 重新绑定动画函数
 
 }
-function reDraw(data, status) {
-        if (status != "success") {
-                ///////////////////////////////////////////////////////
-                //                  提醒用户没有加载成功                      //
-                ///////////////////////////////////////////////////////
-                return console.log(status);
-        }
-        gEdges.style("stroke", function (d, i) {
-                for (var p in data) {
-                        if (d.source.index == data[p].source && d.target.index == data[p].target)
-                                return "#d22";
-                }
-                return "#ccc";
-        })
-}
-
+// 广度优先搜索
 function BFS() {
         if (!gReady) {
                 ///////////////////////////////////////////////////////
@@ -80,17 +106,28 @@ function BFS() {
                 ///////////////////////////////////////////////////////
                 return;
         }
-        resetG(true, true, true);
         // BFS功能初始化
+        index0 = -1;
+        resetNodes();
+        resetEdges();
+        resetWeight();   
 
         // 为结点绑定独有的事件响应函数
-        gNodes/*.on("mouseover", null)
-                .on("mouseout", null)*/
-                .on("click", function (d, i) {
-                        if (d3.event.defaultPrevented) return;
-                        index0 = d.index;
-                        $.get("../json/BFS.json", { whichDataSet: crntDataSet, filename: "BFS.json", id: index0 }, reDraw);
+        gNodes.on("click", function (d, i) {
+                if (d3.event.defaultPrevented) return;
+                if (index0 >= 0)
+                        resetEdges();
+                index0 = d.index;
+                $.get("../json/BFS.json", { whichDataSet: crntDataSet, filename: "BFS.json", id: index0 }, function (subEdges, status) {
+                        if (status != "success") {
+                                ///////////////////////////////////////////////////////
+                                //                  提醒用户没有加载成功                      //
+                                ///////////////////////////////////////////////////////
+                                return console.log(status);
+                        }
+                        reDrawEdges(subEdges);
                 });
+        });
 
         // 重新绑定动画函数
 }
@@ -102,16 +139,27 @@ function DFS() {
                 return;
         }
         // DFS功能初始化
-        resetG(true, true, true);
+        index0 = -1;
+        resetNodes();
+        resetEdges();
+        resetWeight();
 
         // 为结点绑定独有的事件响应函数
-        gNodes/*.on("mouseover", null)
-                .on("mouseout", null)*/
-                .on("click", function (d, i) {
-                        if (d3.event.defaultPrevented) return;
-                        index0 = d.index;
-                        $.get("../json/dfs.json", { whichDataSet: crntDataSet, filename: "DFS.json", id: index0 }, reDraw);
+        gNodes.on("click", function (d, i) {
+                if (d3.event.defaultPrevented) return;
+                if (index0 >= 0)
+                        resetEdges();
+                index0 = d.index;
+                $.get("../json/dfs.json", { whichDataSet: crntDataSet, filename: "DFS.json", id: index0 }, function (subEdges, status) {
+                        if (status != "success") {
+                                ///////////////////////////////////////////////////////
+                                //                  提醒用户没有加载成功                      //
+                                ///////////////////////////////////////////////////////
+                                return console.log(status);
+                        }
+                        reDrawEdges(subEdges);
                 });
+        });
 
 }
 
@@ -122,14 +170,16 @@ function Dijkstra() {
                 return;
         }
 
-        resetG(true, true, true);
+        // Dijkstra功能初始化
+        index0 = index1 = -1;        
+        resetNodes();
+        resetEdges();
+        resetWeight();
 
         // 重新为结点绑定点击事件
-        gNodes/*.on("mouseover", null)
-                .on("mouseout", null);
-        gNodes*/.on("click", function (n0d, n0i) {
+        gNodes.on("click", function (node0data, n0i) {
                 if (d3.event.defaultPrevented) return;
-                index0 = n0d.index;
+                index0 = node0data.index;
 
                 // 向服务器发送包含选择点的Dijkstra请求
                 //$.post("IO.html", { node: 5 }, function () {
@@ -144,20 +194,22 @@ function Dijkstra() {
                                 return;
                         }
                         // 取回结果后，给结点注册OVER和OUT事件函数
-                        gNodes.on("mouseover", function (n1d, n1i) {
+                        gNodes.on("mouseover", function (node1data, n1i) {
                                 // 滑到自己身上不用响应
-                                if (n1d.index == index0)
+                                if (node1data.index == index0)
                                         return;
-                                index1 = n1d.index;
+
+                                index1 = node1data.index;
                                 var path = data[index1];
-                                // 先把符合条件的边找出来放到一个集合中                                
-                                gEdges.style("stroke", function (ed, ei) {
-                                        for (var e in path) {
-                                                if (ed.source.index == path[e].source && ed.target.index == path[e].target)
-                                                        return "#d22";
-                                        }
-                                        return "#ccc"
-                                });
+                                // 先把符合条件的边找出来放到一个集合中
+                                reDrawEdges(path);
+                                //gEdges.style("stroke", function (ed, ei) {
+                                //        for (var e in path) {
+                                //                if (ed.source.index == path[e].source && ed.target.index == path[e].target)
+                                //                        return "#d22";
+                                //        }
+                                //        return "#ccc"
+                                //});
 
                         })
                                 // 注册划出函数
@@ -177,32 +229,47 @@ function Prim() {
                 ///////////////////////////////////////////////////////
                 return;
         }
-        // DFS功能初始化
-        resetG(true, true, true);
+        // Prim功能初始化
+        index0 = -1;
+        resetNodes();
+        resetEdges();
+        resetWeight();
 
         // 为结点绑定独有的事件响应函数
         gNodes/*.on("mouseover", null)
                 .on("mouseout", null)*/
                 .on("click", function (d, i) {
                         if (d3.event.defaultPrevented) return;
+                        if (index0 >= 0)
+                                resetEdges();
                         index0 = d.index;
-                        $.get("../json/prim.json", { whichDataSet: crntDataSet, filename: "Prim.json", id: index0 }, reDraw);
+                        $.get("../json/prim.json", { whichDataSet: crntDataSet, filename: "Prim.json", id: index0 }, function (subEdges, status) {
+                                if (status != "success") {
+                                        ///////////////////////////////////////////////////////
+                                        //                  提醒用户没有加载成功                      //
+                                        ///////////////////////////////////////////////////////
+                                        return console.log(status);
+                                }
+                                reDrawEdges(subEdges);
+                        });
                 });
 }
-function reDrawP2P(data, status) {
-        if (status != "success") {
-                ///////////////////////////////////////////////////////
-                //                  提醒用户没有加载成功                      //
-                ///////////////////////////////////////////////////////
-                return console.log(status);
-        }
+function reDrawP2P(max2match) {
+
         // 边集高亮
-        gEdges.style("stroke", "#ccc")
-                .style("stroke-width", function (d) {
-                        return Math.log(d.weight) + 2;
-                });
+        reDrawEdges(max2match);
+
+        //gEdges.style("stroke", function (d, i) {
+        //        for (var p in max2match) {
+        //                if (d.source.index == max2match[p].source && d.target.index == max2match[p].target)
+        //                        return "#d22";
+        //        }
+        //        return "#ccc";
+        //})
 
         // 画两个结点集
+        reDrawNodes(max2match);
+        
 
 }
 // 响应Bipartite功能
@@ -214,10 +281,21 @@ function Bipartite() {
                 return;
         }
         // 二分图功能初始化
-        resetG(true, true, true);
+        index0 = -1;
+        resetNodes();
+        resetEdges();
+        resetWeight();
 
         // 为结点绑定独有的事件响应函数
-        $.get("../json/p2p.json", { whichDataSet: crntDataSet, filename: "p2p.json", id: index0 }, reDrawP2P);
+        $.get("../json/P2P.json", { whichDataSet: crntDataSet, filename: "P2P.json", id: index0 }, function (max2match, status) {
+                if (status != "success") {
+                        ///////////////////////////////////////////////////////
+                        //                  提醒用户没有加载成功                      //
+                        ///////////////////////////////////////////////////////
+                        return console.log(status);
+                }
+                reDrawP2P(max2match);
+        });
 
 
 }
@@ -227,60 +305,52 @@ function FordFulkerson() {
                 // 提醒用户图还没加载完毕
                 return;
         }
-        resetG(true, true, true);
+        index0 = index1 = -1;
+        resetNodes();
+        resetEdges();
+        resetWeight();
         // 重新为结点绑定点击事件
         // 给结点绑定点击事件
         // 当选中两个不同结点时，
         // 向后台发送请求
         // 成功后回调处理边特效的函数
-        gNodes/*.on("mouseover",null)
-                .on("mouseout", null)*/
-                .on("click", function (d, i) {
-                        if (d3.event.defaultPrevented) return;
-                        // 选中第一个结点                        
-                        if (index0<0) {
-                                index0 = d.index;
-                                // 提示用户选第二个点
-                                return;
-                        }
-                        // 和前一个点一样          
-                        if (d.index == index0) {
-                                // 提示用户选第二个点
-                                return;
-                        }
-                        if (index1 < 0) {
-                                index1 = d.index;                               
-                                // 选中了一个和第一个不一样的点                       
-                                // 向服务器发送包含选择点的最大流请求
-                                //$.post("IO.html", { node: 5 }, function () {
-                                //后台准备好最大流.json就可以画了
-                                //})
-                                $.get("../json/FordFulkerson.json", function (data, status) {
-                                        // 取回结果后，修改边上的文字
-                                        gEdgeTexts.text(function (td) {
-                                                for (var e in data) {
-                                                        if (td.source.index == data[e].source && td.target.index == data[e].target)
-                                                                return data[e].weight + "/" + td.weight;
-                                                }
-                                                return td.weight;
-                                        });
-                                        gEdges.style("stroke", function (ed, ei) {
-                                                for (var e in data) {
-                                                        if (ed.source.index == data[e].source && ed.target.index == data[e].target)
-                                                                return "#F88";
-                                                }
-                                                return "#ccc"
-                                        });
-                                        index0 = -1;
-                                        index1 = -1;
-
-                                });
-                        }
-                        // 选中了第三个有效点，将它设为起点，并清除第二个选点
-                        //index0 = d.index;
-                        //index1 = -1;
+        gNodes.on("click", function (d, i) {
+                if (d3.event.defaultPrevented) return;
+                // 选中第一个结点                        
+                if (index0 < 0) {
+                        resetEdges();
+                        index0 = d.index;
                         // 提示用户选第二个点
-                })
+                        return;
+                }
+                // 和前一个点一样          
+                if (d.index == index0) {
+                        // 提示用户选第二个点
+                        return;
+                }
+                if (index1 < 0) {
+                        index1 = d.index;
+                        // 选中了一个和第一个不一样的点                       
+                        // 向服务器发送包含选择点的最大流请求
+                        //$.post("IO.html", { node: 5 }, function () {
+                        //后台准备好最大流.json就可以画了
+                        //})
+                        $.get("../json/FordFulkerson.json", function (maxFlow, status) {
+                                // 取回结果后，修改边上的文字
+                                reDrawEdges(maxFlow);
+                                //gEdges.style("stroke", function (ed, ei) {
+                                //        for (var e in maxFlow) {
+                                //                if (ed.source.index == maxFlow[e].source && ed.target.index == maxFlow[e].target)
+                                //                        return "#F88";
+                                //        }
+                                //        return "#ccc"
+                                //});
+                                index0 = -1;
+                                index1 = -1;
+
+                        });
+                }
+        })
 }
 // 响应Bridge功能
 function Bridge() {
@@ -290,11 +360,25 @@ function Bridge() {
                 ///////////////////////////////////////////////////////
                 return;
         }
-        resetG(true, true, true);
         // 桥边检测功能初始化
+        resetNodes();
+        resetEdges();
+        resetWeight();       
 
         // 为结点绑定独有的事件响应函数
-        $.get("../json/Bridge.json", { whichDataSet: crntDataSet, filename: "Bridge.json", id: index0 }, reDraw);
+        $.get("../json/Bridge.json", { whichDataSet: crntDataSet, filename: "Bridge.json"}, function (bridges, status) {
+                if (status != "success") {
+                        ///////////////////////////////////////////////////////
+                        //                  提醒用户没有加载成功                      //
+                        ///////////////////////////////////////////////////////
+                        return console.log(status);
+                }
+                reDrawEdges(bridges);
+        });
         // 重新绑定动画函数
 
+}
+
+function search() {
+        alert("搜索内容" + document.getElementById("search4").innerHTML);
 }

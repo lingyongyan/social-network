@@ -8,7 +8,8 @@ var force = undefined; // 主图区的力导向图布局
 var gEdges = undefined; // 边集
 var gEdgeTexts = undefined; // 权重集
 var gNodes = undefined; // 结点集
-var color = d3.scale.category20();
+var color = d3.scale.category20(); // 颜色集
+var constMaxRadius = 25; // 最大结点圆半径
 
 // 画图
 function paintGraph(graphData, status) {
@@ -36,8 +37,8 @@ function paintGraph(graphData, status) {
                         .attr("markerWidth", "6")
                         .attr("markerHeight", "6")
                         .attr("viewBox", "0 0 12 12")
-                        .attr("refX", "27")
-                        .attr("refY", "6")
+                        .attr("refX", 20)
+                        .attr("refY", 6)
                         .attr("orient", "auto");
                 var arrow_path = "M0,0 L12,6 L0,12 L8,6 L0,0";
                 arrowMarker.append("path")
@@ -68,6 +69,8 @@ function paintGraph(graphData, status) {
                         .on("drag", dragged)
                         .on("dragend", dragended);
 
+
+
         var svg_g = svg.append("g")
                 .attr("transform", "translate(0, 0)")
                 .call(gZoom)
@@ -83,10 +86,8 @@ function paintGraph(graphData, status) {
         // 放结点边的容器，该容器支持 缩放 拖拽
         var container = svg_g.append("g");
 
-
         // 根据有向无向绘制连线
         // 3.1 绘制连接线
-
         gEdges = container.selectAll(".edge")
                 .data(graphData.edges)
                 .enter()
@@ -95,18 +96,14 @@ function paintGraph(graphData, status) {
                 .style("stroke-width", function (d) {
                         return Math.log(d.weight)+2;
                 })
-                .attr("class", "edge")
-                .attr("marker-end", function () {
-                        if (gType)
-                                return "url(#arrow)";
-                        else
-                                return "";
-                });
+                .attr("class", "edge");
+        if (gType){
+                gEdges.attr("marker-end", "url(#arrow)");
+        }                
 
 
         // 根据有权无权绘制线的权重
-        // 3.2 绘制直线上的文字
-        
+        // 3.2 绘制直线上的文字        
         if (gWeight) {
                 gEdgeTexts = container.selectAll(".linetext")
                         .data(graphData.edges)
@@ -117,50 +114,31 @@ function paintGraph(graphData, status) {
         }
 
 
-        // 4 绘制结点
-        var nodeR = 15; // 结点圆半径                
-        
-
+        // 4 绘制结点        
         gNodes = container.selectAll(".node")
                 .data(graphData.nodes)
                 .enter()
                 .append("circle")
                 .attr("class", "node")
                 .attr("r", function (d, i) {
-                        //return nodeR;
                         return Math.log(d.group)+10;
-                })//nodeR
+                })
                 .style("fill", function (d, i) {
                         return color(d.group);
                 })
                 .on("dblclick", dblclick)
                 .call(dragN);
+        // 悬浮鼠标结点信息
         gNodes.append("title")
                 .text(function (d) { return d.name+ " "+ d.group; });
 
-        // 5 绘制结点标签
-        //var text_dx = -7.5;
-        //var text_dy = 15;
-
-        //var gNodeTexts = container.selectAll(".nodetext")
-        //                    .data(graphData.nodes)
-        //                    .enter()
-        //                    .append("text")
-        //                    .attr("class", "nodetext")
-        //                    .attr("dx", text_dx)
-        //                    .attr("dy", text_dy)
-        //                    .text(function (d) {
-        //                            return d.name;
-        //                    });
 
         // zoomed 函数，
         // 用于更改需要缩放的元素的属性，
         // d3.event.translate 是平移的坐标值，
         // d3.event.scale 是缩放的值。
         function zoomed() {
-                //d3.event.sourceEvent.stopPropagation();
                 container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                // 更新动画
         }
 
         function dragstarted(d) {
@@ -168,7 +146,6 @@ function paintGraph(graphData, status) {
                 d3.event.sourceEvent.stopPropagation();
                 //d3.select(this).classed("dragging", true);
                 d3.select(this).classed("fixed", d.fixed = true);
-                //ticktick();
         }
 
         function dragged(d) {
@@ -190,10 +167,10 @@ function paintGraph(graphData, status) {
         function baseTick() {
                 //限制结点的边界
                 gNodes.forEach(function (d, i) {
-                        d.x = d.x - nodeR < 0 ? nodeR : d.x;
-                        d.x = d.x + nodeR > gWidth ? gWidth - nodeR : d.x;
-                        d.y = d.y - nodeR < 0 ? nodeR : d.y;
-                        d.y = d.y + nodeR > gHeight ? gHeight - nodeR : d.y;
+                        d.x = d.x - constMaxRadius < 0 ? constMaxRadius : d.x;
+                        d.x = d.x + constMaxRadius > gWidth ? gWidth - constMaxRadius : d.x;
+                        d.y = d.y - constMaxRadius < 0 ? constMaxRadius : d.y;
+                        d.y = d.y + constMaxRadius > gHeight ? gHeight - constMaxRadius : d.y;
                 });
                 //更新连接线的位置
                 gEdges.attr("x1", function (d) { return d.source.x; })
