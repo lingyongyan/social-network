@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-        <title>UCAS Network Analysis Project</title>
+        <title>图秀</title>
         <!-- Bootstrap -->
         
         <link href="../css/bootstrap.css" rel="stylesheet">
@@ -23,25 +23,20 @@
 </head>
 <body>
         
-        <div class="container-fluid">
+        <div class="container">
                 <!--导航栏-->
                 <div class="row">
                         <div class="col-md-12">
                         <style>
                                 .btn-group .btn {
-                                        width:128px;
-                                        height:64px;
+                                        width:100px;
+                                        height:50px;
                                 }
                         </style>
-                                <!--<div class="btn-group" role="group">-->
-                                <div class="btn-group" ><!--role="group"-->
-                                <!--<div class="btn-group-xs" role="group">-->
+                                <div class="btn-group" role="group">
                                                 <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
-
                                                 <button type="button" class="btn btn-default" onclick='(function(){window.location="IO.html";})()'>数据上传</button>
-
                                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph.html"; })()'>图秀</button>
-
                                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络测量<!--Network<br />Measures--></button>
                                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络模型<!--Network<br />Models--></button>
                                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>数据挖掘<!--Data<br />Mining--></button>
@@ -61,11 +56,6 @@
                 </div>
                 <div class="row">
                         <div class="col-md-10 col-md-offset-1">
-                                <!--<defs>
-                                        <marker id="arrow" markerunits="strokeWidth" markerwidth="6" markerheight="6" viewbox="0 0 12 12" refx="27" refy="6" orient="auto">
-                                                <path d="M0,0 L12,6 L0,12 L12,6" fill="#ccc"></path>
-                                        </marker>
-                                </defs>-->
                                 <svg id="graph" width=1000 height=600 viewBox="0 0 1000 600">
                                 </svg>
                         </div>
@@ -139,14 +129,12 @@
         <script src="../js/jquery-2.1.4.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="../js/bootstrap.min.js"></script>
-        <!--自定义JavaScript-->
-        <script src="../js/graph.js"></script><!--主图区绘制-->
+        <!--自定义JavaScript-->        
         <script src="../js/loadDataSet.js"></script><!--加载数据集-->
-
-        <script src="../js/graph8.js"></script><!--8个图算法功能函数 随旭东-->
-        <script src="../js/degree.js"></script>  <!--度分布 孙家栋-->
-        <script src="../js/table.js"> </script>  <!--表和矩阵 王庆全-->
-        <script src="../js/DBP.js"></script>
+        <script src="../js/showGraph.js"></script><!--主图区绘制-->
+        <script src="../js/graph8.js"></script><!--8个图算法功能函数-->
+        <script src="../js/showDegree.js"></script>  <!--度分布-->
+        <script src="../js/showTable.js"> </script>  <!--表和矩阵-->
 
 </body>
 </html>
