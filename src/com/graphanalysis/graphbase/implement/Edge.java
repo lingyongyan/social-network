@@ -61,5 +61,5 @@ public class Edge implements EdgeInterface{
 	public double getFlow() {
 		// TODO 自动生成的方法存根
 		return flow;
-	}	
+	}
 }

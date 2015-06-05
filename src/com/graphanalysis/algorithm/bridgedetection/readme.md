@@ -1,0 +1,2 @@
+bridgeDetection使用说明：
+调用exec(Bridge br,String filename)函数，得到bridge，然后调用bridge的packtoJson函数打包成json对象。

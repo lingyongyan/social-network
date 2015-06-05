@@ -1,4 +1,5 @@
-package com.graphanalysis.algorithm.bfsANDdfs.invokClass;
+package com.graphanalysis.algorithm.primmst;
+
 public class UF {
     private int[] id;     // id[i] = parent of i
     private byte[] rank;  // rank[i] = rank of subtree rooted at i (cannot be more than 31)
@@ -48,7 +49,7 @@ public class UF {
     }
 
     public static void main(String[] args) {
-        int N = StdIn.readInt();
+/*        int N = StdIn.readInt();
         UF uf = new UF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
@@ -57,6 +58,6 @@ public class UF {
             uf.union(p, q);
             System.out.println(p + " " + q);
         }
-        System.out.println(uf.count() + " components");
+        System.out.println(uf.count() + " components");*/
     }
 }

@@ -1,6 +1,11 @@
 package com.graphanalysis.graphbase.implement;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,8 +15,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javafx.util.Pair;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONWriter;
 
 import com.graphanalysis.graphBase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
@@ -27,6 +37,7 @@ public class Graph implements GraphInterface{
 	protected GraphType type =GraphType. UNDirectedGraph;//图类型
 	protected double [][] adjMatrix;//邻接矩阵
 	protected HashMap<Integer,Vector<Integer>>adjList = new HashMap<Integer,Vector<Integer>>();//邻接链表
+	protected HashMap<Integer,Vector<Edge>> adjEdgeList = new HashMap<Integer,Vector<Edge>>();//邻接链表
 	protected Set<Node> nodes = new HashSet<Node>();//点集
 	protected Vector<Edge> edges = new Vector<Edge>();//边集
 	
@@ -46,17 +57,18 @@ public class Graph implements GraphInterface{
 		for(int i=0;i<rows;i++){
 			columns = adjMatrix[i].length;
 			this.nodes.add(new Node(i));
-			Vector<Integer> mapTemp = new Vector<Integer>();
+			//Vector<Integer> mapTemp = new Vector<Integer>();
 			for(int j=0;j<columns;j++){
 				if(adjMatrix[i][j]!=0){
-					mapTemp.add(j);
+					//mapTemp.add(j);
 					this.edges.add(new Edge(i,j));
 				}
 			}
-			this.adjList.put(i,mapTemp);
+			//this.adjList.put(i,mapTemp);
 		}
 		constructAdjList(this.edges);
-		constructAdjMatrixFromAdjList();
+		constructNodeSetFromEdges();
+		//constructAdjMatrixFromAdjList();
 	}
 	
 	/**
@@ -65,9 +77,9 @@ public class Graph implements GraphInterface{
 	 */
 	public Graph(Vector<Edge> edges) {
 		setEdges(edges);
-		constructNodeSetFromEdges();
 		constructAdjList(this.edges);
 		constructAdjMatrixFromAdjList();
+		constructNodeSetFromEdges();
 	}
 	
 	/**
@@ -82,10 +94,15 @@ public class Graph implements GraphInterface{
 			if(this.adjList.containsKey(fromID)){//如果邻接链表中已有该节点项则在该项后追加新的链接节点ID
 				Vector<Integer> alreadyin = this.adjList.get(fromID);
 				alreadyin.add(edge.getToID());
+				Vector<Edge> alEdge = this.adjEdgeList.get(fromID);
+				alEdge.add(edge);
 			}else{
 				Vector<Integer> newitem = new Vector<Integer>();
 				newitem.add(edge.getToID());
 				this.adjList.put(fromID, newitem);
+				Vector<Edge> edgeItem = new Vector<Edge>();
+				edgeItem.add(edge);
+				this.adjEdgeList.put(fromID, edgeItem);
 			}
 		}
 	}
@@ -118,25 +135,65 @@ public class Graph implements GraphInterface{
 	}
 	
 	/**
-	 * 根据边集构建点集
+	 * 根据边集构建点集,必须在adjList创建之后进行
 	 */
 	protected void constructNodeSetFromEdges(){
 		if(this.nodes.size()!=0)
 			return;
+		if(this.adjMatrix.length==0)
+			constructAdjMatrixFromAdjList();
+		double[][] mt = transpose(this.adjMatrix);
+		Set<Integer> nodeIn = new HashSet<Integer>();
 		for(int i=0;i<this.edges.size();i++){
 			int from =this.edges.get(i).getFromID();
 			int to = this.edges.get(i).getToID();
-			if(!this.nodes.contains(from)){
+			if(!nodeIn.contains(from)){
 				Node node = new Node(from);
+				int in = 0;
+				int out = 0;
+				for(int pos=0;pos<this.adjMatrix.length;pos++){
+					if(this.adjMatrix[from][pos]>0)
+						out++;
+					if(mt[from][pos]>0)
+						in++;
+				}
+				node.setOutDegree(out);
+				node.setInDegree(in);
+				nodeIn.add(from);
 				this.nodes.add(node);
 			}
-			if(!this.nodes.contains(to)){
+			if(!nodeIn.contains(to)){
 				Node node = new Node(to);
+				int in = 0;
+				int out = 0;
+				for(int pos=0;pos<this.adjMatrix.length;pos++){
+					if(this.adjMatrix[to][pos]>0)
+						out++;
+					if(mt[to][pos]>0)
+						in++;
+				}
+				node.setOutDegree(out);
+				node.setInDegree(in);
+				nodeIn.add(to);
 				this.nodes.add( node);
 			}
 		}
 	}
 	
+	private double[][] transpose(double[][] matrix){
+		double[][] mt = new double[matrix.length][];
+		int rows = matrix.length;
+		if(rows==0)
+			return mt;
+		int cols = matrix[0].length;
+		for(int i=0;i<rows;i++)
+			mt[i] = new double[cols];
+		
+		for(int i=0;i<rows;i++)
+			for(int j=0;j<cols;j++)
+				mt[j][i] = matrix[i][j];
+		return mt;
+	}
 	
 	private int getBiggestNode(){
 		int max = -1;
@@ -203,6 +260,14 @@ public class Graph implements GraphInterface{
 		return res;
 	}
 	
+	public  Vector<Edge> getAdjEdgeList(int node){
+		Vector<Edge>  rt  = null ;
+		if(node>=this.adjEdgeList.size())
+			return rt;
+		rt = this.adjEdgeList.get(node);
+		 return rt;
+	}
+	
 	@Override
 	public Set<Node> getNodeSet() {
 		return this.nodes;
@@ -229,7 +294,7 @@ public class Graph implements GraphInterface{
 	}
 	
 	@Override
-	public void writeToJson(String fileName) throws JSONException {
+	public JSONObject packToJson() throws JSONException{
 		// TODO 自动生成的方法存根
 		String gtype = (this.type==GraphType. UNDirectedGraph)? "false":"true";
 		String json = "{'type':'"+gtype+"'}";
@@ -237,38 +302,45 @@ public class Graph implements GraphInterface{
 		jsonObj.put("weight", "true");
 		jsonObj.put("N", this.adjMatrix.length);
 		jsonObj.put("E", this.edges.size());
-		Vector<String> nodesJs = new Vector <String>();
+		JSONArray nodesJs = new JSONArray();
 		Iterator<Node> nodeite = nodes.iterator();
-		int i=0;
-		while(nodeite.hasNext() && i<100){
+		while(nodeite.hasNext()){
 			Node now = nodeite.next();
-			Map <String, String> nodesJs2 = new HashMap <String, String>();
-			nodesJs2.put("name", now.getName());
-			nodesJs2.put("id", Integer.toString(now.getID()));
-			nodesJs.add(nodesJs2.toString());
-			i++;
+			JSONObject nodeObj = new JSONObject();
+			nodeObj.put("name", now.getName());
+			nodeObj.put("id", Integer.toString(now.getID()));
+			nodesJs.put(nodeObj);
 		}
-		jsonObj.put("nodes", nodesJs.toString());
+		jsonObj.put("nodes", nodesJs);
 		
-		Vector<String> edgesJs = new Vector <String>();
+		JSONArray edgesJs = new JSONArray();
 		Iterator<Edge> edgesite = edges.iterator();
-		i=0;
-		while(nodeite.hasNext() && i<100){
+		while(edgesite.hasNext()){
 			Edge now = edgesite.next();
-			Map <String, String> edgesJs2 = new HashMap <String, String>();
-			edgesJs2.put("source",Integer.toString( now.getFromID()));
-			edgesJs2.put("target", Integer.toString(now.getToID()));
-			edgesJs2.put("weight", Double.toString(now.getWeight()));
-			edgesJs.add(edgesJs2.toString());
-			i++;
+			JSONObject edgeObj = new JSONObject();
+			edgeObj.put("source",Integer.toString( now.getFromID()));
+			edgeObj.put("target", Integer.toString(now.getToID()));
+			edgeObj.put("weight", Double.toString(now.getWeight()));
+			edgesJs.put(edgeObj);
 		}
-		jsonObj.put("edges", edgesJs.toString());
-		try {
-			JsonDeal.writeFile(fileName,jsonObj.toString() );
-		} catch (IOException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		jsonObj.put("edges", edgesJs);
 		//jsonObj.put(key, value)
+		return jsonObj;
+	}
+
+	@Override
+	public void writeToJson(String filePath) throws JSONException {
+		// TODO 自动生成的方法存根
+		JSONObject jsonObj = packToJson();
+		if(jsonObj != null){
+			try {
+				JsonDeal.writeFile(filePath, jsonObj.toString());
+			} catch (IOException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+		}
 	}
 }
+
+

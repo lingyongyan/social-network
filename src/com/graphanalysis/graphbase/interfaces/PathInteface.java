@@ -1,8 +1,10 @@
 package com.graphanalysis.graphbase.interfaces;
 
-import java.util.Set;
+import java.util.Vector;
+import org.json.JSONObject;
 
 import com.graphanalysis.graphbase.implement.Edge;
 public interface PathInteface {
-	public Set<Edge> getPath();
+	public Vector<Edge> getPath();
+	public JSONObject packetToJson();
 }

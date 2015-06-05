@@ -3,29 +3,31 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Vector;
 
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.Edge;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.EdgeWeightedGraph;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.In;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.IndexMinPQ;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.Queue;
-import com.graphanalysis.algorithm.bfsANDdfs.invokClass.UF;
+import com.graphanalysis.graphBase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.graphbase.implement.Graph;
 
-public class PrimMST {
+public class PrimMST implements PrimMSTImpl {
     private Edge[] edgeTo;        // edgeTo[v] = shortest edge from tree vertex to non-tree vertex
     private double[] distTo;      // distTo[v] = weight of shortest such edge
     private boolean[] marked;     // marked[v] = true if v on tree, false otherwise
     private IndexMinPQ<Double> pq;
     private static String content="";
    
-    public PrimMST(EdgeWeightedGraph G) {
-        edgeTo = new Edge[G.V()];
-        distTo = new double[G.V()];
-        marked = new boolean[G.V()];
-        pq = new IndexMinPQ<Double>(G.V());
-        for (int v = 0; v < G.V(); v++) distTo[v] = Double.POSITIVE_INFINITY;
+    public PrimMST(Graph G) {
+    	int node_num = G.getNodeNum();
+        edgeTo = new Edge[node_num];
+        distTo = new double[node_num];
+        marked = new boolean[node_num];
+        pq = new IndexMinPQ<Double>(node_num);
+        for (int v = 0; v < node_num; v++) distTo[v] = Double.POSITIVE_INFINITY;
 
-        for (int v = 0; v < G.V(); v++)      // run from each vertex to find
+        for (int v = 0; v < node_num; v++)      // run from each vertex to find
             if (!marked[v]) prim(G, v);      // minimum spanning forest
 
         // check optimality conditions
@@ -33,7 +35,7 @@ public class PrimMST {
     }
 
     // run Prim's algorithm in graph G, starting from vertex s
-    public void prim(EdgeWeightedGraph G, int s) {
+    public void prim(Graph G, int s) {
         distTo[s] = 0.0;
         pq.insert(s, distTo[s]);
         while (!pq.isEmpty()) {
@@ -43,13 +45,17 @@ public class PrimMST {
     }
 
     // scan vertex v
-    public void scan(EdgeWeightedGraph G, int v) {
+    public void scan(Graph G, int v) {
         marked[v] = true;
-        for (Edge e : G.adj(v)) {
-            int w = e.other(v);
+        Iterator<Edge> it = G.getAdjEdgeList(v).iterator();
+        while (it.hasNext()) {
+        	Edge e = it.next();
+            int w = e.getToID();
+            if(w==v) w = e.getFromID();
+            double weight = e.getWeight();
             if (marked[w]) continue;         // v-w is obsolete edge
-            if (e.weight() < distTo[w]) {
-                distTo[w] = e.weight();
+            if (weight < distTo[w]) {
+                distTo[w] = weight;
                 edgeTo[w] = e;
                 if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
                 else                pq.insert(w, distTo[w]);
@@ -58,11 +64,11 @@ public class PrimMST {
     }
 
     public Iterable<Edge> edges() {
-        Queue<Edge> mst = new Queue<Edge>();
+        Queue<Edge> mst = new LinkedList<Edge>();
         for (int v = 0; v < edgeTo.length; v++) {
             Edge e = edgeTo[v];
             if (e != null) {
-                mst.enqueue(e);
+                mst.offer(e);
             }
         }
         return mst;
@@ -71,17 +77,17 @@ public class PrimMST {
     public double weight() {
         double weight = 0.0;
         for (Edge e : edges())
-            weight += e.weight();
+            weight += e.getWeight();
         return weight;
     }
 
     // check optimality conditions (takes time proportional to E V lg* V)
-    public boolean check(EdgeWeightedGraph G) {
+    public boolean check(Graph G) {
 
         // check weight
         double totalWeight = 0.0;
         for (Edge e : edges()) {
-            totalWeight += e.weight();
+            totalWeight += e.getWeight();
         }
         double EPSILON = 1E-12;
         if (Math.abs(totalWeight - weight()) > EPSILON) {
@@ -90,9 +96,9 @@ public class PrimMST {
         }
 
         // check that it is acyclic
-        UF uf = new UF(G.V());
+        UF uf = new UF(G.getNodeNum());
         for (Edge e : edges()) {
-            int v = e.either(), w = e.other(v);
+            int v = e.getFromID(), w = e.getToID();
             if (uf.connected(v, w)) {
                 System.err.println("Not a forest");
                 return false;
@@ -101,8 +107,8 @@ public class PrimMST {
         }
 
         // check that it is a spanning forest
-        for (Edge e : G.edges()) {
-            int v = e.either(), w = e.other(v);
+        for (Edge e : G.getEdgeSet()) {
+            int v = e.getFromID(), w = e.getToID();
             if (!uf.connected(v, w)) {
                 System.err.println("Not a spanning forest");
                 return false;
@@ -113,17 +119,17 @@ public class PrimMST {
         for (Edge e : edges()) {
 
             // all edges in MST except e
-            uf = new UF(G.V());
+            uf = new UF(G.getNodeNum());
             for (Edge f : edges()) {
-                int x = f.either(), y = f.other(x);
+                int x = f.getFromID(), y = f.getToID();
                 if (f != e) uf.union(x, y);
             }
 
             // check that e is min weight edge in crossing cut
-            for (Edge f : G.edges()) {
-                int x = f.either(), y = f.other(x);
+            for (Edge f : G.getEdgeSet()) {
+                int x = f.getFromID(), y = f.getToID();
                 if (!uf.connected(x, y)) {
-                    if (f.weight() < e.weight()) {
+                    if (f.getWeight() < e.getWeight()) {
                         System.err.println("Edge " + f + " violates cut optimality conditions");
                         return false;
                     }
@@ -136,16 +142,14 @@ public class PrimMST {
     }
 
     public static void main(String[] args) {
-        //In in = new In(args[0]);
-    	In in = new In("tinyGPrimMST.txt");
-        EdgeWeightedGraph G = new EdgeWeightedGraph(in);
+		Vector<Edge> edges = GraphReader.readFromFile("/tmp/tinyGPrimMST.txt",2);
+		Graph G = new Graph(edges);
         PrimMST mst = new PrimMST(G);
         for (Edge e : mst.edges()) {
-        	content += e.toString()+"\r\n";
-           //System.out.println(e);
+        	content += e.getFromID()+" "+e.getToID()+"\r\n";
         }
         try {
-      	   File file = new File("PrimMSTResult.txt");
+      	   File file = new File("PrimMSTResult2.txt");
       	   if (!file.exists()) {
       	    file.createNewFile();
       	   }

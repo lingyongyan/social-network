@@ -110,7 +110,7 @@ public class FordFulkerson {
 
 	public FlowResult exec(String fileName, int src, int dst) {
 		// TODO Auto-generated method stub
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, false);
+		Vector<Edge> edges = GraphReader.readFromFile(fileName, 1);
 		// System.out.println(edges.size());
 		DijkstraGraph g = new DijkstraGraph(edges);
 		Set<Integer> vSet = new HashSet<Integer>();

@@ -6,19 +6,21 @@
 package com.graphanalysis.algorithm.bridgedetection;
 
 public class NodeForDetection {
-	private int ID;
-	private int depth;
-	private int father;
-	private int ancestor;
-	private boolean reached;
-	private boolean lastSonNew;
-	public int visitNum;
+	private int ID;//节点ID
+	private int depth;//节点深度
+	private int father;//节点的父节点ID
+	private int ancestor;//节点的祖先节点
+	private boolean reached;//表明节点是否已被访问
+	private boolean lastSonNew;//表明上次访问的节点是不是新节点
+	public int visitNum;//子节点的访问量
 	
 	public NodeForDetection(){
 	}
+	
 	public NodeForDetection(int ID){
 		this(ID,0);
 	}
+	
 	public NodeForDetection(int ID,int depth){
 		this(ID,depth,-1);
 	}
