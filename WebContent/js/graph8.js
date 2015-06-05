@@ -116,7 +116,7 @@ function Random() {
                         cnt = 0;
                         FPS = 6;
                         loop = false;
-                        setInterval (function () {
+                        playshow = setInterval(function () {
                                 play(subEdges, subEdges.length);
                         }, 1000 / FPS); // 这里控制帧数
                 });
@@ -162,7 +162,7 @@ function BFS() {
                         cnt = 0;
                         FPS = 6;
                         loop = false;
-                        setInterval(function () {
+                        playshow = setInterval(function () {
                                 play(subEdges, subEdges.length);
                         }, 1000 / FPS); // 这里控制帧数
 
@@ -204,7 +204,7 @@ function DFS() {
                         cnt = 0;
                         FPS = 6;
                         loop = false;
-                        setInterval(function () {
+                        playshow = setInterval(function () {
                                 play(subEdges, subEdges.length);
                         }, 1000 / FPS); // 这里控制帧数
                 });
@@ -306,7 +306,7 @@ function Prim() {
                                 cnt = 0;
                                 FPS = 6;
                                 loop = true;
-                                setInterval(function () {
+                                playshow = setInterval(function () {
                                         play(minTree, minTree.length);
                                 }, 1000 / FPS); // 这里控制帧数
                         });
