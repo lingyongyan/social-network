@@ -15,13 +15,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import javafx.util.Pair;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
+
+import javafx.util.Pair;
 
 import com.graphanalysis.graphBase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
@@ -254,9 +252,9 @@ public class Graph implements GraphInterface{
 
 	public Vector<Integer> getAdjList(int node){//获取某个节点邻接的全部节点
 		Vector<Integer> res = null;
-		if(node>=this.adjList.size())
-			return res;
 		res = this.adjList.get(node);
+		if(res==null)
+			return new Vector<Integer>();
 		return res;
 	}
 	
@@ -297,8 +295,8 @@ public class Graph implements GraphInterface{
 	public JSONObject packToJson() throws JSONException{
 		// TODO 自动生成的方法存根
 		String gtype = (this.type==GraphType. UNDirectedGraph)? "false":"true";
-		String json = "{'type':'"+gtype+"'}";
-		JSONObject jsonObj = new JSONObject(json);
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("type", gtype);
 		jsonObj.put("weight", "true");
 		jsonObj.put("N", this.adjMatrix.length);
 		jsonObj.put("E", this.edges.size());
@@ -308,7 +306,7 @@ public class Graph implements GraphInterface{
 			Node now = nodeite.next();
 			JSONObject nodeObj = new JSONObject();
 			nodeObj.put("name", now.getName());
-			nodeObj.put("id", Integer.toString(now.getID()));
+			nodeObj.put("group", 0);
 			nodesJs.put(nodeObj);
 		}
 		jsonObj.put("nodes", nodesJs);
@@ -318,9 +316,9 @@ public class Graph implements GraphInterface{
 		while(edgesite.hasNext()){
 			Edge now = edgesite.next();
 			JSONObject edgeObj = new JSONObject();
-			edgeObj.put("source",Integer.toString( now.getFromID()));
-			edgeObj.put("target", Integer.toString(now.getToID()));
-			edgeObj.put("weight", Double.toString(now.getWeight()));
+			edgeObj.put("source",now.getFromID());
+			edgeObj.put("target",now.getToID());
+			edgeObj.put("weight", now.getWeight());
 			edgesJs.put(edgeObj);
 		}
 		jsonObj.put("edges", edgesJs);
@@ -340,6 +338,10 @@ public class Graph implements GraphInterface{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void  writeNodeJson(String fileName){
+		
 	}
 }
 

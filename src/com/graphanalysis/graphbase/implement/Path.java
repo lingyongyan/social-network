@@ -32,23 +32,23 @@ public class Path implements PathInteface {
 		return this.path;
 	}
 	@Override
-	public JSONObject packetToJson() {
+	public JSONArray packetToJson() {
 		// TODO 自动生成的方法存根
-		JSONObject jsObj = new JSONObject();
+		JSONArray jsedges = new JSONArray();
 		try {
-			JSONArray jsedges = new JSONArray(); 
 			for(int i=0;i<this.path.size();i++){
 				Edge tmp = this.path.get(i);
 				JSONObject jsedge = new JSONObject();
-				jsedge.put("source", tmp.getFromID()).put("target", tmp.getToID()).put("weight", tmp.getWeight());
+				jsedge.put("source", tmp.getFromID());
+				jsedge.put("target", tmp.getToID());
+				jsedge.put("weight", tmp.getWeight());
 				jsedges.put(jsedge);
 			}
-			jsObj.put("edges", jsedges);
 		} catch (JSONException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-		return jsObj;
+		return jsedges;
 	}
 
 }

@@ -66,31 +66,34 @@ public class GraphReader{
 	
 	public static Graph readGraphFromJson(String fileName){
 		Graph gra = null;
-		JSONObject jsonObj  = null;
-		String strJson = JsonDeal.ReadFile(fileName);
 		try {
-			jsonObj =  new JSONObject(strJson);
+		String strJson = JsonDeal.ReadFile(fileName);
+		JSONObject jsonObj;
+		jsonObj = new JSONObject(strJson);
+
+		//jsonObj =  new JSONObject(strJson);
 			boolean weighted =Boolean.valueOf( jsonObj.get("weight").toString());
-			boolean directed = Boolean.valueOf( jsonObj.get("type").toString());
-			Vector<Edge> edges = new Vector<Edge>();
-			JSONArray jsonAr = jsonObj.getJSONArray("edges");
-			for(int i=0; i < jsonAr.length();i++){
-				JSONObject jo = (JSONObject) jsonAr.get(i);
-				int from =Integer.valueOf( jo.get("source").toString());
-				int to =Integer.valueOf( jo.get("target").toString());
-				double weight = Double.valueOf( jo.get("weight").toString());
-				Edge edge = new Edge(from,to,weight);
-				edges.add(edge);
-				if(!directed){//如果是无向图
-					Edge edge2 = new Edge(to,from,weight);
-					edges.add(edge2);
-				}
-				gra = new Graph(edges);
+		boolean directed = Boolean.valueOf( jsonObj.get("type").toString());
+		Vector<Edge> edges = new Vector<Edge>();
+		JSONArray jsonAr = jsonObj.getJSONArray("edges");
+		for(int i=0; i < jsonAr.length();i++){
+			JSONObject jo = (JSONObject) jsonAr.get(i);
+			int from =Integer.valueOf( jo.get("source").toString());
+			int to =Integer.valueOf( jo.get("target").toString());
+			double weight = Double.valueOf( jo.get("weight").toString());
+			Edge edge = new Edge(from,to,weight);
+			edges.add(edge);
+			if(!directed){//如果是无向图
+				Edge edge2 = new Edge(to,from,weight);
+				edges.add(edge2);
 			}
+			gra = new Graph(edges);
+		}
 		} catch (JSONException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
+		System.out.println("Reader OK");
 		return gra;
 	}
 }

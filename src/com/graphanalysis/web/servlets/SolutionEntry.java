@@ -1,5 +1,6 @@
 
 package com.graphanalysis.web.servlets;
+
 import org.json.JSONObject;
 
 public class SolutionEntry {

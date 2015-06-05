@@ -13,6 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="/home/young/workspace/test2/lib/json.org.jar"/>
+	<classpathentry kind="lib" path="/home/young/git/SNW/graphAnalysis/lib/json.org.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
