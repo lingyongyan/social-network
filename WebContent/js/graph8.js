@@ -4,18 +4,9 @@ var index0 = -1;
 // 终点索引
 var index1 = -1;
 
-var nodes2draw = undefined;
-var edges2draw = undefined;
-var weight2draw = undefined;
-
-
 // 重置结点
 function resetNodes() {
-
-        gNodes/*.attr("r", function (d, i) {
-                return Math.log(d.group) + 10;
-        })*/
-                .style("fill", function (d, i) {
+        gNodes.style("fill", function (d, i) {
                         return color(d.group);
                 })
                 .on("mouseover", null)
@@ -24,22 +15,13 @@ function resetNodes() {
 }
 // 重置边
 function resetEdges() {
-
         gEdges.style("stroke", "#ccc");
-                //.style("stroke-width", function (d) {
-                //        return Math.log(d.weight) + 2;
-                //});
 }
 //重置权重
 function resetWeight() {
         gEdgeTexts.text(function (d) { return d.weight; });
 }
-//
-function resetTick() {
-        force.on("tick", function () {
-                tickBase();
-        })
-}
+
 // 重绘边集，条数
 function reDrawEdges(subEdges, ne) {
         gEdges.style("stroke", function (d, i) {
@@ -77,7 +59,30 @@ function reDrawWeights(maxFlow) {
                 return textData.weight;
         });
 }
+var FPS = 12; // 帧速率
+var loop = true; // 循环播放
+var cnt = 0; // 子集渲染比率
+// 实现动画绘制
+function tickPlus(subEdges, ne) {
+        if (!startTick)
+                return;
+        // 拦截器  
+        if (cnt < ne) {
+                cnt++;
+        }
+        else {
+                if (loop)
+                        cnt = 1;
+                else
+                        return;
+        }
+        //-------------------------分界线-----------------------------
+        reDrawEdges(subEdges, cnt);
 
+        setTimeout(function () {
+                tickPlus(subEdges, ne);
+        }, 1000 / FPS); // 这里控制帧数
+}
 
 // 响应Random功能
 // 选中一个点，在其他点上滑动，形成一条边则高亮该边
@@ -90,10 +95,10 @@ function Random() {
         }
         // Random功能初始化
         index0 = -1;
+        startTick = false;
         resetNodes();
         resetEdges();
-        resetWeight();
-        resetTick();
+        resetWeight();        
 
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
@@ -108,34 +113,17 @@ function Random() {
                                 ///////////////////////////////////////////////////////
                                 return console.log(status);
                         }
-                        reDrawEdges(subEdges, subEdges.length);
+                        cnt = 0;
+                        FPS = 6;
+                        loop = false;
+                        startTick = true;
+                        tickPlus(subEdges, subEdges.length);
                 });
         });
 
         // 重新绑定动画函数
 
 }
-
-var cnt = 0;
-var loop = true;
-function tickPlus() {
-        setTimeout(tickPlus, 1000);
-        //tickBase();        
-        if (cnt < edges2draw.length) {
-                cnt++;
-                reDrawEdges(edges2draw, cnt);
-                //return;
-        }
-        else {
-                if(loop)
-                        cnt = 0;
-                return;
-        }
-                //reDrawEdges(subEdges, cnt);
-                //cnt = 0;
-                //return;
-}
-
 
 // 广度优先搜索
 function BFS() {
@@ -147,13 +135,11 @@ function BFS() {
         }
         // BFS功能初始化
         index0 = -1;
-        nodes2draw = undefined;
-        edges2draw = undefined;
-        weight2draw = undefined;
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();   
-        resetTick();
+
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
@@ -167,14 +153,13 @@ function BFS() {
                                 ///////////////////////////////////////////////////////
                                 return console.log(status);
                         }
-                        //for (var tms = 0; tms < subEdges.length; tms++)
-                        //{
 
-                        //}
-                        edges2draw = subEdges;
+
                         cnt = 0;
-                        //force.on("tick", tickPlus);
-                        tickPlus();
+                        FPS = 6;
+                        loop = false;
+                        startTick = true;
+                        tickPlus(subEdges, subEdges.length);
                         //reDrawEdges(subEdges, subEdges.length);
                 });
         });
@@ -190,10 +175,11 @@ function DFS() {
         }
         // DFS功能初始化
         index0 = -1;
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();
-        resetTick();
+
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
@@ -207,7 +193,11 @@ function DFS() {
                                 ///////////////////////////////////////////////////////
                                 return console.log(status);
                         }
-                        reDrawEdges(subEdges, subEdges.length);
+                        cnt = 0;
+                        FPS = 6;
+                        loop = false;
+                        startTick = true;
+                        tickPlus(subEdges, subEdges.length);
                 });
         });
 
@@ -221,11 +211,12 @@ function Dijkstra() {
         }
 
         // Dijkstra功能初始化
-        index0 = index1 = -1;        
+        index0 = index1 = -1;
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();
-        resetTick();
+
         // 重新为结点绑定点击事件
         gNodes.on("click", function (node0data, n0i) {
                 if (d3.event.defaultPrevented) return;
@@ -281,26 +272,29 @@ function Prim() {
         }
         // Prim功能初始化
         index0 = -1;
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();
-        resetTick();
+
         // 为结点绑定独有的事件响应函数
-        gNodes/*.on("mouseover", null)
-                .on("mouseout", null)*/
-                .on("click", function (d, i) {
+        gNodes.on("click", function (d, i) {
                         if (d3.event.defaultPrevented) return;
                         if (index0 >= 0)
                                 resetEdges();
                         index0 = d.index;
-                        $.get("../json/prim.json", { whichDataSet: crntDataSet, filename: "Prim.json", id: index0 }, function (subEdges, status) {
+                        $.get("../json/prim.json", { whichDataSet: crntDataSet, filename: "Prim.json", id: index0 }, function (minTree, status) {
                                 if (status != "success") {
                                         ///////////////////////////////////////////////////////
                                         //                  提醒用户没有加载成功                      //
                                         ///////////////////////////////////////////////////////
                                         return console.log(status);
                                 }
-                                reDrawEdges(subEdges, subEdges.length);
+                                cnt = 0;
+                                FPS = 6;
+                                loop = true;
+                                startTick = true;
+                                tickPlus(minTree, minTree.length);
                         });
                 });
 }
@@ -332,10 +326,11 @@ function Bipartite() {
         }
         // 二分图功能初始化
         index0 = -1;
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();
-        resetTick();
+
         // 为结点绑定独有的事件响应函数
         $.get("../json/P2P.json", { whichDataSet: crntDataSet, filename: "P2P.json", id: index0 }, function (max2match, status) {
                 if (status != "success") {
@@ -369,10 +364,11 @@ function FordFulkerson() {
                 return;
         }
         index0 = index1 = -1;
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();
-        resetTick();
+
         // 重新为结点绑定点击事件
         // 给结点绑定点击事件
         // 当选中两个不同结点时，
@@ -425,10 +421,11 @@ function Bridge() {
                 return;
         }
         // 桥边检测功能初始化
+        startTick = false;
         resetNodes();
         resetEdges();
         resetWeight();       
-        resetTick();
+
         // 为结点绑定独有的事件响应函数
         $.get("../json/Bridge.json", { whichDataSet: crntDataSet, filename: "Bridge.json"}, function (bridges, status) {
                 if (status != "success") {
