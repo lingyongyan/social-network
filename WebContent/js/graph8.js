@@ -31,7 +31,8 @@ function reDrawEdges(subEdges, ne) {
                 if (gEdges)
                         gEdges.style("stroke", function (d, i) {
                                 for (var edgeIndex = 0; edgeIndex < ne; edgeIndex++) {
-                                        if (d.source.index == subEdges[edgeIndex].source && d.target.index == subEdges[edgeIndex].target)
+                                        if (d.source.index == subEdges[edgeIndex].source && d.target.index == subEdges[edgeIndex].target
+                                                || (!gType && (d.source.index == subEdges[edgeIndex].target && d.target.index == subEdges[edgeIndex].source)))
                                                 return "#d22";
                                 }
                                 return "#ccc";
@@ -58,7 +59,8 @@ function reDrawWeights(maxFlow) {
                 if (gEdgeTexts)
                         gEdgeTexts.text(function (textData) {
                                 for (var weightIndex in maxFlow) {
-                                        if (textData.source.index == maxFlow[weightIndex].source && textData.target.index == maxFlow[weightIndex].target)
+                                        if (textData.source.index == maxFlow[weightIndex].source && textData.target.index == maxFlow[weightIndex].target
+                                                || (!gType && (textData.source.index == maxFlow[weightIndex].target && textData.target.index == maxFlow[weightIndex].source)))
                                                 return maxFlow[weightIndex].weight + "/" + textData.weight;
                                 }
                                 return textData.weight;
