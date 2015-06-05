@@ -1,5 +1,23 @@
+
+// 邻接链表邻接矩阵数据
+var tableData = undefined;
+// 邻接链表/矩阵图区宽高
 var tWidth = parseInt(d3.select("#table").attr("width"));
 var tHeight = parseInt(d3.select("#table").attr("height"));
+
+
+// 画表
+function paintTable(tData, status) {
+        if (status != "success") {
+                ///////////////////////////////////////////////////////
+                //                  提醒用户没有加载成功                      //
+                ///////////////////////////////////////////////////////
+                return console.log(status);
+        }
+        // TODO
+        tableData = tData;
+        drawLinklist();
+}
 
 // Usage                         
 var dataset = {
@@ -31,6 +49,12 @@ function zoomed() {
 
 
 function matrix() {
+        if (!tableData) {
+                ///////////////////////////////////////////////////////
+                //           提醒用户链表和矩阵还没有准备好            //
+                ///////////////////////////////////////////////////////
+                return console.log(tableData);
+        }
 
         var svgdiv = document.getElementById("divTable");
         svgdiv.innerHTML = "";
@@ -339,7 +363,13 @@ function list() {
 
 //canvas 画链表
 function drawLinklist() {
-        
+        if (!tableData) {
+                ///////////////////////////////////////////////////////
+                //           提醒用户链表和矩阵还没有准备好            //
+                ///////////////////////////////////////////////////////
+                return console.log(tableData);
+        }
+
         // 获取上下文 
         //var matrix = document.getElementById('matrix'); 
         //matrix.style.display = "none";
@@ -567,6 +597,7 @@ function drawLinklist() {
                         context.stroke();
                 }
         }/*);*/
+
 }
 
 function drawRectangle(context, x, y, width, height, n) {
