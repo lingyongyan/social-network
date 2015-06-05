@@ -1,6 +1,11 @@
 package com.graphanalysis.graphbase.implement;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,8 +17,11 @@ import java.util.Vector;
 
 import javafx.util.Pair;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONWriter;
 
 import com.graphanalysis.graphBase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
@@ -286,7 +294,7 @@ public class Graph implements GraphInterface{
 	}
 	
 	@Override
-	public void writeToJson(String fileName) throws JSONException {
+	public JSONObject packToJson() throws JSONException{
 		// TODO 自动生成的方法存根
 		String gtype = (this.type==GraphType. UNDirectedGraph)? "false":"true";
 		String json = "{'type':'"+gtype+"'}";
@@ -294,38 +302,45 @@ public class Graph implements GraphInterface{
 		jsonObj.put("weight", "true");
 		jsonObj.put("N", this.adjMatrix.length);
 		jsonObj.put("E", this.edges.size());
-		Vector<String> nodesJs = new Vector <String>();
+		JSONArray nodesJs = new JSONArray();
 		Iterator<Node> nodeite = nodes.iterator();
-		int i=0;
-		while(nodeite.hasNext() && i<100){
+		while(nodeite.hasNext()){
 			Node now = nodeite.next();
-			Map <String, String> nodesJs2 = new HashMap <String, String>();
-			nodesJs2.put("name", now.getName());
-			nodesJs2.put("id", Integer.toString(now.getID()));
-			nodesJs.add(nodesJs2.toString());
-			i++;
+			JSONObject nodeObj = new JSONObject();
+			nodeObj.put("name", now.getName());
+			nodeObj.put("id", Integer.toString(now.getID()));
+			nodesJs.put(nodeObj);
 		}
-		jsonObj.put("nodes", nodesJs.toString());
+		jsonObj.put("nodes", nodesJs);
 		
-		Vector<String> edgesJs = new Vector <String>();
+		JSONArray edgesJs = new JSONArray();
 		Iterator<Edge> edgesite = edges.iterator();
-		i=0;
-		while(nodeite.hasNext() && i<100){
+		while(edgesite.hasNext()){
 			Edge now = edgesite.next();
-			Map <String, String> edgesJs2 = new HashMap <String, String>();
-			edgesJs2.put("source",Integer.toString( now.getFromID()));
-			edgesJs2.put("target", Integer.toString(now.getToID()));
-			edgesJs2.put("weight", Double.toString(now.getWeight()));
-			edgesJs.add(edgesJs2.toString());
-			i++;
+			JSONObject edgeObj = new JSONObject();
+			edgeObj.put("source",Integer.toString( now.getFromID()));
+			edgeObj.put("target", Integer.toString(now.getToID()));
+			edgeObj.put("weight", Double.toString(now.getWeight()));
+			edgesJs.put(edgeObj);
 		}
-		jsonObj.put("edges", edgesJs.toString());
-		try {
-			JsonDeal.writeFile(fileName,jsonObj.toString() );
-		} catch (IOException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		jsonObj.put("edges", edgesJs);
 		//jsonObj.put(key, value)
+		return jsonObj;
+	}
+
+	@Override
+	public void writeToJson(String filePath) throws JSONException {
+		// TODO 自动生成的方法存根
+		JSONObject jsonObj = packToJson();
+		if(jsonObj != null){
+			try {
+				JsonDeal.writeFile(filePath, jsonObj.toString());
+			} catch (IOException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+		}
 	}
 }
+
+

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.graphanalysis.graphBase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
@@ -15,5 +16,6 @@ public interface GraphInterface {
 	public Vector<Integer>  getAdjList(int nodeID);
 	public Set<Node> getNodeSet();
 	public Vector<Edge> getEdgeSet();
+	public JSONObject packToJson() throws JSONException;
 	public void writeToJson(String fileName) throws JSONException;
 }

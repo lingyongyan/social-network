@@ -81,8 +81,8 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 		return res;
 	}
 	
-	public int exec(Bridge br, Graph myGraph,String fileName) throws Exception {
-		myGraph.writeToJson("/tmp/graph.json");
+	public int exec(Bridge br, Graph myGraph) throws Exception {
+		//myGraph.writeToJson("/tmp/graph.json");
 		br.set(detectBridge(myGraph));
 		return 0;
 	}

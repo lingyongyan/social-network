@@ -15,7 +15,8 @@ public class JsonDeal {
 	        out.write(sets);  
 	        out.println();  
 	        fw.close();  
-	        out.close();  
+	        out.close(); 
+	        System.out.println("写入成功");
 	    }  
 	  
 	    public static String ReadFile(String path) {  
