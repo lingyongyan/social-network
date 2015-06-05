@@ -62,11 +62,11 @@ function reDrawWeights(maxFlow) {
 var FPS = 12; // 帧速率
 var loop = true; // 循环播放
 var cnt = 0; // 子集渲染比率
+var playshow = undefined; // 当前播放的动画
+
 // 实现动画绘制
-function tickPlus(subEdges, ne) {
-        if (!startTick)
-                return;
-        // 拦截器  
+function play(subEdges, ne) {
+        // 动画条件控制
         if (cnt < ne) {
                 cnt++;
         }
@@ -78,10 +78,6 @@ function tickPlus(subEdges, ne) {
         }
         //-------------------------分界线-----------------------------
         reDrawEdges(subEdges, cnt);
-
-        setTimeout(function () {
-                tickPlus(subEdges, ne);
-        }, 1000 / FPS); // 这里控制帧数
 }
 
 // 响应Random功能
@@ -95,7 +91,8 @@ function Random() {
         }
         // Random功能初始化
         index0 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();        
@@ -103,8 +100,11 @@ function Random() {
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
-                if (index0 >= 0)
+                if (index0 >= 0) {
+                        clearInterval(playshow);
                         resetEdges();
+                }
+                        
                 index0 = d.index;
                 $.get("../json/Random.json", { whichDataSet: crntDataSet, filename: "Random.json", id: index0 }, function (subEdges, status) {
                         if (status != "success") {
@@ -116,8 +116,9 @@ function Random() {
                         cnt = 0;
                         FPS = 6;
                         loop = false;
-                        startTick = true;
-                        tickPlus(subEdges, subEdges.length);
+                        setInterval (function () {
+                                play(subEdges, subEdges.length);
+                        }, 1000 / FPS); // 这里控制帧数
                 });
         });
 
@@ -135,7 +136,8 @@ function BFS() {
         }
         // BFS功能初始化
         index0 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();   
@@ -143,8 +145,10 @@ function BFS() {
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
-                if (index0 >= 0)
+                if (index0 >= 0) {
+                        clearInterval(playshow);
                         resetEdges();
+                }
                 index0 = d.index;
                 $.get("../json/BFS.json", { whichDataSet: crntDataSet, filename: "BFS.json", id: index0 }, function (subEdges, status) {
                         if (status != "success") {
@@ -158,9 +162,10 @@ function BFS() {
                         cnt = 0;
                         FPS = 6;
                         loop = false;
-                        startTick = true;
-                        tickPlus(subEdges, subEdges.length);
-                        //reDrawEdges(subEdges, subEdges.length);
+                        setInterval(function () {
+                                play(subEdges, subEdges.length);
+                        }, 1000 / FPS); // 这里控制帧数
+
                 });
         });
 
@@ -175,7 +180,8 @@ function DFS() {
         }
         // DFS功能初始化
         index0 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();
@@ -183,8 +189,10 @@ function DFS() {
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                 if (d3.event.defaultPrevented) return;
-                if (index0 >= 0)
+                if (index0 >= 0) {
+                        clearInterval(playshow);
                         resetEdges();
+                }
                 index0 = d.index;
                 $.get("../json/dfs.json", { whichDataSet: crntDataSet, filename: "DFS.json", id: index0 }, function (subEdges, status) {
                         if (status != "success") {
@@ -196,8 +204,9 @@ function DFS() {
                         cnt = 0;
                         FPS = 6;
                         loop = false;
-                        startTick = true;
-                        tickPlus(subEdges, subEdges.length);
+                        setInterval(function () {
+                                play(subEdges, subEdges.length);
+                        }, 1000 / FPS); // 这里控制帧数
                 });
         });
 
@@ -212,7 +221,8 @@ function Dijkstra() {
 
         // Dijkstra功能初始化
         index0 = index1 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();
@@ -272,7 +282,8 @@ function Prim() {
         }
         // Prim功能初始化
         index0 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();
@@ -280,8 +291,10 @@ function Prim() {
         // 为结点绑定独有的事件响应函数
         gNodes.on("click", function (d, i) {
                         if (d3.event.defaultPrevented) return;
-                        if (index0 >= 0)
+                        if (index0 >= 0) {
+                                clearInterval(playshow);
                                 resetEdges();
+                        }
                         index0 = d.index;
                         $.get("../json/prim.json", { whichDataSet: crntDataSet, filename: "Prim.json", id: index0 }, function (minTree, status) {
                                 if (status != "success") {
@@ -293,29 +306,13 @@ function Prim() {
                                 cnt = 0;
                                 FPS = 6;
                                 loop = true;
-                                startTick = true;
-                                tickPlus(minTree, minTree.length);
+                                setInterval(function () {
+                                        play(minTree, minTree.length);
+                                }, 1000 / FPS); // 这里控制帧数
                         });
                 });
 }
-//function reDrawP2P(max2match) {
 
-//        // 边集高亮
-//        reDrawEdges(max2match);
-
-//        //gEdges.style("stroke", function (d, i) {
-//        //        for (var p in max2match) {
-//        //                if (d.source.index == max2match[p].source && d.target.index == max2match[p].target)
-//        //                        return "#d22";
-//        //        }
-//        //        return "#ccc";
-//        //})
-
-//        // 画两个结点集
-//        reDrawNodes(max2match);
-        
-
-//}
 // 响应Bipartite功能
 function Bipartite() {
         if (!gReady) {
@@ -326,7 +323,8 @@ function Bipartite() {
         }
         // 二分图功能初始化
         index0 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();
@@ -342,17 +340,9 @@ function Bipartite() {
                 // 边集高亮
                 reDrawEdges(max2match, max2match.length);
 
-                //gEdges.style("stroke", function (d, i) {
-                //        for (var p in max2match) {
-                //                if (d.source.index == max2match[p].source && d.target.index == max2match[p].target)
-                //                        return "#d22";
-                //        }
-                //        return "#ccc";
-                //})
-
                 // 画两个结点集
                 reDrawNodes(max2match);
-                //reDrawP2P(max2match);
+
         });
 
 
@@ -364,7 +354,8 @@ function FordFulkerson() {
                 return;
         }
         index0 = index1 = -1;
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();
@@ -421,7 +412,8 @@ function Bridge() {
                 return;
         }
         // 桥边检测功能初始化
-        startTick = false;
+        if (playshow)
+                clearInterval(playshow);
         resetNodes();
         resetEdges();
         resetWeight();       
