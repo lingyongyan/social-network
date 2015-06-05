@@ -3,9 +3,12 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.json.JSONArray;
+
 import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.GraphException;
 import com.graphanalysis.graphbase.implement.Path;
 
 public class DepthFirstSearch  implements DFSImpl{
@@ -13,8 +16,8 @@ public class DepthFirstSearch  implements DFSImpl{
     private int count;           // number of vertices connected to s
     File file = new File("dfsResult");
     String content="";
-    public DepthFirstSearch(Graph G, int s) {
-        marked = new boolean[G.getNodeNum()];
+    public DepthFirstSearch(int num) {
+        marked = new boolean[num];
     }
 
     // depth first search from v
@@ -47,10 +50,49 @@ public class DepthFirstSearch  implements DFSImpl{
 		Vector<Edge> edges = GraphReader.readFromFile("/tmp/tinyG.txt",2);
 		Graph G = new Graph(edges);
         int s = Integer.parseInt("1");
-        DepthFirstSearch search = new DepthFirstSearch(G, s);
+        DepthFirstSearch search = new DepthFirstSearch(G.getNodeNum());
         Path res = search.dfs(G, s);
         res.packetToJson();
         //System.out.print("success!");
     }
+
+	@Override
+	public JSONArray exec(String fileName, int s) {
+		// TODO 自动生成的方法存根
+		JSONArray res = null;
+		Graph myGraph = GraphReader.readGraphFromJson(fileName);
+		try{
+		if(myGraph == null)
+			throw new GraphException("Graph Should Be Null!");
+		Path bres = this.dfs(myGraph,s);
+		res  = bres.packetToJson();
+		}catch(GraphException e){
+			System.out.println(e);
+		}
+		//String fJson = JsonDeal.ReadFile(request.getSession().getServletContext().getRealPath(localFile));
+		return res;
+	}
+
+	@Override
+	public JSONArray exec(Graph myGraph, int s) {
+		// TODO 自动生成的方法存根
+		JSONArray res = null;
+		try{
+		if(myGraph == null)
+			throw new GraphException("Graph Should Be Null!");
+		Path bres = this.dfs(myGraph,s);
+		res  = bres.packetToJson();
+		}catch(GraphException e){
+			System.out.println(e);
+		}
+		//String fJson = JsonDeal.ReadFile(request.getSession().getServletContext().getRealPath(localFile));
+		return res;
+	}
+
+	@Override
+	public int exec(String[] args) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
 }
 

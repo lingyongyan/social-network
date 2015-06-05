@@ -29,10 +29,9 @@ public class Entry {
 			Graph myGraph =  new Graph(edges);
 			myGraph.writeToJson("./WebContent/json/graph3.json");*/
 			Graph myGraph = GraphReader.readGraphFromJson("./WebContent/json/graphL.json");
-			Bridge br = new Bridge();
 			BridgeDetectionInterface algInter;
 			algInter = new BridgeDetection();
-			int i = algInter.exec(br,myGraph);
+			Bridge br= algInter.execB(myGraph);
 
 			if(br!=null)
 				br.printBridge();

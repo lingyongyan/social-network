@@ -8,9 +8,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
 
+import org.json.JSONArray;
+
 import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.GraphException;
+import com.graphanalysis.graphbase.implement.Path;
 
 public class PrimMST implements PrimMSTImpl {
     private Edge[] edgeTo;        // edgeTo[v] = shortest edge from tree vertex to non-tree vertex
@@ -19,19 +23,13 @@ public class PrimMST implements PrimMSTImpl {
     private IndexMinPQ<Double> pq;
     private static String content="";
    
-    public PrimMST(Graph G) {
-    	int node_num = G.getNodeNum();
+    public PrimMST(int node_num) {
         edgeTo = new Edge[node_num];
         distTo = new double[node_num];
         marked = new boolean[node_num];
         pq = new IndexMinPQ<Double>(node_num);
-        for (int v = 0; v < node_num; v++) distTo[v] = Double.POSITIVE_INFINITY;
-
-        for (int v = 0; v < node_num; v++)      // run from each vertex to find
-            if (!marked[v]) prim(G, v);      // minimum spanning forest
-
         // check optimality conditions
-        assert check(G);
+        //assert check(G);
     }
 
     // run Prim's algorithm in graph G, starting from vertex s
@@ -42,6 +40,18 @@ public class PrimMST implements PrimMSTImpl {
             int v = pq.delMin();
             scan(G, v);
         }
+    }
+    public Path prim(Graph myGraph){
+    	int node_num = myGraph.getNodeNum();
+        for (int v = 0; v < node_num; v++) distTo[v] = Double.POSITIVE_INFINITY;
+        for (int v = 0; v < node_num; v++)      // run from each vertex to find
+            if (!marked[v]) prim(myGraph, v);      // minimum spanning forest
+        check(myGraph);
+        Path p = new Path();
+        for (Edge e : edges()) {
+        	p.addPath(e);
+        }
+        return p;
     }
 
     // scan vertex v
@@ -144,7 +154,8 @@ public class PrimMST implements PrimMSTImpl {
     public static void main(String[] args) {
 		Vector<Edge> edges = GraphReader.readFromFile("/tmp/tinyGPrimMST.txt",2);
 		Graph G = new Graph(edges);
-        PrimMST mst = new PrimMST(G);
+        PrimMST mst = new PrimMST(G.getNodeNum());
+        mst.prim(G);
         for (Edge e : mst.edges()) {
         	content += e.getFromID()+" "+e.getToID()+"\r\n";
         }
@@ -162,6 +173,43 @@ public class PrimMST implements PrimMSTImpl {
       	   e.printStackTrace();
       	  }     
         //System.out.println("success!");
-      }
     }
+
+	@Override
+	public int exec(String[] args) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
+
+	@Override
+	public JSONArray exec(String fileName, int s) {
+		// TODO 自动生成的方法存根
+		JSONArray res = null;
+		Graph myGraph = GraphReader.readGraphFromJson(fileName);
+		try{
+		if(myGraph == null)
+			throw new GraphException("Graph Should Be Null!");
+		Path bres = this.prim(myGraph);
+		res  = bres.packetToJson();
+		}catch(GraphException e){
+			System.out.println(e);
+		}
+		return res;
+	}
+
+	@Override
+	public JSONArray exec(Graph myGraph, int s) {
+		// TODO 自动生成的方法存根
+		JSONArray res = null;
+		try{
+		if(myGraph == null)
+			throw new GraphException("Graph Should Be Null!");
+		Path bres = this.prim(myGraph);
+		res  = bres.packetToJson();
+		}catch(GraphException e){
+			System.out.println(e);
+		}
+		return res;
+	}
+}
 

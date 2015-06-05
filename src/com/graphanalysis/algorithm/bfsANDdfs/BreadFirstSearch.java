@@ -5,9 +5,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
 
+import org.json.JSONArray;
+
 import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.GraphException;
 import com.graphanalysis.graphbase.implement.Path;
 
 public class BreadFirstSearch implements BFSImpl {
@@ -17,8 +20,7 @@ public class BreadFirstSearch implements BFSImpl {
     private int[] edgeTo;      // edgeTo[v] = previous edge on shortest s-v path
     private int[] distTo;      // distTo[v] = number of edges shortest s-v path
 
-    public BreadFirstSearch(Graph G) {
-    	int num = G.getNodeNum();
+    public BreadFirstSearch(int num) {
     	 marked = new boolean[num];
          distTo = new int[num];
          edgeTo = new int[num];
@@ -81,7 +83,40 @@ public class BreadFirstSearch implements BFSImpl {
     public int count() {
         return count;
     }
+    
+	@Override
+	public JSONArray exec(String fileName, int s) {
+		// TODO 自动生成的方法存根
+		JSONArray res = null;
+		Graph myGraph = GraphReader.readGraphFromJson(fileName);
+		try{
+		if(myGraph == null)
+			throw new GraphException("Graph Should Be Null!");
+		Path bres = this.bfs(myGraph,s);
+		res  = bres.packetToJson();
+		}catch(GraphException e){
+			System.out.println(e);
+		}
+		//String fJson = JsonDeal.ReadFile(request.getSession().getServletContext().getRealPath(localFile));
+		return res;
+	}
 
+	@Override
+	public JSONArray exec(Graph myGraph, int s) {
+		// TODO 自动生成的方法存根
+		JSONArray res = null;
+		try{
+		if(myGraph == null)
+			throw new GraphException("Graph Should Be Null!");
+		Path bres = this.bfs(myGraph,s);
+		res  = bres.packetToJson();
+		}catch(GraphException e){
+			System.out.println(e);
+		}
+		//String fJson = JsonDeal.ReadFile(request.getSession().getServletContext().getRealPath(localFile));
+		return res;
+	}
+	
     public static void main(String[] args) {
         //In in = new In(args[0]);
     	//In in = new In("tinyG.txt");
@@ -90,9 +125,15 @@ public class BreadFirstSearch implements BFSImpl {
         //Graph G = new Graph(in);
         //int s = Integer.parseInt(args[1]);
         int s = Integer.parseInt("1");
-        BreadFirstSearch search = new BreadFirstSearch(G);
+        BreadFirstSearch search = new BreadFirstSearch(G.getNodeNum());
        Path res = search.bfs(G, s);
        res.packetToJson();
         //System.out.print("success!");
     }
+
+	@Override
+	public int exec(String[] args) {
+		// TODO 自动生成的方法存根
+		return 0;
+	}
 }

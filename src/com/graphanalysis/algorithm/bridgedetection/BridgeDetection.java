@@ -5,14 +5,18 @@
  * */
 
 package com.graphanalysis.algorithm.bridgedetection;
+import java.io.IOException;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.NodeForDetection;
-import com.graphanalysis.graphBase.commondefine.GraphReader;
-import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.graphBase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.GraphException;
 
 public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetectionNodeState{
 	public BridgeDetection(){
@@ -30,14 +34,24 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 	 *The main idea is that we choose one node as a root node,and then use the DFS method to
 	 * determine whether a edge linked a node and his father a bridge edge
 	 * */
-	public static Bridge detectBridge(Graph graph) throws Exception{
+	public static Bridge detectBridge(Graph graph){
+		try{
 		if(graph == null){
 			throw new Exception("size shouldn't be zero!");
 		}
-		
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		try{
+		if(graph.getType()!=GraphType.UNDirectedGraph)
+			throw new GraphException("bridge detection don't allow directed graph");
+		}catch(Exception e){
+			System.out.println(e);
+			return new Bridge();
+		}
 		/*a stack used to make the DFS method work.It stores the node ID,which is associated with the Node Vector 'nodes'*/
-		Stack<Integer> nodeStack = new Stack<Integer>();
 		Bridge res = new Bridge();
+		Stack<Integer> nodeStack = new Stack<Integer>();
 		Vector<NodeForDetection> nodes = constructNodeList(graph.getNodeNum());
 		
 		nodeStack.push(ROOT);//we set the node 0 as the root as default
@@ -81,13 +95,19 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 		return res;
 	}
 	
-	public int exec(Bridge br, Graph myGraph) throws Exception {
+	public JSONArray exec(Graph myGraph) {
 		//myGraph.writeToJson("/tmp/graph.json");
-		br.set(detectBridge(myGraph));
-		return 0;
+		return execB(myGraph).packetToJSON();
 	}
+	
+	public  Bridge execB(Graph myGraph){
+		Bridge b = null;
+		b= detectBridge(myGraph);
+		return b;
+	}
+	
 	@Override
-	public int exec(String fileName) {
+	public int exec(String[] args) {
 		return -1;
 	}
 }

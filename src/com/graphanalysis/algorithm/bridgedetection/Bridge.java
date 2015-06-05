@@ -49,21 +49,19 @@ public class  Bridge{
 	 * @throws IOException
 	 * 将桥边打包成json对象
 	 */
-	public JSONObject packetToJSON() throws JSONException, IOException{
-		JSONObject jsObj = new JSONObject();
+	public JSONArray packetToJSON(){
+		JSONArray jsedges = new JSONArray();
 		try {
-			JSONArray jsedges = new JSONArray(); 
 			for(int i=0;i<this.vbridge.size();i++){
 				int[] tmp = this.vbridge.get(i);
 				JSONObject jsedge = new JSONObject();
 				jsedge.put("source", tmp[0]).put("target", tmp[1]);
 				jsedges.put(jsedge);
 			}
-			jsObj.put("edges", jsedges);
 		} catch (JSONException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-		return jsObj;
-		}
+		return jsedges;
+	}
 }

@@ -27,11 +27,10 @@ public class GraphReader{
 	public static Vector<Edge> readFromFile(String fileName,int gtype){
 		File file = new File(fileName);
 		BufferedReader reader = null;
-		int len = (gtype&1)!=0?3:2;
-		boolean bodirect = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
-		boolean boweight = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
+		boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
+		boolean weighted = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
+		System.out.println("从文件中新建graph");
 		try{
-			System.out.println("从文件中新建graph");
 			reader = new BufferedReader(new FileReader(file));
 			String tempStr = null;
 			Vector<Edge> edges = new Vector<Edge>();
@@ -40,14 +39,10 @@ public class GraphReader{
 				int from = Integer.parseInt(arr[0]);
 				int to = Integer.parseInt(arr[1]);
 				double weight = 1;
-				if(boweight)//如果是有权图
+				if(weighted)//如果是有权图
 					weight = Double.parseDouble(arr[2]);
 				Edge edge = new Edge(from,to,weight);
 				edges.add(edge);
-				if(!bodirect){//如果是无向图
-					Edge edge2 = new Edge(to,from,weight);
-					edges.add(edge2);
-				}
 			}
 			reader.close();
 			return edges;
@@ -61,34 +56,30 @@ public class GraphReader{
 				}
 			}
 		}
-		return null;
+		return new Vector<Edge>();
 	}
-	
+
 	public static Graph readGraphFromJson(String fileName){
 		Graph gra = null;
 		try {
-		String strJson = JsonDeal.ReadFile(fileName);
-		JSONObject jsonObj;
-		jsonObj = new JSONObject(strJson);
+			String strJson = JsonDeal.ReadFile(fileName);
+			JSONObject jsonObj;
+			jsonObj = new JSONObject(strJson);
 
-		//jsonObj =  new JSONObject(strJson);
+			//jsonObj =  new JSONObject(strJson);
 			boolean weighted =Boolean.valueOf( jsonObj.get("weight").toString());
-		boolean directed = Boolean.valueOf( jsonObj.get("type").toString());
-		Vector<Edge> edges = new Vector<Edge>();
-		JSONArray jsonAr = jsonObj.getJSONArray("edges");
-		for(int i=0; i < jsonAr.length();i++){
-			JSONObject jo = (JSONObject) jsonAr.get(i);
-			int from =Integer.valueOf( jo.get("source").toString());
-			int to =Integer.valueOf( jo.get("target").toString());
-			double weight = Double.valueOf( jo.get("weight").toString());
-			Edge edge = new Edge(from,to,weight);
-			edges.add(edge);
-			if(!directed){//如果是无向图
-				Edge edge2 = new Edge(to,from,weight);
-				edges.add(edge2);
+			boolean directed = Boolean.valueOf( jsonObj.get("type").toString());
+			Vector<Edge> edges = new Vector<Edge>();
+			JSONArray jsonAr = jsonObj.getJSONArray("edges");
+			for(int i=0; i < jsonAr.length();i++){
+				JSONObject jo = (JSONObject) jsonAr.get(i);
+				int from =Integer.valueOf( jo.get("source").toString());
+				int to =Integer.valueOf( jo.get("target").toString());
+				double weight = Double.valueOf( jo.get("weight").toString());
+				Edge edge = new Edge(from,to,weight);
+				edges.add(edge);
+				gra = new Graph(edges,directed);
 			}
-			gra = new Graph(edges);
-		}
 		} catch (JSONException e) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();

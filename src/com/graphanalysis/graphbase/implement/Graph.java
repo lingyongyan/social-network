@@ -74,10 +74,34 @@ public class Graph implements GraphInterface{
 	 * 根据已有的边集构建图
 	 */
 	public Graph(Vector<Edge> edges) {
+		this(edges,false);
+	}
+	
+	public Graph(Vector<Edge> edges,Boolean t) {
+		if(t)
+			this.type = GraphType. DirectedGraph;
+		else
+			this.type = GraphType.UNDirectedGraph;
 		setEdges(edges);
 		constructAdjList(this.edges);
 		constructAdjMatrixFromAdjList();
 		constructNodeSetFromEdges();
+	}
+	
+	protected void constructList(int fromID, int toID,Edge edge){
+		if(this.adjList.containsKey(fromID)){//如果邻接链表中已有该节点项则在该项后追加新的链接节点ID
+			Vector<Integer> alreadyin = this.adjList.get(fromID);
+			alreadyin.add(toID);
+			Vector<Edge> alEdge = this.adjEdgeList.get(fromID);
+			alEdge.add(edge);
+		}else{
+			Vector<Integer> newitem = new Vector<Integer>();
+			newitem.add(toID);
+			this.adjList.put(fromID, newitem);
+			Vector<Edge> edgeItem = new Vector<Edge>();
+			edgeItem.add(edge);
+			this.adjEdgeList.put(fromID, edgeItem);
+		}
 	}
 	
 	/**
@@ -89,18 +113,11 @@ public class Graph implements GraphInterface{
 		for(int i=0;i<size;i++){
 			Edge edge = edges.get(i);
 			int fromID = edge.getFromID();
-			if(this.adjList.containsKey(fromID)){//如果邻接链表中已有该节点项则在该项后追加新的链接节点ID
-				Vector<Integer> alreadyin = this.adjList.get(fromID);
-				alreadyin.add(edge.getToID());
-				Vector<Edge> alEdge = this.adjEdgeList.get(fromID);
-				alEdge.add(edge);
-			}else{
-				Vector<Integer> newitem = new Vector<Integer>();
-				newitem.add(edge.getToID());
-				this.adjList.put(fromID, newitem);
-				Vector<Edge> edgeItem = new Vector<Edge>();
-				edgeItem.add(edge);
-				this.adjEdgeList.put(fromID, edgeItem);
+			int toID = edge.getToID();
+			constructList(fromID, toID,edge);
+			if(this.type == GraphType.UNDirectedGraph){
+				Edge edgeT = new Edge(toID,fromID,edge.getWeight());
+				constructList(toID,fromID,edge);
 			}
 		}
 	}
@@ -157,6 +174,7 @@ public class Graph implements GraphInterface{
 				}
 				node.setOutDegree(out);
 				node.setInDegree(in);
+				node.setName(String.valueOf(node.getID()));
 				nodeIn.add(from);
 				this.nodes.add(node);
 			}
@@ -172,6 +190,7 @@ public class Graph implements GraphInterface{
 				}
 				node.setOutDegree(out);
 				node.setInDegree(in);
+				node.setName(String.valueOf(node.getID()));
 				nodeIn.add(to);
 				this.nodes.add( node);
 			}
@@ -259,11 +278,15 @@ public class Graph implements GraphInterface{
 	}
 	
 	public  Vector<Edge> getAdjEdgeList(int node){
-		Vector<Edge>  rt  = null ;
-		if(node>=this.adjEdgeList.size())
-			return rt;
-		rt = this.adjEdgeList.get(node);
-		 return rt;
+		Vector<Edge>  res  = null ;
+		res = this.adjEdgeList.get(node);
+		if(res==null)
+			return new Vector<Edge>();
+		 return res;
+	}
+	
+	public int getNodeGroup(int nodeId){
+		return 1;
 	}
 	
 	@Override
@@ -294,10 +317,10 @@ public class Graph implements GraphInterface{
 	@Override
 	public JSONObject packToJson() throws JSONException{
 		// TODO 自动生成的方法存根
-		String gtype = (this.type==GraphType. UNDirectedGraph)? "false":"true";
+		boolean gtype = (this.type==GraphType. UNDirectedGraph)? false:true;
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("type", gtype);
-		jsonObj.put("weight", "true");
+		jsonObj.put("weight", true);
 		jsonObj.put("N", this.adjMatrix.length);
 		jsonObj.put("E", this.edges.size());
 		JSONArray nodesJs = new JSONArray();
@@ -306,7 +329,7 @@ public class Graph implements GraphInterface{
 			Node now = nodeite.next();
 			JSONObject nodeObj = new JSONObject();
 			nodeObj.put("name", now.getName());
-			nodeObj.put("group", 0);
+			nodeObj.put("group",getNodeGroup(now.getID()));
 			nodesJs.put(nodeObj);
 		}
 		jsonObj.put("nodes", nodesJs);
