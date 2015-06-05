@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class graphJs
  */
-@WebServlet({ "/graphJs", "/json/graph.json" })
+//@WebServlet({ "/graphJs", "/json/graph.json" })
 public class graphJs extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -28,6 +28,7 @@ public class graphJs extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		System.out.println(2);
+		String fileName = request.getParameter("");
 	}
 
 	/**

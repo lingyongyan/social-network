@@ -1,7 +1,8 @@
 package com.graphanalysis.algorithm.bridgedetection;
 
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
+import com.graphanalysis.graphbase.implement.Graph;
 
 public interface BridgeDetectionInterface extends AlgorithmInterface {
-	public  int exec(Bridge br,String fileName) throws Exception;
+	public  int exec(Bridge br, Graph myGraph,String fileName) throws Exception;
 }

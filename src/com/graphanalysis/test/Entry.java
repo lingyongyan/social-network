@@ -12,22 +12,35 @@ import com.graphanalysis.algorithm.bridgedetection.BridgeDetectionInterface;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.graphbase.implement.Graph;
 
 public class Entry {
 	public static void main(String[] args){
 		try{
-			long startTime=System.currentTimeMillis();
+			//long startTime=System.currentTimeMillis();
+			//myGraph.printGraph();
+			//System.out.println(myGraph.getType());
+			//Bridge br = new Bridge();
+			//BridgeDetectionInterface algInter;
+			//algInter = new BridgeDetection();
+			//int i = algInter.exec(br,"/tmp/facebook_combined.txt");
+			//long endTime=System.currentTimeMillis(); //获取结束时间
+			//System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
+			//if(br!=null)
+				//br.printBridge();
+			//br.packetToJSON();
+			Graph myGraph = GraphReader.readGraphFromJson("./WebContent/json/graph.json");
 			//myGraph.printGraph();
 			//System.out.println(myGraph.getType());
 			Bridge br = new Bridge();
 			BridgeDetectionInterface algInter;
 			algInter = new BridgeDetection();
-			int i = algInter.exec(br,"/tmp/facebook_combined.txt");
-			long endTime=System.currentTimeMillis(); //获取结束时间
-			System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
+			int i = algInter.exec(br,myGraph,"/tmp/facebook_combined.txt");
+			//long endTime=System.currentTimeMillis(); //获取结束时间
+			//System.out.println("程序运行时间： "+(endTime-startTime)+"ms");
 			if(br!=null)
 				br.printBridge();
-			br.packetToJSON();
+			//br.packetToJSON();
 		}
 		catch(Exception e){
 			System.out.println(e);

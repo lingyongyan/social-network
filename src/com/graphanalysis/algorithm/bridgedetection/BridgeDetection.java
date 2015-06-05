@@ -81,9 +81,7 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 		return res;
 	}
 	
-	public int exec(Bridge br,String fileName) throws Exception {
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
-		Graph myGraph = new Graph(edges);
+	public int exec(Bridge br, Graph myGraph,String fileName) throws Exception {
 		myGraph.writeToJson("/tmp/graph.json");
 		br.set(detectBridge(myGraph));
 		return 0;
