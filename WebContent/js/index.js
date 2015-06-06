@@ -5,7 +5,7 @@ var height = parseInt(svg.attr("height"));
 var img_w = 100;
 var img_h = 100;
 
-d3.json("../json/demo.json", function (error, root) {
+d3.json("json/demo.json", function (error, root) {
 
         if (error) {
                 return console.log(error);
