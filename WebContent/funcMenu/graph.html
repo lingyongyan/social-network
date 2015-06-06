@@ -15,8 +15,7 @@
         <!--[if lt IE 9]>
           <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <script src="../js/d3.min.js" charset="utf-8"></script>
+        <![endif]-->      
 
         <!--自定义JavaScript-->
         <link href="../css/graph.css" rel="stylesheet">
@@ -116,8 +115,7 @@
                 <div class="row">
                         <div class="col-md-1"></div>
                         <div class="col-md-10">
-                                <canvas id="degree2" width=1000 height=600 style="border:5px solid #ccc;">
-                                </canvas>
+                                <div id="degree2" style="width:1000px;height:600px;border:5px solid #ccc;"></div>
                         </div>
                         <div class="col-md-1"></div>
                 </div>
@@ -151,11 +149,7 @@
                         <div class="col-md-4"></div>
                 </div>
         </div>
-        <style>
-                footer {
-                        border: 5px double black;
-                }
-        </style>
+
         <footer class="bs-docs-footer" role="contentinfo">
                 <div class="container">
                         <div class="row">
@@ -170,20 +164,18 @@
                         </div>
                 </div>
         </footer>
+        
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="../js/jquery-2.1.4.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="../js/bootstrap.min.js"></script>
         <script src="../js/echarts.js"></script>
+        <script src="../js/d3.min.js" charset="utf-8"></script>
         <!--自定义JavaScript-->
         <script src="../js/showGraph.js"></script><!--主图区绘制-->
-        <script src="../js/loadDataSet.js"></script><!--加载数据集-->
         <script src="../js/showDegree.js"></script>  <!--度分布-->
-        
-        
-        <script src="../js/graph8.js"></script><!--8个图算法功能函数-->
-        
         <script src="../js/showTable.js"> </script>  <!--表和矩阵-->
-
+        <script src="../js/loadDataSet.js"></script><!--加载数据集-->
+        <script src="../js/graph8.js"></script><!--8个图算法功能函数-->
 </body>
 </html>
