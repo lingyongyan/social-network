@@ -93,7 +93,11 @@ function Random() {
         if (!gReady) {
                 ///////////////////////////////////////////////////////
                 //            提醒用户主图区还未渲染完毕                  //
-                ///////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////                
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         // Random功能初始化
@@ -102,26 +106,42 @@ function Random() {
                 clearInterval(playshow);
                 playshow = null;
         }
-
         resetNodes();
         resetEdges();
         resetWeight();
 
+        $('#tips').text("请选择一个起点：").addClass('green');
+        setTimeout(function () {
+                $('#tips').text("").removeClass('green');
+        }, tipsLastTime);
+
         // 为结点绑定独有的事件响应函数
-        gNodes.on("click", function (d, i) {
+        gNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
+
                 if (index0 >= 0) {
+                        if (nodeClicked.index == index0) {//点击了同一个
+                                $('#tips').text("？点击了同一个？").addClass('yellow');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('yellow');
+                                }, tipsLastTime);
+                                return;
+                        }
                         clearInterval(playshow);
                         playshow = null;
                         resetEdges();
                 }
 
-                index0 = d.index;
+                index0 = nodeClicked.index;
                 $.get("../json/Random.json", { whichDataSet: crntDataSet, filename: "Random.json", id: index0 }, function (randomPaths, status) {
                         if (status != "success") {
                                 ///////////////////////////////////////////////////////
                                 //                  提醒用户没有加载成功                      //
                                 ///////////////////////////////////////////////////////
+                                $('#tips').text("网络不好，请重新请求！").addClass('red');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('red');
+                                }, tipsLastTime);
                                 return console.log(status);
                         }
                         cnt = 0;
@@ -130,10 +150,12 @@ function Random() {
                         playshow = setInterval(function () {
                                 play(randomPaths, randomPaths.length);
                         }, 1000 / FPS); // 这里控制帧数
+                        $('#tips').text("您还可以选择其他点：").addClass('green');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('green');
+                        }, tipsLastTime);
                 });
         });
-
-        // 重新绑定动画函数
 
 }
 
@@ -143,6 +165,10 @@ function BFS() {
                 ///////////////////////////////////////////////////////
                 //            提醒用户主图区还未渲染完毕                  //
                 ///////////////////////////////////////////////////////
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         // BFS功能初始化
@@ -151,25 +177,41 @@ function BFS() {
                 clearInterval(playshow);
                 playshow = null;
         }
-
         resetNodes();
         resetEdges();
         resetWeight();
 
+        $('#tips').text("请选择一个起点：").addClass('green');
+        setTimeout(function () {
+                $('#tips').text("").removeClass('green');
+        }, tipsLastTime);
+
         // 为结点绑定独有的事件响应函数
-        gNodes.on("click", function (d, i) {
+        gNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
                 if (index0 >= 0) {
+                        if (nodeClicked.index == index0) {//点击了同一个
+                                $('#tips').text("？点击了同一个？").addClass('yellow');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('yellow');
+                                }, tipsLastTime);
+                                return;
+                        }
                         clearInterval(playshow);
                         playshow = null;
                         resetEdges();
                 }
-                index0 = d.index;
+
+                index0 = nodeClicked.index;
                 $.get("../json/BFS.json", { whichDataSet: crntDataSet, filename: "BFS.json", id: index0 }, function (bfsPaths, status) {
                         if (status != "success") {
                                 ///////////////////////////////////////////////////////
                                 //                  提醒用户没有加载成功                      //
                                 ///////////////////////////////////////////////////////
+                                $('#tips').text("网络不好，请重新请求！").addClass('red');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('red');
+                                }, tipsLastTime);
                                 return console.log(status);
                         }
 
@@ -179,17 +221,23 @@ function BFS() {
                         playshow = setInterval(function () {
                                 play(bfsPaths, bfsPaths.length);
                         }, 1000 / FPS); // 这里控制帧数
-
+                        $('#tips').text("您还可以选择其他点：").addClass('green');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('green');
+                        }, tipsLastTime);
                 });
         });
 
-        // 重新绑定动画函数
 }
 function DFS() {
         if (!gReady) {
                 ///////////////////////////////////////////////////////
                 //            提醒用户主图区还未渲染完毕                  //
                 ///////////////////////////////////////////////////////
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         // DFS功能初始化
@@ -198,25 +246,41 @@ function DFS() {
                 clearInterval(playshow);
                 playshow = null;
         }
-
         resetNodes();
         resetEdges();
         resetWeight();
 
+        $('#tips').text("请选择一个起点：").addClass('green');
+        setTimeout(function () {
+                $('#tips').text("").removeClass('green');
+        }, tipsLastTime);
+
         // 为结点绑定独有的事件响应函数
-        gNodes.on("click", function (d, i) {
+        gNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
                 if (index0 >= 0) {
+                        if (index0 == nodeClicked.index) {//点击了同一个
+                                $('#tips').text("？点击了同一个？").addClass('yellow');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('yellow');
+                                }, tipsLastTime);
+                                return;
+                        }
                         clearInterval(playshow);
                         playshow = null;
                         resetEdges();
                 }
-                index0 = d.index;
+
+                index0 = nodeClicked.index;
                 $.get("../json/dfs.json", { whichDataSet: crntDataSet, filename: "DFS.json", id: index0 }, function (dfsPaths, status) {
                         if (status != "success") {
                                 ///////////////////////////////////////////////////////
                                 //                  提醒用户没有加载成功                      //
-                                ///////////////////////////////////////////////////////
+                                ///////////////////////////////////////////////////////                                
+                                $('#tips').text("网络不好，请重新请求！").addClass('red');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('red');
+                                }, tipsLastTime);
                                 return console.log(status);
                         }
 
@@ -226,6 +290,10 @@ function DFS() {
                         playshow = setInterval(function () {
                                 play(dfsPaths, dfsPaths.length);
                         }, 1000 / FPS); // 这里控制帧数
+                        $('#tips').text("您还可以选择其他点：").addClass('green');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('green');
+                        }, tipsLastTime);
                 });
         });
 
@@ -235,6 +303,10 @@ function DFS() {
 function Dijkstra() {
         if (!gReady) {
                 // 提醒用户图还没加载完毕
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
 
@@ -248,15 +320,28 @@ function Dijkstra() {
         resetEdges();
         resetWeight();
 
+        $('#tips').text("请选择一个起点：").addClass('green');
+        setTimeout(function () {
+                $('#tips').text("").removeClass('green');
+        }, tipsLastTime);
+
         // 重新为结点绑定点击事件
         gNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
+                $('#tips').text("滑动到其他点查看最短路径：").addClass('green');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('green');
+                }, tipsLastTime);
 
-                if (index0 == nodeClicked.index)//点击了同一个
+                if (nodeClicked.index == index0) {//点击了同一个
+                        $('#tips').text("？点击了同一个？").addClass('yellow');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('yellow');
+                        }, tipsLastTime);
                         return;
+                }
 
                 index0 = nodeClicked.index;
-                resetEdges();
                 // 向服务器发送包含选择点的Dijkstra请求
                 //$.post("IO.html", { node: 5 }, function () {
                 //后台准备好Dijkstra.json就可以画了
@@ -265,8 +350,11 @@ function Dijkstra() {
                 $.get("../json/Dijkstra.json", { whichDataSet: crntDataSet, filename: "Dijkstra.json", id: index0 }, function (minPaths, status) {
                         //console.log(status);
                         if (status != "success") {
-                                // 修改状态栏提示没有成功
-                                alert("请重新选择！");
+                                // 修改状态栏提示没有成功                                
+                                $('#tips').text("网络不好，请重新请求！").addClass('red');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('red');
+                                }, tipsLastTime);
                                 return;
                         }
                         // 取回结果后，给结点注册OVER和OUT事件函数
@@ -300,6 +388,10 @@ function Prim() {
                 ///////////////////////////////////////////////////////
                 //            提醒用户主图区还未渲染完毕                  //
                 ///////////////////////////////////////////////////////
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         // Prim功能初始化
@@ -311,12 +403,16 @@ function Prim() {
         resetEdges();
         resetWeight();
 
-
         $.get("../json/prim.json", { whichDataSet: crntDataSet, filename: "Prim.json", id: index0 }, function (minTree, status) {
                 if (status != "success") {
                         ///////////////////////////////////////////////////////
                         //                  提醒用户没有加载成功                      //
                         ///////////////////////////////////////////////////////
+
+                        $('#tips').text("网络不好，请重新请求！").addClass('red');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('red');
+                        }, tipsLastTime);
                         return console.log(status);
                 }
                 cnt = 0;
@@ -335,6 +431,10 @@ function Bipartite() {
                 ///////////////////////////////////////////////////////
                 //            提醒用户主图区还未渲染完毕                  //
                 ///////////////////////////////////////////////////////
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         // 二分图功能初始化
@@ -352,6 +452,11 @@ function Bipartite() {
                         ///////////////////////////////////////////////////////
                         //                  提醒用户没有加载成功                      //
                         ///////////////////////////////////////////////////////
+
+                        $('#tips').text("网络不好，请重新请求！").addClass('red');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('red');
+                        }, tipsLastTime);
                         return console.log(status);
                 }
                 // 边集高亮
@@ -367,6 +472,10 @@ function Bipartite() {
 function FordFulkerson() {
         if (!gReady) {
                 // 提醒用户图还没加载完毕
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         index0 = index1 = -1;
@@ -378,44 +487,65 @@ function FordFulkerson() {
         resetEdges();
         resetWeight();
 
+        // 提示用户选一个源点
+        $('#tips').text("请选择源点-=>：").addClass('green');
+        setTimeout(function () {
+                $('#tips').text("").removeClass('green');
+        }, tipsLastTime);
+
         // 重新为结点绑定点击事件
         // 当选中两个不同结点时，
         // 向后台发送请求
         // 成功后回调处理边特效的函数
-        gNodes.on("click", function (d, i) {
+        gNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
-                // 选中第一个结点                        
+
                 if (index0 < 0) {
+                        index0 = nodeClicked.index;
                         resetEdges();
-                        index0 = d.index;
+                        resetWeight();
                         // 提示用户选第二个点
-                        return;
+                        $('#tips').text("请选择-=>汇点：").addClass('green');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('green');
+                        }, tipsLastTime);
+                        //return;                                                
                 }
-                // 和前一个点一样          
-                if (d.index == index0) {
-                        // 提示用户选第二个点
-                        return;
-                }
-                if (index1 < 0) {
-                        index1 = d.index;
-                        // 选中了一个和第一个不一样的点                       
-                        // 向服务器发送包含选择点的最大流请求
-                        //后台准备好最大流.json就可以画了
-                        //})
-                        $.get("../json/FordFulkerson.json", function (maxFlow, status) {
+                else {
+                        if (nodeClicked.index == index0) {
+                                // 提示用户选第二个点
+                                $('#tips').text("？点击了同一个？请选择-=>汇点：").addClass('yellow');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('yellow');
+                                }, tipsLastTime);
+                                return;
+                        }
+                        index1 = nodeClicked.index;
+
+                        $.get("../json/FordFulkerson.json", { whichDataSet: crntDataSet, filename: "maxFlow.json", id0: index0, id1: index1 }, function (maxFlow, status) {
                                 if (status != "success") {
                                         ///////////////////////////////////////////////////////
                                         //                  提醒用户没有加载成功                      //
                                         ///////////////////////////////////////////////////////
+
+                                        $('#tips').text("网络不好，请重新请求！").addClass('red');
+                                        setTimeout(function () {
+                                                $('#tips').text("").removeClass('red');
+                                        }, tipsLastTime);
                                         return console.log(status);
                                 }
                                 // 取回结果后，修改边上的文字
                                 reDrawEdges(maxFlow, maxFlow.length);
-                                // 画完之后，可以把选择点清空，等待下一对儿幸运儿
+                                reDrawWeights(maxFlow);
+                                // 提示用户选一个源点
+                                $('#tips').text("请选择源点-=>：").addClass('green');
+                                setTimeout(function () {
+                                        $('#tips').text("").removeClass('green');
+                                }, tipsLastTime);
                                 index0 = index1 = -1;
                         });
                 }
-        })
+        });
 }
 // 响应Bridge 桥边检测功能
 function Bridge() {
@@ -423,6 +553,10 @@ function Bridge() {
                 ///////////////////////////////////////////////////////
                 //            提醒用户主图区还未渲染完毕                  //
                 ///////////////////////////////////////////////////////
+                $('#tips').text("图区尚未加载完毕，请等待！").addClass('yellow');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('yellow');
+                }, tipsLastTime);
                 return;
         }
         // 桥边检测功能初始化
@@ -440,6 +574,11 @@ function Bridge() {
                         ///////////////////////////////////////////////////////
                         //                  提醒用户没有加载成功                      //
                         ///////////////////////////////////////////////////////
+
+                        $('#tips').text("网络不好，请重新请求！").addClass('red');
+                        setTimeout(function () {
+                                $('#tips').text("").removeClass('red');
+                        }, tipsLastTime);
                         return console.log(status);
                 }
                 reDrawEdges(bridges, bridges.length);
@@ -447,6 +586,21 @@ function Bridge() {
 
 }
 
-function search() {
-        alert("搜索内容" + document.getElementById("search4").innerHTML);
+function search4() {
+        // console.log(parseInt( $("#search4").val()));
+        var value = $("#search4").val();
+        if (isNaN(parseInt(value))) {
+                $('#tips').text("请输入一个数字ID！").addClass('red');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('red');
+                }, tipsLastTime);
+        }
+        var theNode = gNodes.select(function (d, i) {
+                return d.name == value ? this : null;
+        })
+        theNode.attr("r", function (oneNode) {
+                return Math.log(oneNode.group) + 15;
+        });
+
+        $("#search4").val('请输入您想查找的信息');
 }
