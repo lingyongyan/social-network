@@ -4,14 +4,20 @@ var gReady = false;
 var gType = undefined; // 有向无向
 var gWeight = undefined; // 有权无权
 
-var force = undefined; // 主图区的力导向图布局
-var gEdges = undefined; // 边集
-var gEdgeTexts = undefined; // 权重集
-var gNodes = undefined; // 结点集
+var force = null; // 主图区的力导向图布局
+var gEdges = null; // 边集
+var gEdgeTexts = null; // 权重集
+var gNodes = null; // 结点集
+
 var color = d3.scale.category20(); // 颜色集
 var constMaxRadius = 25; // 最大结点圆半径
-var gWidth = undefined;
+
+var gWidth = undefined; //主图区宽高
 var gHeight = undefined;
+
+var zoomScale = 1; //缩放系数
+var zoomTranslate = [0, 0]; // 缩放平移
+var constMaxZoomScale = 3;
 // 画图
 function paintGraph(graphData, status) {
         if (status != "success") {
@@ -23,6 +29,7 @@ function paintGraph(graphData, status) {
 
         // 1 选择id为graph的SVG元素
         var svg = d3.select("#graph");
+
         // 获取graph SVG的宽高
         gWidth = parseInt(svg.attr("width"));
         gHeight = parseInt(svg.attr("height"));
@@ -53,17 +60,18 @@ function paintGraph(graphData, status) {
         force = d3.layout.force()
                 .nodes(graphData.nodes) // 转换结点
                 .links(graphData.edges) // 转换边
-                .size([gWidth, gHeight])
-                .linkDistance(40)
-                .charge(-400)
-                .on("tick", function () {
-                        tickBase();
-                })
+                .size([gWidth, gHeight]) // 用于设定力学图的作用范围
+                .linkDistance(80) // 指定结点连接线的距离
+                .charge(-800)
+                .friction(0.5) // 值为0，粗糙。值为1，无摩擦。
+                .gravity(0.3) // 0无重力 1 最大重力
+                //.theta(0.1)
+                .on("tick", tickBase)
                 .start();
 
         // 定义交互事件
         var gZoom = d3.behavior.zoom()
-                .scaleExtent([1, 10])
+                .scaleExtent([1, constMaxZoomScale])
                 .on("zoom", zoomed);
         // 拖拽响应
         var dragN = force.drag()
@@ -141,24 +149,53 @@ function paintGraph(graphData, status) {
         // d3.event.translate 是平移的坐标值，
         // d3.event.scale 是缩放的值。
         function zoomed() {
-                container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+                //console.log(d3.event.translate);
+                zoomScale = d3.event.scale;
+                zoomTranslate = d3.event.translate;
+                //zoomTranslate[0] = d3.event.translate[0] < -gWidth * zoomScale * 0.1 ? -gWidth * zoomScale * 0.1 : d3.event.translate[0];
+                //zoomTranslate[0] = d3.event.translate[0] > gWidth * zoomScale * 0.1 ? gWidth * zoomScale * 0.1 : d3.event.translate[0];
+                //zoomTranslate[1] = d3.event.translate[1] < -gHeight * zoomScale * 0.1 ? -gHeight * zoomScale * 0.1 : d3.event.translate[1];
+                //zoomTranslate[1] = d3.event.translate[1] > gHeight * zoomScale * 0.1 ? gHeight * zoomScale * 0.1 : d3.event.translate[1];
+                container.attr("transform", "translate(" + zoomTranslate + ")scale(" + zoomScale + ")");
         }
 
         function dragstarted(d) {
                 //console.log("dragstarted");
                 d3.event.sourceEvent.stopPropagation();
                 //d3.select(this).classed("dragging", true);
-                d3.select(this).classed("fixed", d.fixed = true);
+                //d3.select(this).classed("fixed", d.fixed = true);
         }
+        //var newWidth = gWidth / zoomScale, newHeight = gHeight / zoomScale;
+        //var newx = undefined, newy = undefined;
 
         function dragged(d) {
                 //console.log("dragged");
+                //newWidth = gWidth / zoomScale; newHeight =gHeight / zoomScale; // 
+                //newx = d3.event.x; newy = d3.event.y;
+                //newx = newx < constMaxRadius ? constMaxRadius : newx;
+                //newx = newx > newWidth - constMaxRadius ? newWidth - constMaxRadius : newx;
+                //newx = newy < constMaxRadius ? constMaxRadius : newy;
+                //newy = newy > newHeight - constMaxRadius ? newHeight - constMaxRadius : newy;
+
+                
+                //console.log(d3.event.x);
+                //console.log(d3.event.y);
                 d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+                //d3.select(this).attr("cx", d.x = newx).attr("cy", d.y = newy);
         }
 
         function dragended(d) {
+
                 //console.log("dragended");
                 //d3.select(this).classed("dragging", false);
+                //newWidth = gWidth / zoomScale; newHeight = gHeight / zoomScale; // 
+
+                //newx = newx < constMaxRadius ? constMaxRadius : newx;
+                //newx = newx > newWidth - constMaxRadius ? newWidth - constMaxRadius : newx;
+                //newy = newy < constMaxRadius ? constMaxRadius : newy;
+                //newy = newy > newHeight - constMaxRadius ? newHeight - constMaxRadius : newy;
+                //d3.select(this).attr("cx", d.x = newx).attr("cy", d.y = newy);
+                d3.select(this).classed("fixed", d.fixed = true);
         }
 
        
@@ -166,31 +203,30 @@ function paintGraph(graphData, status) {
                 //d3.event.sourceEvent.stopPropagation();
                 d3.select(this).classed("fixed", d.fixed = false);
         }
-        
+        function tickBase() {
+                //限制结点的边界
+                gNodes.forEach(function (d, i) {
+                        d.x = d.x - constMaxRadius < 0 ? constMaxRadius : d.x;
+                        d.x = d.x + constMaxRadius > gWidth ? gWidth - constMaxRadius : d.x;
+                        d.y = d.y - constMaxRadius < 0 ? constMaxRadius : d.y;
+                        d.y = d.y + constMaxRadius > gHeight ? gHeight - constMaxRadius : d.y;
+                });
+                //更新连接线的位置
+                gEdges.attr("x1", function (d) { return d.source.x; })
+                        .attr("y1", function (d) { return d.source.y; })
+                        .attr("x2", function (d) { return d.target.x; })
+                        .attr("y2", function (d) { return d.target.y; });
+
+                gNodes.attr("cx", function (d) { return d.x; })
+                        .attr("cy", function (d) { return d.y; });
+
+                if (gWeight) {
+                        //更新连接线上文字的位置
+                        gEdgeTexts.attr("x", function (d) { return (d.source.x + d.target.x) / 2; })
+                                .attr("y", function (d) { return (d.source.y + d.target.y) / 2; });
+                }
+        }
 
         gReady = true;
 }
 
-function tickBase() {
-        //限制结点的边界
-        gNodes.forEach(function (d, i) {
-                d.x = d.x - constMaxRadius < 0 ? constMaxRadius : d.x;
-                d.x = d.x + constMaxRadius > gWidth ? gWidth - constMaxRadius : d.x;
-                d.y = d.y - constMaxRadius < 0 ? constMaxRadius : d.y;
-                d.y = d.y + constMaxRadius > gHeight ? gHeight - constMaxRadius : d.y;
-        });
-        //更新连接线的位置
-        gEdges.attr("x1", function (d) { return d.source.x; })
-                .attr("y1", function (d) { return d.source.y; })
-                .attr("x2", function (d) { return d.target.x; })
-                .attr("y2", function (d) { return d.target.y; });
-
-        gNodes.attr("cx", function (d) { return d.x; })
-                .attr("cy", function (d) { return d.y; });
-
-        if (gWeight) {
-                //更新连接线上文字的位置
-                gEdgeTexts.attr("x", function (d) { return (d.source.x + d.target.x) / 2; })
-                        .attr("y", function (d) { return (d.source.y + d.target.y) / 2; });
-        }
-}

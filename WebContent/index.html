@@ -8,31 +8,16 @@
         <title>UCAS Network Analysis Project</title>
         <!-- Bootstrap -->
         <link href="css/bootstrap.css" rel="stylesheet">
-        <link href="../css/bootstrap-theme.css" rel="stylesheet">
+        <link href="css/bootstrap-theme.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
           <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-        <script src="js/d3.js" charset="utf-8"></script>
-        <script>
-                // 全局变量传递测试
-                // 用户数据是否就绪
-                //window.userDataReady = false;
-                // 图是否就绪
-                //window.graphReady = false;
-
-        </script>
-        <!--<link href="css/index.css" rel="stylesheet">-->
+        <link href="css/index.css" rel="stylesheet">
 </head>
 <body>
-        <style>
-                .btn-group .btn {
-                        width: 100px;
-                        height: 50px;
-                }
-        </style>
         <div class="container container-fluid">
                 <!--导航栏-->
                 <div class="row">
@@ -55,7 +40,7 @@
                 <!--欢迎界面-->
                 <div class="row">
                         <div class="col-md-12">
-                                <svg id="demo" width="1200px" height="600px" viewBox="0 0 1200 600">
+                                <svg id="demo" width=1000 height=600 viewBox="0 0 1000 600">
                                 </svg>
                         </div>
 
@@ -75,13 +60,24 @@
 
         <footer class="bs-docs-footer" role="contentinfo">
                 <div class="container">
-
+                        <div class="row">
+                                <div class="col-md-12">
+                                        <h2 class="text-left">出品人：</h2>
+                                </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-md-12">
+                                        <h3 class="text-center">随旭东 王庆全 孙家栋 颜令勇 王建平 陈晓旭 高伟</h3>
+                                </div>
+                        </div>
                 </div>
         </footer>
+
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="js/jquery-2.1.4.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="js/bootstrap.js"></script>
+        <script src="js/d3.js" charset="utf-8"></script>
         <script src="js/index.js"></script>
 </body>
 </html>

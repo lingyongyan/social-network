@@ -2,8 +2,8 @@
 //                   Graph页全局变量区                        //
 ///////////////////////////////////////////////////////
 // 当前数据集
-var crntDataSet = undefined;
-
+var crntDataSet = null;
+var echarts = null; // echarts命名空间
 
 ///////////////////////////////////////////////////////
 //                           Graph页入口                           //
@@ -42,7 +42,25 @@ var crntDataSet = undefined;
                 crntDataSet = dataSets[0];
                 loadDataSet(crntDataSet);
         });
+        // Step:3 conifg ECharts's path, link to echarts.js from current page.
+        // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+        require.config({
+                paths: {
+                        echarts: '../js'
+                }
+        });
 
+        // Step:4 require echarts and use it in the callback.
+        // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+        require(
+            [
+                'echarts',
+                'echarts/chart/line'
+            ],
+            function (ec) {
+                    echarts = ec;
+            }//回调函数
+        );
 })()
 
 
@@ -59,9 +77,9 @@ function loadDataSet(theDataSet) {
         // 一、读入用户数据集之图JSON文件并渲染
         $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json" }, paintGraph);
         // 二、读入用户数据集之度分布图JSON文件并渲染
-        $.get("../json/degree.json", { whichDataSet: theDataSet, filename: "degree.json" }, paintDegree);
+        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "degree.json" }, paintDegree);
         // 三、读入用户数据集之邻接矩阵邻接链表JSON文件并渲染
-        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "table.json" }, paintTable);
+        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json" }, paintTable);
 
 }
 
