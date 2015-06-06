@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
+import com.graphanalysis.graphbase.implement.Node;
 import com.graphanalysis.graphbase.interfaces.GraphReaderInterface;
 import com.graphanalysis.web.json.JsonDeal;
 
@@ -24,24 +26,34 @@ public class GraphReader{
 	 * @return
 	 * 
 	 */
-	public static Vector<Edge> readFromFile(String fileName,int gtype){
-		File file = new File(fileName);
+	public static Vector<Edge> readFromFile(String filePath,int gtype){
+		File file = new File(filePath);
 		BufferedReader reader = null;
 		boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
 		boolean weighted = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
-		System.out.println("从文件中新建graph");
+		String[] fileName = filePath.split("/");
+		System.out.println("从文件"+fileName[fileName.length-1]+"中新建graph");
 		try{
 			reader = new BufferedReader(new FileReader(file));
 			String tempStr = null;
 			Vector<Edge> edges = new Vector<Edge>();
+			HashMap<Integer,Node> nodeMap = new HashMap<Integer,Node>();
 			while((tempStr=reader.readLine())!=null){
 				String[] arr = tempStr.split(" ");
-				int from = Integer.parseInt(arr[0]);
-				int to = Integer.parseInt(arr[1]);
+				int fromID = Integer.parseInt(arr[0]);
+				int toID = Integer.parseInt(arr[1]);
 				double weight = 1;
 				if(weighted)//如果是有权图
 					weight = Double.parseDouble(arr[2]);
-				Edge edge = new Edge(from,to,weight);
+				if(!nodeMap.containsKey(fromID))
+				{
+					nodeMap.put(fromID, new Node(fromID,String.valueOf(fromID)));
+				}
+				if(!nodeMap.containsKey(toID))
+				{
+					nodeMap.put(toID, new Node(toID,String.valueOf(toID)));
+				}
+				Edge edge = new Edge(nodeMap.get(fromID),nodeMap.get(toID),weight);
 				edges.add(edge);
 			}
 			reader.close();
@@ -86,5 +98,52 @@ public class GraphReader{
 		}
 		System.out.println("Reader OK");
 		return gra;
+	}
+	
+	public static GraphReaderData readGraphFromFile(String filePath,int gtype){
+		File file = new File(filePath);
+		BufferedReader reader = null;
+		boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
+		boolean weighted = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
+		GraphReaderData gData = new GraphReaderData();
+		gData.type = directed;
+		String[] fileName = filePath.split("/");
+		System.out.println("从文件"+fileName[fileName.length-1]+"中新建graph");
+		try{
+			reader = new BufferedReader(new FileReader(file));
+			String tempStr = null;
+			while((tempStr=reader.readLine())!=null){
+				String[] arr = tempStr.split(" ");
+				int fromID = Integer.parseInt(arr[0]);
+				int toID = Integer.parseInt(arr[1]);
+				double weight = 1;
+				if(weighted)//如果是有权图
+					weight = Double.parseDouble(arr[2]);
+				if(!gData.nodeMap.containsKey(fromID))
+				{
+					gData.nodeMap.put(fromID, new Node(fromID,String.valueOf(fromID)));
+					gData.nodes.add(gData.nodeMap.get(fromID));
+				}
+				if(!gData.nodeMap.containsKey(toID))
+				{
+					gData.nodeMap.put(toID, new Node(toID,String.valueOf(toID)));
+					gData.nodes.add(gData.nodeMap.get(toID));
+				}
+				Edge edge = new Edge(gData.nodeMap.get(fromID),gData.nodeMap.get(toID),weight);
+				gData.edges.add(edge);
+			}
+			reader.close();
+			return gData;
+		}catch (IOException e){
+			e.printStackTrace();
+		}finally{
+			if(reader!=null){
+				try{
+					reader.close();
+				}catch(IOException e){
+				}
+			}
+		}
+		return gData;
 	}
 }

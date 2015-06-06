@@ -47,7 +47,7 @@ public class ObjectPoolFactory {
 
      */
 
-    public ObjectPool createPool(ParameterObject paraObj, Class clsType) {
+    public ObjectPool createPool(ParameterObject paraObj, Class<?> clsType) {
        return new ObjectPool(paraObj, clsType);
     }
 }

@@ -1,8 +1,6 @@
 package com.graphanalysis.web.servlets;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

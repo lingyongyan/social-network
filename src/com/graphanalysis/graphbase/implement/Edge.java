@@ -3,8 +3,8 @@ package com.graphanalysis.graphbase.implement;
 import com.graphanalysis.graphbase.interfaces.EdgeInterface;
 
 public class Edge implements EdgeInterface{
-	private int fromID;//边的始节点
-	private int toID;//边的终节点
+	private Node fromNode;//边的始节点
+	private Node toNode;//边的终节点
 	private double weight = 0;//边的权重
 	private double flow = 0;//边的流
 	/**
@@ -12,38 +12,54 @@ public class Edge implements EdgeInterface{
 	 * @param toID
 	 * @param weight
 	 */
+	public Edge(Node fromNode, Node toNode, double weight) {
+		this.fromNode = fromNode;
+		this.toNode = toNode;
+		this.weight = weight;
+	}
+	public Edge(Node fromNode, Node toNode) {
+		this(toNode,toNode,1);
+	}
+	
 	public Edge(int fromID, int toID, double weight) {
-		super();
-		this.fromID = fromID;
-		this.toID = toID;
+		this.fromNode = new Node(fromID);
+		this.toNode = new Node(toID);
 		this.weight = weight;
 	}
 	public Edge(int fromID, int toID) {
 		this(fromID,toID,1);
 	}
+	
+	public Node getFromNode(){
+		return this.fromNode;
+	}
+	public Node getToNode(){
+		return this.toNode;
+	}
+	
 	/**
 	 * @return fromID
 	 */
 	public int getFromID() {
-		return fromID;
+		return fromNode.getID();
 	}
 	/**
 	 * @param fromID 要设置的 fromID
 	 */
 	public void setFromID(int fromID) {
-		this.fromID = fromID;
+		this.fromNode.setID(fromID);
 	}
 	/**
 	 * @return toID
 	 */
 	public int getToID() {
-		return toID;
+		return toNode.getID();
 	}
 	/**
 	 * @param toID 要设置的 toID
 	 */
 	public void setToID(int toID) {
-		this.toID = toID;
+		this.toNode.setID(toID);
 	}
 	/**
 	 * @return weight

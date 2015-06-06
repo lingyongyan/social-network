@@ -1,5 +1,9 @@
 package com.graphanalysis.graphbase.implement;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
+
 import com.graphanalysis.graphBase.commondefine.NodeColor;
 import com.graphanalysis.graphbase.interfaces.NodeInterface;
 
@@ -18,6 +22,10 @@ public class Node implements NodeInterface{
 	
 	public Node(int ID,NodeColor color){
 		this(ID,color,"");
+	}
+	
+	public Node(int ID,String name){
+		this(ID,NodeColor.unknown,name);
 	}
 	
 	public Node(int ID){
@@ -54,7 +62,7 @@ public class Node implements NodeInterface{
 	public NodeColor getColor(){
 		return this.color;
 	}
-
+	
 	@Override
 	public int getInDegree() {
 		return this.indegree;

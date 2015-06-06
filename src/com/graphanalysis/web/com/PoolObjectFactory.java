@@ -17,8 +17,8 @@ public class PoolObjectFactory {
        return factory;
     }
 
-    public Object createObject(Class clsType,Object[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class clazz = clsType;
+    public Object createObject(Class<?> clsType,Object[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Class<?> clazz = clsType;
         Class[] argsClass = new Class[args.length];   
 
         for (int i = 0, j = args.length; i < j; i++) {   
@@ -26,7 +26,7 @@ public class PoolObjectFactory {
             argsClass[i] = args[i].getClass();   
 
         }
-        Constructor cons = clazz.getConstructor(argsClass);
+        Constructor<?> cons = clazz.getConstructor(argsClass);
         return cons.newInstance(args);
     }
 }

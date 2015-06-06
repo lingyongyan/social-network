@@ -21,7 +21,7 @@ public class Dijkstra {
 		HashMap<Integer, Double> dist = new HashMap<Integer, Double>();
 		HashMap<Integer, Integer> prev = new HashMap<Integer, Integer>();
 
-		Set<Node> nodes = graph.getNodeSet();
+		Vector<Node> nodes = graph.getNodeSet();
 
 		Iterator iter = nodes.iterator();
 		while (iter.hasNext()) {

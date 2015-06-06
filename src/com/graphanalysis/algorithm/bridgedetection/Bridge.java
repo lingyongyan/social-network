@@ -6,16 +6,11 @@
 package com.graphanalysis.algorithm.bridgedetection;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-
-import com.graphanalysis.graphbase.implement.Edge;
-import com.graphanalysis.web.json.JsonDeal;
 
 public class  Bridge{
 	private Vector<int[]> vbridge = new Vector<int[]>();//桥边集合

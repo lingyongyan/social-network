@@ -2,9 +2,6 @@
 package com.graphanalysis.web.servlets;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.annotation.*;
-import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,13 +13,11 @@ import com.graphanalysis.algorithm.bfsANDdfs.BFSImpl;
 import com.graphanalysis.algorithm.bfsANDdfs.BreadFirstSearch;
 import com.graphanalysis.algorithm.bfsANDdfs.DFSImpl;
 import com.graphanalysis.algorithm.bfsANDdfs.DepthFirstSearch;
-import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.BridgeDetection;
 import com.graphanalysis.algorithm.bridgedetection.BridgeDetectionInterface;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.algorithm.primmst.PrimMST;
 import com.graphanalysis.algorithm.primmst.PrimMSTImpl;
-import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.GraphException;
 import com.graphanalysis.web.com.ObjectPool;
@@ -68,6 +63,8 @@ public class SolutionEntry {
 			case "GRAPH":
 				JSONObject graphJson =  myGraph.packToJson();
 				response.getOutputStream().write(graphJson.toString().getBytes("UTF-8"));
+				break;
+			case "DEGREE":
 				break;
 			default:;
 			}

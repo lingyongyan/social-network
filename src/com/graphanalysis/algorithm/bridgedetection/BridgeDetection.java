@@ -5,12 +5,11 @@
  * */
 
 package com.graphanalysis.algorithm.bridgedetection;
-import java.io.IOException;
+
 import java.util.Stack;
 import java.util.Vector;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.NodeForDetection;

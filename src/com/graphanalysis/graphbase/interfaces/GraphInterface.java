@@ -1,6 +1,5 @@
 package com.graphanalysis.graphbase.interfaces;
 
-import java.util.Set;
 import java.util.Vector;
 
 import org.json.JSONException;
@@ -14,7 +13,7 @@ public interface GraphInterface {
 	public GraphType getType();
 	public double[][] getAdjMatrix();
 	public Vector<Integer>  getAdjList(int nodeID);
-	public Set<Node> getNodeSet();
+	public Vector<Node> getNodeSet();
 	public Vector<Edge> getEdgeSet();
 	public JSONObject packToJson() throws JSONException;
 	public void writeToJson(String fileName) throws JSONException;

@@ -171,10 +171,6 @@ public class RandomWalkGraph extends Graph  implements GraphInterface{
 		this.type = t;
 	}
 	
-	protected void setNodes(Set<Node> nodes){
-		this.nodes = nodes;
-	}
-	
 	protected void setEdges(Vector<Edge> edges){
 		this.edges = edges;
 	}
@@ -210,17 +206,6 @@ public class RandomWalkGraph extends Graph  implements GraphInterface{
 			a=1;
 		res = this.adjList.get(node);
 		return res;
-	}
-	
-	@Override
-	public Set<Node> getNodeSet() {
-		// TODO 自动生成的方法存根
-		return this.nodes;
-	}
-	@Override
-	public Vector<Edge> getEdgeSet() {
-		// TODO 自动生成的方法存根
-		return this.edges;
 	}
 	
 	public int getNodeNum(){

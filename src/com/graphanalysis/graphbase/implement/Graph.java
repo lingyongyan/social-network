@@ -1,25 +1,15 @@
 package com.graphanalysis.graphbase.implement;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javafx.util.Pair;
 
 import com.graphanalysis.graphBase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
@@ -36,7 +26,8 @@ public class Graph implements GraphInterface{
 	protected double [][] adjMatrix;//邻接矩阵
 	protected HashMap<Integer,Vector<Integer>>adjList = new HashMap<Integer,Vector<Integer>>();//邻接链表
 	protected HashMap<Integer,Vector<Edge>> adjEdgeList = new HashMap<Integer,Vector<Edge>>();//邻接链表
-	protected Set<Node> nodes = new HashSet<Node>();//点集
+	protected HashMap<Integer,Node> nodeMap = new HashMap<Integer,Node>();
+	protected Vector<Node> nodes = new Vector<Node>();//点集
 	protected Vector<Edge> edges = new Vector<Edge>();//边集
 	
 	public Graph(){
@@ -55,18 +46,15 @@ public class Graph implements GraphInterface{
 		for(int i=0;i<rows;i++){
 			columns = adjMatrix[i].length;
 			this.nodes.add(new Node(i));
-			//Vector<Integer> mapTemp = new Vector<Integer>();
 			for(int j=0;j<columns;j++){
 				if(adjMatrix[i][j]!=0){
-					//mapTemp.add(j);
 					this.edges.add(new Edge(i,j));
 				}
 			}
-			//this.adjList.put(i,mapTemp);
 		}
-		constructAdjList(this.edges);
-		constructNodeSetFromEdges();
-		//constructAdjMatrixFromAdjList();
+		constructAdjList();
+		constructNodeSet();
+		setNodeDegree();
 	}
 	
 	/**
@@ -83,53 +71,82 @@ public class Graph implements GraphInterface{
 		else
 			this.type = GraphType.UNDirectedGraph;
 		setEdges(edges);
-		constructAdjList(this.edges);
-		constructAdjMatrixFromAdjList();
-		constructNodeSetFromEdges();
+		if(this.edges.size()==0)
+			return;
+		constructAdjList();
+		constructAdjMatrix();
+		constructNodeSet();
+		setNodeDegree();
 	}
 	
-	protected void constructList(int fromID, int toID,Edge edge){
-		if(this.adjList.containsKey(fromID)){//如果邻接链表中已有该节点项则在该项后追加新的链接节点ID
-			Vector<Integer> alreadyin = this.adjList.get(fromID);
-			alreadyin.add(toID);
-			Vector<Edge> alEdge = this.adjEdgeList.get(fromID);
-			alEdge.add(edge);
-		}else{
-			Vector<Integer> newitem = new Vector<Integer>();
-			newitem.add(toID);
-			this.adjList.put(fromID, newitem);
-			Vector<Edge> edgeItem = new Vector<Edge>();
-			edgeItem.add(edge);
-			this.adjEdgeList.put(fromID, edgeItem);
-		}
+	public Graph(Vector<Edge> edges,Vector<Node> nodes,Boolean t) {
+		if(t)
+			this.type = GraphType. DirectedGraph;
+		else
+			this.type = GraphType.UNDirectedGraph;
+		setEdges(edges);
+		setNodes(nodes);
+		if(this.edges.size()==0 || this.nodes.size() == 0)
+			return;
+		constructAdjList();
+		constructAdjMatrix();
+		setNodeDegree();
 	}
 	
 	/**
 	 * @param edges
 	 * 根据边集构建邻接链表
 	 */
-	protected void constructAdjList(Vector<Edge> edges){
+	protected void constructAdjList(){
+		if(this.edges.size()<=0)
+			return;
 		int size = edges.size();
 		for(int i=0;i<size;i++){
 			Edge edge = edges.get(i);
-			int fromID = edge.getFromID();
-			int toID = edge.getToID();
-			constructList(fromID, toID,edge);
+			Node fromNode = edge.getFromNode();
+			Node toNode = edge.getToNode();
+			addLinkedList(fromNode.getID(),toNode.getID(),edge);
 			if(this.type == GraphType.UNDirectedGraph){
-				Edge edgeT = new Edge(toID,fromID,edge.getWeight());
-				constructList(toID,fromID,edge);
+				Edge edgeInverse = new Edge(toNode,fromNode,edge.getWeight());
+				addLinkedList(toNode.getID(),fromNode.getID(),edgeInverse);
 			}
+		}
+	}
+	
+	/**
+	 * @param fromID:起始节点
+	 * @param toID:终止节点
+	 * @param edge:边
+	 */
+	protected void addLinkedList(int fromID, int toID,Edge edge){
+		if(this.adjList.containsKey(fromID)){//如果邻接链表中已有该节点项则在该项后追加新的链接节点ID
+			Vector<Integer> alreadyin = this.adjList.get(fromID);
+			Vector<Edge> alEdge = this.adjEdgeList.get(fromID);
+			
+			alreadyin.add(toID);
+			alEdge.add(edge);
+			
+		}else{
+			Vector<Integer> newitem = new Vector<Integer>();
+			Vector<Edge> edgeItem = new Vector<Edge>();
+			
+			newitem.add(toID);
+			this.adjList.put(fromID, newitem);
+			edgeItem.add(edge);
+			this.adjEdgeList.put(fromID, edgeItem);
 		}
 	}
 	
 	/**
 	 * 根据邻接链表构建邻接矩阵
 	 */
-	protected int constructAdjMatrixFromAdjList(){
-		if(this.adjList.size()<=0)
-			return -1;
-		int size = getBiggestNode()+1;
-		Iterator it =  this.adjList.entrySet().iterator();
+	protected int constructAdjMatrix(){
+		if(this.adjEdgeList.size()<=0)
+			this.constructAdjList();
+		if(this.nodes.size()<=0)
+			this.constructNodeSet();
+		int size = this.nodes.size();
+		Iterator<Entry<Integer, Vector<Edge>>> it =  this.adjEdgeList.entrySet().iterator();
 		this.adjMatrix = new double[size][];
 	    for(int i=0;i<size;i++){
 	    	this.adjMatrix[i] = new double[size];
@@ -138,65 +155,39 @@ public class Graph implements GraphInterface{
 	    	}
 	    }
 	    while (it.hasNext()) {    
-	    	Map.Entry entry =   (Entry) it.next();    
-	        Integer key = (Integer) entry.getKey();    
-	        Vector<Integer> value = (Vector<Integer>) entry.getValue();
-	       for(int i=0;i<value.size();i++){
-	    	   this.adjMatrix[key][value.get(i)] = 1;
+	    	Entry<Integer, Vector<Edge>> entry =    it.next();    
+	        Integer key = (Integer) entry.getKey();
+	        Vector<Edge> values = entry.getValue();
+	       for(int i=0;i<values.size();i++){
+	    	   this.adjMatrix[key][values.get(i).getToID()] = values.get(i).getWeight();
 	       }
 	    }
-	    this.type = autoCheckType();
 		return 0;
 	}
 	
 	/**
-	 * 根据边集构建点集,必须在adjList创建之后进行
+	 * 根据边集构建点集,必须在adjList创建之前进行
 	 */
-	protected void constructNodeSetFromEdges(){
+	protected void constructNodeSet(){
 		if(this.nodes.size()!=0)
 			return;
-		if(this.adjMatrix.length==0)
-			constructAdjMatrixFromAdjList();
-		double[][] mt = transpose(this.adjMatrix);
-		Set<Integer> nodeIn = new HashSet<Integer>();
 		for(int i=0;i<this.edges.size();i++){
-			int from =this.edges.get(i).getFromID();
-			int to = this.edges.get(i).getToID();
-			if(!nodeIn.contains(from)){
-				Node node = new Node(from);
-				int in = 0;
-				int out = 0;
-				for(int pos=0;pos<this.adjMatrix.length;pos++){
-					if(this.adjMatrix[from][pos]>0)
-						out++;
-					if(mt[from][pos]>0)
-						in++;
-				}
-				node.setOutDegree(out);
-				node.setInDegree(in);
-				node.setName(String.valueOf(node.getID()));
-				nodeIn.add(from);
-				this.nodes.add(node);
+			Node fromNode =this.edges.get(i).getFromNode();
+			Node toNode = this.edges.get(i).getToNode();
+			if(!this.nodeMap.containsKey(fromNode.getID())){
+				this.nodes.add(fromNode);
+				this.nodeMap.put(fromNode.getID(), fromNode);
 			}
-			if(!nodeIn.contains(to)){
-				Node node = new Node(to);
-				int in = 0;
-				int out = 0;
-				for(int pos=0;pos<this.adjMatrix.length;pos++){
-					if(this.adjMatrix[to][pos]>0)
-						out++;
-					if(mt[to][pos]>0)
-						in++;
-				}
-				node.setOutDegree(out);
-				node.setInDegree(in);
-				node.setName(String.valueOf(node.getID()));
-				nodeIn.add(to);
-				this.nodes.add( node);
+			if(!this.nodeMap.containsKey(toNode.getID())){
+				this.nodes.add(toNode);
+				this.nodeMap.put(toNode.getID(), toNode);
 			}
 		}
 	}
-	
+	/**
+	 * @param matrix
+	 * @return double[][]
+	 */
 	private double[][] transpose(double[][] matrix){
 		double[][] mt = new double[matrix.length][];
 		int rows = matrix.length;
@@ -212,47 +203,34 @@ public class Graph implements GraphInterface{
 		return mt;
 	}
 	
-	private int getBiggestNode(){
-		int max = -1;
-		Iterator<Edge> it = this.edges.iterator();
-		while(it.hasNext()){
-			 Edge edge=  it.next();
-			 
-			if(edge.getFromID()>max){
-				max=edge.getFromID();
-			}
-			if(edge.getToID()>max){
-				max=edge.getToID();
-			}
-		}
-		return max;
-	}
-	
-	public GraphType autoCheckType(){
+	protected void setNodeDegree(){
+		if(this.nodes.size()<=0)
+			constructNodeSet();
 		if(this.adjMatrix.length<=0)
-			return GraphType.UNKnown;
-		int size = this.adjMatrix.length;
-		for(int i=0;i<size;i++){
-			if(this.adjMatrix[i].length!=size)
-				return GraphType.UNKnown;
-			for(int j=0;j<=i;j++){
-				if(i==j && this.adjMatrix[i][j]==1){
-					return GraphType.selfCircle;
-				}
-				if(this.adjMatrix[i][j]!=this.adjMatrix[j][i]){
-					return GraphType.DirectedGraph;
-				}
+			constructAdjMatrix();
+		double[][] mt = transpose(this.adjMatrix);
+		for(int i=0;i<mt.length;i++){
+			int out = 0;
+			int in = 0;
+			for(int j=0;j<mt[i].length;j++){
+				if(this.adjMatrix[i][j]>0)
+					out++;
+				if(mt[i][j]>0)
+					in++;
+			}
+			if(this.nodeMap.containsKey(i)){
+				this.nodeMap.get(i).setInDegree(in);
+				this.nodeMap.get(i).setOutDegree(out);
 			}
 		}
-		return GraphType.UNDirectedGraph;
 	}
 	
 	public void setType(GraphType t ){
 		this.type = t;
 	}
 	
-	protected void setNodes(Set<Node> nodes){
-		this.nodes = nodes;
+	protected void setNodes(Vector<Node> nodes){
+		this.nodes.addAll(nodes);
 	}
 	
 	protected void setEdges(Vector<Edge> edges){
@@ -269,17 +247,17 @@ public class Graph implements GraphInterface{
 		return this.adjMatrix;
 	}
 
-	public Vector<Integer> getAdjList(int node){//获取某个节点邻接的全部节点
+	public Vector<Integer> getAdjList(int nodeID){//获取某个节点邻接的全部节点
 		Vector<Integer> res = null;
-		res = this.adjList.get(node);
+		res = this.adjList.get(nodeID);
 		if(res==null)
 			return new Vector<Integer>();
 		return res;
 	}
 	
-	public  Vector<Edge> getAdjEdgeList(int node){
+	public  Vector<Edge> getAdjEdgeList(int nodeID){
 		Vector<Edge>  res  = null ;
-		res = this.adjEdgeList.get(node);
+		res = this.adjEdgeList.get(nodeID);
 		if(res==null)
 			return new Vector<Edge>();
 		 return res;
@@ -290,7 +268,7 @@ public class Graph implements GraphInterface{
 	}
 	
 	@Override
-	public Set<Node> getNodeSet() {
+	public Vector<Node> getNodeSet() {
 		return this.nodes;
 	}
 	@Override
