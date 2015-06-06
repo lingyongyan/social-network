@@ -7,7 +7,7 @@ var dOption = {
                 text: '度数分布图',
                 subtext: '孙家栋',
                 x: 'right',
-                y:'bottom'
+                y: 'bottom'
         },
         tooltip: {
                 trigger: 'item'
@@ -15,7 +15,7 @@ var dOption = {
         legend: {
                 data: ['度数'],
                 x: 'center',
-                y: 'top'               
+                y: 'top'
         },
         toolbox: {
                 show: true,
@@ -47,7 +47,7 @@ var dOption = {
         ],
         series: [
             {
-                    name: '出度',
+                    name: '度数',
                     type: 'line',
                     data: [256, 128, 64, 32, 16, 8, 4, 2, 1]
             },
@@ -90,19 +90,24 @@ function paintDegree(degreeData, status) {
                     degree2 = ec.init(document.getElementById('degree2'));
                     // 接下来是将后台返回的度分布图数据
                     // 组装成echats支持的格式
-                    
-                    if (degreeData.length == 3) {
+
+                    if (degreeData.length == 3) {//有向图
                             dOption.legend.data[0] = "出度";
-                            dOption.legend.data[1] = "入度";
+                            dOption.legend.data.push("入度");
 
                             dOption.series[0].data = degreeData[1];
+                            dOption.series[0].name = '出度';
                             dOption.series[1].data = degreeData[2];
                     }
-                    else
+                    else {//无向图
+
                             dOption.series[0].data = degreeData[1];
+                            dOption.series.pop(1);
+                    }
+
                     dOption.xAxis[0].data = degreeData[0];
                     degree2.setOption(dOption);
             }//回调函数
         );
-        
+
 }
