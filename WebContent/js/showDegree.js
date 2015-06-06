@@ -1,109 +1,67 @@
-﻿
+﻿//var echarts = null; // echarts命名空间
 var degree2 = null; // 度图分布实例
 
 // 度分布图模板
 var dOption = {
         title: {
-                text: '度分布图',
-                subtext: '纯属虚构'
+                text: '度数分布图',
+                subtext: '孙家栋',
+                x: 'right',
+                y:'bottom'
         },
         tooltip: {
-                trigger: 'axis'
+                trigger: 'item'
         },
         legend: {
-                data: ['最高气温', '最低气温']
+                data: ['度数'],
+                x: 'center',
+                y: 'top'               
         },
         toolbox: {
                 show: true,
                 feature: {
                         mark: { show: true },
-                        dataView: { show: true, readOnly: false },
-                        magicType: { show: true, type: ['line', 'bar'] },
+                        dataZoom: { show: true },
+                        dataView: { show: true },
+                        //magicType: { show: true, type: ['line'] },
                         restore: { show: true },
                         saveAsImage: { show: true }
                 }
         },
         calculable: true,
+        dataZoom: {
+                show: true,
+                realtime: true
+        },
         xAxis: [
             {
                     type: 'category',
-                    boundaryGap: false,
-                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    boundaryGap: true,
+                    data: [1, 2, 4, 8, 16, 32, 64, 128, 256]
             }
         ],
         yAxis: [
             {
-                    type: 'value',
-                    axisLabel: {
-                            formatter: '{value} °C'
-                    }
+                    type: 'value'
             }
         ],
         series: [
             {
-                    name: '最高气温',
+                    name: '出度',
                     type: 'line',
-                    data: [11, 11, 15, 13, 12, 13, 10],
-                    markPoint: {
-                            data: [
-                                { type: 'max', name: '最大值' },
-                                { type: 'min', name: '最小值' }
-                            ]
-                    },
-                    markLine: {
-                            data: [
-                                { type: 'average', name: '平均值' }
-                            ]
-                    }
+                    data: [256, 128, 64, 32, 16, 8, 4, 2, 1]
             },
             {
-                    name: '最低气温',
+                    name: '入度',
                     type: 'line',
-                    data: [1, -2, 2, 5, 3, 2, 0],
-                    markPoint: {
-                            data: [
-                                { name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }
-                            ]
-                    },
-                    markLine: {
-                            data: [
-                                { type: 'average', name: '平均值' }
-                            ]
-                    }
+                    data: [256+2, 128-2, 64+2, 32-2, 16+2, 8-2, 4+2, 2-2, 1+2]
             }
         ]
 };
 
 
-        
-var dChart;
-
-
-function eChart(ec) {
-        
-        //--- 折线图 ---
-
-        
-        $.get("../json/degree.json", function (root,status){
-                if (status != "success") {
-                        // 提示用户没有拿到图
-                        return console.log(error);
-                }
-
-                for(var i=0;i<root.degrees.length;i++){
-                        option2.xAxis[0].data[i] = root.degrees[i].degree;
-                        option2.series[0].data[i] = root.numbers[i].number;
-                }
-                option2.legend.data[0] = root.legend[0].types;
-                option2.legend.data[1] = root.legend[1].types;
-                degree2.hideLoading();
-                degree2.setOption(option2);
-            
-        });
-
-}
 // 画度分布图
-function paintDegree(degree, status) {
+function paintDegree(degreeData, status) {
 
         if (status != "success") {
                 ///////////////////////////////////////////////////////
@@ -112,7 +70,39 @@ function paintDegree(degree, status) {
                 return console.log(status);
         }
         // TODO
-        degree2 = echarts.init(document.getElementById('degree2'));
-        // 接下来是将后台返回的度分布图数据
-        // 组装成echats支持的格式
+        // Step:3 conifg ECharts's path, link to echarts.js from current page.
+        // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+        require.config({
+                paths: {
+                        echarts: '../js'
+                }
+        });
+
+        // Step:4 require echarts and use it in the callback.
+        // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+        require(
+            [
+                'echarts',
+                'echarts/chart/line',
+            ],
+            function (ec) {
+                    //echarts = ec;
+                    degree2 = ec.init(document.getElementById('degree2'));
+                    // 接下来是将后台返回的度分布图数据
+                    // 组装成echats支持的格式
+                    
+                    if (degreeData.length == 3) {
+                            dOption.legend.data[0] = "出度";
+                            dOption.legend.data[1] = "入度";
+
+                            dOption.series[0].data = degreeData[1];
+                            dOption.series[1].data = degreeData[2];
+                    }
+                    else
+                            dOption.series[0].data = degreeData[1];
+                    dOption.xAxis[0].data = degreeData[0];
+                    degree2.setOption(dOption);
+            }//回调函数
+        );
+        
 }
