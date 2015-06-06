@@ -11,6 +11,8 @@ import java.util.Vector;
 
 import org.json.JSONArray;
 
+import com.graphAnalysis.algorithm.implement.ExecParameter;
+import com.graphAnalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.NodeForDetection;
 import com.graphanalysis.graphBase.commondefine.GraphType;
@@ -33,7 +35,7 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 	 *The main idea is that we choose one node as a root node,and then use the DFS method to
 	 * determine whether a edge linked a node and his father a bridge edge
 	 * */
-	public static Bridge detectBridge(Graph graph){
+	private Bridge detectBridge(Graph graph){
 		try{
 		if(graph == null){
 			throw new Exception("size shouldn't be zero!");
@@ -94,19 +96,21 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 		return res;
 	}
 	
-	public JSONArray exec(Graph myGraph) {
-		//myGraph.writeToJson("/tmp/graph.json");
-		return execB(myGraph).packetToJSON();
-	}
-	
-	public  Bridge execB(Graph myGraph){
+	private  Bridge execB(Graph myGraph){
 		Bridge b = null;
 		b= detectBridge(myGraph);
 		return b;
 	}
 	
 	@Override
-	public int exec(String[] args) {
-		return -1;
+	public ExecReturn exec(ExecParameter args) {
+		// TODO 自动生成的方法存根
+		if(args.size()!=1 || args.get(0).getClass()!=Graph.class)
+			return null;
+		Graph myGraph = (Graph) args.get(0);
+		JSONArray jArray = this.execB(myGraph).packetToJSON();
+		ExecReturn res = new ExecReturn();
+		res.addResult(jArray);
+		return res;
 	}
 }

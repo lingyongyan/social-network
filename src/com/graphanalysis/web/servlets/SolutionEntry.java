@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.graphAnalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.bfsANDdfs.BFSImpl;
 import com.graphanalysis.algorithm.bfsANDdfs.BreadFirstSearch;
 import com.graphanalysis.algorithm.bfsANDdfs.DFSImpl;
@@ -36,28 +37,32 @@ public class SolutionEntry {
 		try {
 			Graph myGraph = null;
 			myGraph = (Graph)ObjectPool.getInstance().getObject(dataSets, localFile);
+			ExecParameter paras = new ExecParameter();
+			paras.addParameter(myGraph);
 			//myGraph = GraphReader.readGraphFromJson(localFile);
 			if(myGraph == null)
 				throw new GraphException("Graph Should Be Null!");
 			switch(method){
 			case "DFS":
+				paras.addParameter(Integer.valueOf(id));
 				algorithm = new DepthFirstSearch(myGraph.getNodeNum());
-				JSONArray dr = ((DFSImpl)algorithm).exec(myGraph, id);
+				JSONArray dr = (JSONArray) algorithm.exec(paras).get(0);
 				response.getOutputStream().write(dr.toString().getBytes("UTF-8"));
 				break;
 			case "BFS":
+				paras.addParameter(Integer.valueOf(id));
 				algorithm = new BreadFirstSearch(myGraph.getNodeNum());
-				JSONArray br = ((BFSImpl)algorithm).exec(myGraph, id);
+				JSONArray br = (JSONArray) algorithm.exec(paras).get(0);
 				response.getOutputStream().write(br.toString().getBytes("UTF-8"));
 				break;
 			case"PRIM":
 				algorithm = new PrimMST(myGraph.getNodeNum());
-				JSONArray pr = ((PrimMSTImpl)algorithm).exec(myGraph, id);
+				JSONArray pr = (JSONArray) algorithm.exec(paras).get(0);
 				response.getOutputStream().write(pr.toString().getBytes("UTF-8"));
 				break;
 			case "BRIDGE":
 				algorithm = new BridgeDetection();
-				JSONArray bridgeJSON =  ((BridgeDetectionInterface)algorithm).exec(myGraph);
+				JSONArray bridgeJSON = (JSONArray) algorithm.exec(paras).get(0);
 				response.getOutputStream().write(bridgeJSON.toString().getBytes("UTF-8"));
 				break;
 			case "GRAPH":
@@ -65,6 +70,8 @@ public class SolutionEntry {
 				response.getOutputStream().write(graphJson.toString().getBytes("UTF-8"));
 				break;
 			case "DEGREE":
+				JSONArray degreeJson =  myGraph.getDegreeJson();
+				response.getOutputStream().write(degreeJson.toString().getBytes("UTF-8"));
 				break;
 			default:;
 			}

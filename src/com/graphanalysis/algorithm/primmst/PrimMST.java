@@ -10,6 +10,8 @@ import java.util.Vector;
 
 import org.json.JSONArray;
 
+import com.graphAnalysis.algorithm.implement.ExecParameter;
+import com.graphAnalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
@@ -33,7 +35,7 @@ public class PrimMST implements PrimMSTImpl {
     }
 
     // run Prim's algorithm in graph G, starting from vertex s
-    public void prim(Graph G, int s) {
+    private void prim(Graph G, int s) {
         distTo[s] = 0.0;
         pq.insert(s, distTo[s]);
         while (!pq.isEmpty()) {
@@ -41,7 +43,7 @@ public class PrimMST implements PrimMSTImpl {
             scan(G, v);
         }
     }
-    public Path prim(Graph myGraph){
+    private Path prim(Graph myGraph){
     	int node_num = myGraph.getNodeNum();
         for (int v = 0; v < node_num; v++) distTo[v] = Double.POSITIVE_INFINITY;
         for (int v = 0; v < node_num; v++)      // run from each vertex to find
@@ -55,7 +57,7 @@ public class PrimMST implements PrimMSTImpl {
     }
 
     // scan vertex v
-    public void scan(Graph G, int v) {
+    private void scan(Graph G, int v) {
         marked[v] = true;
         Iterator<Edge> it = G.getAdjEdgeList(v).iterator();
         while (it.hasNext()) {
@@ -73,7 +75,7 @@ public class PrimMST implements PrimMSTImpl {
         }
     }
 
-    public Iterable<Edge> edges() {
+    private Iterable<Edge> edges() {
         Queue<Edge> mst = new LinkedList<Edge>();
         for (int v = 0; v < edgeTo.length; v++) {
             Edge e = edgeTo[v];
@@ -84,7 +86,7 @@ public class PrimMST implements PrimMSTImpl {
         return mst;
     }
 
-    public double weight() {
+    private double weight() {
         double weight = 0.0;
         for (Edge e : edges())
             weight += e.getWeight();
@@ -92,7 +94,7 @@ public class PrimMST implements PrimMSTImpl {
     }
 
     // check optimality conditions (takes time proportional to E V lg* V)
-    public boolean check(Graph G) {
+    private boolean check(Graph G) {
 
         // check weight
         double totalWeight = 0.0;
@@ -175,17 +177,9 @@ public class PrimMST implements PrimMSTImpl {
         //System.out.println("success!");
     }
 
-	@Override
-	public int exec(String[] args) {
-		// TODO 自动生成的方法存根
-		return 0;
-	}
-
-	@Override
-	public JSONArray exec(String fileName, int s) {
+	private  JSONArray exec(Graph myGraph) {
 		// TODO 自动生成的方法存根
 		JSONArray res = null;
-		Graph myGraph = GraphReader.readGraphFromJson(fileName);
 		try{
 		if(myGraph == null)
 			throw new GraphException("Graph Should Be Null!");
@@ -198,17 +192,14 @@ public class PrimMST implements PrimMSTImpl {
 	}
 
 	@Override
-	public JSONArray exec(Graph myGraph, int s) {
+	public ExecReturn exec(ExecParameter args) {
 		// TODO 自动生成的方法存根
-		JSONArray res = null;
-		try{
-		if(myGraph == null)
-			throw new GraphException("Graph Should Be Null!");
-		Path bres = this.prim(myGraph);
-		res  = bres.packetToJson();
-		}catch(GraphException e){
-			System.out.println(e);
-		}
+		if(args.size()!=1 || args.get(0).getClass()!=Graph.class)
+			return null;
+		Graph myGraph = (Graph) args.get(0);
+		JSONArray jArray = this.exec(myGraph);
+		ExecReturn res = new ExecReturn();
+		res.addResult(jArray);
 		return res;
 	}
 }

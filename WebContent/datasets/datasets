@@ -1,4 +1,4 @@
-userdata2	tinyG.txt txt 2
+userdata0	tinyG.txt txt 2
 userdataL	facebook_combined.txt txt 0
 userdata1	bridge.txt txt 0
-userdata0	weightedGraph.txt txt 2
+userdata2	weightedGraph.txt txt 3

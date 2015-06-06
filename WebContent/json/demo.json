@@ -6,7 +6,7 @@
         "E": 16,
         "nodes": [
 
-                { "id": "0", "name": "钢铁侠","img": "img/钢铁侠.jpg" },
+                { "id": "0", "name": "钢铁侠","img": "img/1.jpg" },
                 { "id": "1", "name": "美国队长","img": "img/美国队长.jpg"},
                 { "id": "2", "name": "鹰眼","img": "img/鹰眼.jpg" },
                 { "id": "3", "name": "雷神","img": "img/雷神.jpg" },

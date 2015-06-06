@@ -47,8 +47,8 @@ public class ObjectPool {
 
 		GraphReaderData gData = GraphReader.readGraphFromFile(filePath,graphType);
 		boolean directed = (graphType & 1)>0?true:false;
-		objs[0] = gData.edges;
-		objs[1] = gData.nodes;
+		objs[0] = gData.getEdges();
+		objs[1] = gData.getNodeSet();
 		objs[2] = directed;
 		try {
 			objectPool.put(name, objFactory.createObject(clsType,objs));

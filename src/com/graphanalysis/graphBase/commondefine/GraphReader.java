@@ -106,7 +106,7 @@ public class GraphReader{
 		boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
 		boolean weighted = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
 		GraphReaderData gData = new GraphReaderData();
-		gData.type = directed;
+		gData.setType(directed);
 		String[] fileName = filePath.split("/");
 		System.out.println("从文件"+fileName[fileName.length-1]+"中新建graph");
 		try{
@@ -119,18 +119,10 @@ public class GraphReader{
 				double weight = 1;
 				if(weighted)//如果是有权图
 					weight = Double.parseDouble(arr[2]);
-				if(!gData.nodeMap.containsKey(fromID))
-				{
-					gData.nodeMap.put(fromID, new Node(fromID,String.valueOf(fromID)));
-					gData.nodes.add(gData.nodeMap.get(fromID));
-				}
-				if(!gData.nodeMap.containsKey(toID))
-				{
-					gData.nodeMap.put(toID, new Node(toID,String.valueOf(toID)));
-					gData.nodes.add(gData.nodeMap.get(toID));
-				}
-				Edge edge = new Edge(gData.nodeMap.get(fromID),gData.nodeMap.get(toID),weight);
-				gData.edges.add(edge);
+				gData.addNode(fromID);
+				gData.addNode(toID);
+				Edge edge = new Edge(gData.getNode(fromID),gData.getNode(toID),weight);
+				gData.addEdge(edge);
 			}
 			reader.close();
 			return gData;

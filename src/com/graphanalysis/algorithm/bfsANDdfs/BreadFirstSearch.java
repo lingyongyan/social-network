@@ -7,6 +7,8 @@ import java.util.Vector;
 
 import org.json.JSONArray;
 
+import com.graphAnalysis.algorithm.implement.ExecParameter;
+import com.graphAnalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.graphBase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
@@ -84,24 +86,6 @@ public class BreadFirstSearch implements BFSImpl {
         return count;
     }
     
-	@Override
-	public JSONArray exec(String fileName, int s) {
-		// TODO 自动生成的方法存根
-		JSONArray res = null;
-		Graph myGraph = GraphReader.readGraphFromJson(fileName);
-		try{
-		if(myGraph == null)
-			throw new GraphException("Graph Should Be Null!");
-		Path bres = this.bfs(myGraph,s);
-		res  = bres.packetToJson();
-		}catch(GraphException e){
-			System.out.println(e);
-		}
-		//String fJson = JsonDeal.ReadFile(request.getSession().getServletContext().getRealPath(localFile));
-		return res;
-	}
-
-	@Override
 	public JSONArray exec(Graph myGraph, int s) {
 		// TODO 自动生成的方法存根
 		JSONArray res = null;
@@ -132,8 +116,15 @@ public class BreadFirstSearch implements BFSImpl {
     }
 
 	@Override
-	public int exec(String[] args) {
+	public ExecReturn exec(ExecParameter args) {
 		// TODO 自动生成的方法存根
-		return 0;
+		if(args.size()!=2 || args.get(0).getClass()!=Graph.class || args.get(1).getClass() != Integer.class)
+			return null;
+		Graph myGraph = (Graph) args.get(0);
+		int s = (int) args.get(1);
+		JSONArray jArray = this.exec(myGraph,s);
+		ExecReturn res = new ExecReturn();
+		res.addResult(jArray);
+		return res;
 	}
 }

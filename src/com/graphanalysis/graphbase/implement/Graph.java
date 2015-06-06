@@ -53,7 +53,7 @@ public class Graph implements GraphInterface{
 			}
 		}
 		constructAdjList();
-		constructNodeSet();
+		constructNodeSetFromEdges();
 		setNodeDegree();
 	}
 	
@@ -73,9 +73,9 @@ public class Graph implements GraphInterface{
 		setEdges(edges);
 		if(this.edges.size()==0)
 			return;
+		constructNodeSetFromEdges();		
 		constructAdjList();
 		constructAdjMatrix();
-		constructNodeSet();
 		setNodeDegree();
 	}
 	
@@ -142,9 +142,9 @@ public class Graph implements GraphInterface{
 	 */
 	protected int constructAdjMatrix(){
 		if(this.adjEdgeList.size()<=0)
-			this.constructAdjList();
+			constructAdjList();
 		if(this.nodes.size()<=0)
-			this.constructNodeSet();
+			constructNodeSetFromEdges();
 		int size = this.nodes.size();
 		Iterator<Entry<Integer, Vector<Edge>>> it =  this.adjEdgeList.entrySet().iterator();
 		this.adjMatrix = new double[size][];
@@ -168,9 +168,14 @@ public class Graph implements GraphInterface{
 	/**
 	 * 根据边集构建点集,必须在adjList创建之前进行
 	 */
-	protected void constructNodeSet(){
-		if(this.nodes.size()!=0)
+	protected void constructNodeSetFromEdges(){
+		if(this.nodes.size()!=0){
+			SetNodeMapFromNodes();
 			return;
+		}
+		
+		this.nodeMap.clear();
+		this.nodes.clear();
 		for(int i=0;i<this.edges.size();i++){
 			Node fromNode =this.edges.get(i).getFromNode();
 			Node toNode = this.edges.get(i).getToNode();
@@ -203,9 +208,18 @@ public class Graph implements GraphInterface{
 		return mt;
 	}
 	
-	protected void setNodeDegree(){
+	private void SetNodeMapFromNodes(){
 		if(this.nodes.size()<=0)
-			constructNodeSet();
+			return;
+		for(int i=0;i<this.nodes.size();i++){
+			Node node = this.nodes.get(i);
+			if(!this.nodeMap.containsKey(node.getID())){
+				this.nodeMap.put(node.getID(), node);
+			}
+		}
+	}
+	
+	protected void setNodeDegree(){
 		if(this.adjMatrix.length<=0)
 			constructAdjMatrix();
 		double[][] mt = transpose(this.adjMatrix);
@@ -230,7 +244,9 @@ public class Graph implements GraphInterface{
 	}
 	
 	protected void setNodes(Vector<Node> nodes){
+		this.nodes.clear();
 		this.nodes.addAll(nodes);
+		SetNodeMapFromNodes();
 	}
 	
 	protected void setEdges(Vector<Edge> edges){
@@ -341,8 +357,62 @@ public class Graph implements GraphInterface{
 		}
 	}
 	
-	public void  writeNodeJson(String fileName){
+	private class inOutDegree{
+		private int in=0;
+		private int out=0;
+		public inOutDegree(){
+		}
+		public void addIn(){
+			this.in++;
+		}
+		public void addOut(){
+			this.out++;
+		}
+		public int getIn(){
+			return this.in;
+		}
+		public int getOut(){
+			return this.out;
+		}
+	}
+	public JSONArray getDegreeJson(){
+		JSONArray res = new JSONArray();
+		JSONArray resD = new JSONArray();
+		JSONArray resO = new JSONArray();
+		JSONArray resI = new JSONArray();
 		
+		HashMap<Integer,inOutDegree> calc = new HashMap<Integer,inOutDegree>();
+		for(int i=0;i<this.nodes.size();i++){
+			int in = nodes.get(i).getInDegree();
+			int out = nodes.get(i).getOutDegree();
+			if(!calc.containsKey(in)){
+				inOutDegree inOut = new inOutDegree();
+				inOut.addIn();
+				calc.put(in, inOut);
+			}else{
+				calc.get(in).addIn();
+			}
+			
+			if(!calc.containsKey(out)){
+				inOutDegree inOut = new inOutDegree();
+				inOut.addOut();
+				calc.put(out, inOut);
+			}else{
+				calc.get(out).addOut();
+			}
+		}
+		Iterator<Entry<Integer, inOutDegree>> it = calc.entrySet().iterator();
+		while(it.hasNext()){
+			Entry<Integer, inOutDegree> entry = it.next();
+			resD.put(entry.getKey());
+			resO.put(entry.getValue().getOut()==0?"-":entry.getValue().getOut());
+			resI.put(entry.getValue().getIn()==0?"-":entry.getValue().getIn());
+		}
+		res.put(resD);
+		res.put(resO);
+		if(getType()!=GraphType.UNDirectedGraph)
+			res.put(resI);
+		return res;
 	}
 }
 

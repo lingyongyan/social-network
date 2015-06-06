@@ -18,7 +18,7 @@ import com.graphanalysis.web.com.ServletsPreProcess;
 /**
  * Servlet implementation class graphJs
  */
-@WebServlet(urlPatterns = { "/graphJs", "/json/graph.json"},
+@WebServlet(urlPatterns = { "/graphJs", "/json/graph.json","/json/degree.json","/json/Degree.json"},
 name = "GraphServlet", //servlet名称
 loadOnStartup = 1 )
 public class GraphServlet extends HttpServlet {

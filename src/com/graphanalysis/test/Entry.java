@@ -28,13 +28,13 @@ public class Entry {
 /*			Vector<Edge> edges = GraphReader.readFromFile("/tmp/facebook_combined.txt", 0);
 			Graph myGraph =  new Graph(edges);
 			myGraph.writeToJson("./WebContent/json/graph3.json");*/
-			Graph myGraph = GraphReader.readGraphFromJson("./WebContent/json/graphL.json");
-			BridgeDetectionInterface algInter;
+/*			Graph myGraph = GraphReader.readGraphFromJson("./WebContent/json/graphL.json");
+			AlgorithmInterface algInter;
 			algInter = new BridgeDetection();
-			Bridge br= algInter.execB(myGraph);
+			Bridge br= algInter.exec(myGraph);
 
 			if(br!=null)
-				br.printBridge();
+				br.printBridge();*/
 			
 		}
 		catch(Exception e){
