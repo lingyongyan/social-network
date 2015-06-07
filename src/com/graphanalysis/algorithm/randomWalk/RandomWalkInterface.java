@@ -21,7 +21,7 @@ public interface RandomWalkInterface extends AlgorithmInterface{
 	 * Walk from a random node with default step number.
 	 * @return walk path
 	 */
-	public List<Integer> walk();
+	//public List<Integer> walk();
 	
 	
 	/**
@@ -29,7 +29,7 @@ public interface RandomWalkInterface extends AlgorithmInterface{
 	 * @param step
 	 * @return
 	 */
-	public List<Integer> walk(int step);
+	//public List<Integer> walk(int step);
 	
 	/**
 	 * Walk from given start node with a given step;
@@ -37,7 +37,7 @@ public interface RandomWalkInterface extends AlgorithmInterface{
 	 * @param step
 	 * @return
 	 */
-	public List<Integer> walk(int startNode, int step);
+	//public List<Integer> walk(int startNode, int step);
 	
 	
 	/**
@@ -49,8 +49,11 @@ public interface RandomWalkInterface extends AlgorithmInterface{
 	 * @param stepThreshold
 	 * @return
 	 */
-	public List<Integer> walk(int startNode, int endNode, int stepThreshold);
-	
+	//public List<Integer> walk(int startNode, int endNode, int stepThreshold);
+	public JSONArray exec();
 	public JSONArray exec(int step);
+	public JSONArray exec(int start, int step);
+	public JSONArray exec(int start, int end,int step);
+	
 
 }

@@ -243,17 +243,72 @@ public class RandomWalk implements RandomWalkInterface {
 		}
 		return jsonArray;
 	}
+	
+	@Override
+	public JSONArray exec(int start,int step) {
+		// TODO Auto-generated method stub
+		JSONArray jsonArray = new JSONArray();
+		List<Integer> path = this.walk(start,step);
+		for(int i=0; i<path.size()-1; i++) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put("source", path.get(i)).put("target", path.get(i+1));
+				jsonArray.put(object);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return jsonArray;
+	}
+	
+	@Override
+	public JSONArray exec() {
+		// TODO 自动生成的方法存根
+		JSONArray jsonArray = new JSONArray();
+		List<Integer> path = this.walk();
+		for(int i=0; i<path.size()-1; i++) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put("source", path.get(i)).put("target", path.get(i+1));
+				jsonArray.put(object);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return jsonArray;
+	}
+
+
+	@Override
+	public JSONArray exec(int start, int end, int step) {
+		// TODO 自动生成的方法存根
+		JSONArray jsonArray = new JSONArray();
+		List<Integer> path = this.walk(start,end,step);
+		for(int i=0; i<path.size()-1; i++) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put("source", path.get(i)).put("target", path.get(i+1));
+				jsonArray.put(object);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return jsonArray;
+	}
 
 	@Override
 	public ExecReturn exec(ExecParameter args) {
 		// TODO 自动生成的方法存根
-		if(args.size()!=1 ||  args.get(0).getClass()!=Integer.class)
+		if(args.size()!=2 ||  args.get(0).getClass()!=Integer.class ||args.get(1).getClass()!=Integer.class)
 			return null;
-		int step = (int)args.get(0);
-		JSONArray jArray = this.exec(step);
+		int start = (int) args.get(0);
+		int step = (int)args.get(1);
+		JSONArray jArray = this.exec(start,step);
 		ExecReturn res = new ExecReturn();
 		res.addResult(jArray);
 		return res;
 	}
-
 }

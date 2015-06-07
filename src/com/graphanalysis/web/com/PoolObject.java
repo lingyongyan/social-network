@@ -14,7 +14,7 @@ public class PoolObject {
         return objection;     
     }     
 
-    // 设置此对象的，对象     
+    // 设置此对象 
     public void setObject(Object objection) {     
         this.objection = objection;     
 

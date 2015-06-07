@@ -20,7 +20,8 @@ import com.graphanalysis.graphbase.implement.Graph;
 
 /**
  * @author Yan Lingyong
- *
+ *存放处理所需的某些对象
+ *在本应用中，由于默认会有一些数据集，在这里会新建一些Graph对象，在启动的时候就建立，在处理的时候直接从这里获取该对象
  */
 public class ObjectPool {
 	private ParameterObject paraObj; // 该对象池的属性参数对象
@@ -40,7 +41,7 @@ public class ObjectPool {
 		this.clsType = clsType;
 		factory = this;
 	}
-
+	//从文件中读入图，并建立相应的对象
 	private void addFromFile(String name,String filePath,int graphType){
 		PoolObjectFactory objFactory = PoolObjectFactory.getInstance();
 		Object objs[]= new Object[3];
@@ -85,6 +86,7 @@ public class ObjectPool {
 			}
 		}
 	}
+	
 	//根据名字找对象
 	public Object getObject(String name,String filePath){
 		if(objectPool.containsKey(name))

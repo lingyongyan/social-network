@@ -14,12 +14,6 @@ public class ClassNameFactory {
 	private static ClassNameFactory factory = null;
 	private Map<String,Class> classMap = new HashMap<String,Class>();
 
-	/**
-
-	 * 私有默认的构造子
-
-	 */
-
 	private ClassNameFactory(){
 		
 	}
@@ -33,6 +27,12 @@ public class ClassNameFactory {
 		}
 	}
 
+	/**
+	 ***从文件中读入配置文件，建立请求的方法名称（String）与对应的处理类的映射
+	 * @param fileName	配置文件名
+	 * @throws FileNotFoundException
+	 * @author Yan Lingyong
+	 */
 	private void init(String fileName) throws FileNotFoundException{
 		FileInputStream fis = null;
 		try {
@@ -76,7 +76,10 @@ public class ClassNameFactory {
 		}
 		return factory;
 	}
-
+	
+	/**
+	 * 一下函数用于利用方法名得到对应的处理类
+	 * */
 	public Class getClassFromName(String name) {
 		if(this.classMap.containsKey(name)){
 			Class<?> className = this.classMap.get(name);

@@ -18,7 +18,7 @@ import com.graphanalysis.graphbase.interfaces.GraphInterface;
 import com.graphanalysis.web.json.JsonDeal;
 
 /**
- * @author young
+ * @author Yan Lingyong
  *
  */
 public class Graph implements GraphInterface{
