@@ -5,13 +5,17 @@ package com.graphanalysis.algorithm.randomWalk;
 
 import java.util.List;
 
+import org.json.JSONArray;
+
+import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
+
 /**
  * A Interface to access some method of random walk
  * 
  * @author  chenxx
  * @date	2015/5/30
  */
-public interface RandomWalkInterface {
+public interface RandomWalkInterface extends AlgorithmInterface{
 	
 	/**
 	 * Walk from a random node with default step number.
@@ -46,5 +50,7 @@ public interface RandomWalkInterface {
 	 * @return
 	 */
 	public List<Integer> walk(int startNode, int endNode, int stepThreshold);
+	
+	public JSONArray exec(int step);
 
 }

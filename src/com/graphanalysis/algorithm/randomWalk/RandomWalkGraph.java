@@ -1,16 +1,15 @@
 package com.graphanalysis.algorithm.randomWalk;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
-import java.util.Map.Entry;
 
 import org.json.JSONException;
 
-import com.graphanalysis.graphBase.commondefine.GraphType;
+import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;
@@ -171,6 +170,10 @@ public class RandomWalkGraph extends Graph  implements GraphInterface{
 		this.type = t;
 	}
 	
+	protected void setNodes(Set<Node> nodes){
+		this.nodes = nodes;
+	}
+	
 	protected void setEdges(Vector<Edge> edges){
 		this.edges = edges;
 	}
@@ -206,6 +209,17 @@ public class RandomWalkGraph extends Graph  implements GraphInterface{
 			a=1;
 		res = this.adjList.get(node);
 		return res;
+	}
+	
+	@Override
+	public Set<Node> getNodeSet() {
+		// TODO 自动生成的方法存根
+		return this.nodes;
+	}
+	@Override
+	public Vector<Edge> getEdgeSet() {
+		// TODO 自动生成的方法存根
+		return this.edges;
 	}
 	
 	public int getNodeNum(){
