@@ -19,4 +19,8 @@ public class ExecParameter {
 	public int size(){
 		return this.parameters.size();
 	}
+	
+	public void clear(){
+		this.parameters.clear();
+	}
 }

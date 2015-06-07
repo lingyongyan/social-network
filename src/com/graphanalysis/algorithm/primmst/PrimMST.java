@@ -25,7 +25,7 @@ public class PrimMST implements PrimMSTImpl {
     private IndexMinPQ<Double> pq;
     private static String content="";
    
-    public PrimMST(int node_num) {
+    public PrimMST(Integer node_num) {
         edgeTo = new Edge[node_num];
         distTo = new double[node_num];
         marked = new boolean[node_num];
@@ -35,7 +35,7 @@ public class PrimMST implements PrimMSTImpl {
     }
 
     // run Prim's algorithm in graph G, starting from vertex s
-    private void prim(Graph G, int s) {
+    private void prim(Graph G, Integer s) {
         distTo[s] = 0.0;
         pq.insert(s, distTo[s]);
         while (!pq.isEmpty()) {

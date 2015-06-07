@@ -22,7 +22,7 @@ public class BreadFirstSearch implements BFSImpl {
     private int[] edgeTo;      // edgeTo[v] = previous edge on shortest s-v path
     private int[] distTo;      // distTo[v] = number of edges shortest s-v path
 
-    public BreadFirstSearch(int num) {
+    public BreadFirstSearch(Integer num) {
     	 marked = new boolean[num];
          distTo = new int[num];
          edgeTo = new int[num];

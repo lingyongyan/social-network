@@ -18,7 +18,7 @@ public class DepthFirstSearch  implements DFSImpl{
     private int count;           // number of vertices connected to s
     File file = new File("dfsResult");
     String content="";
-    public DepthFirstSearch(int num) {
+    public DepthFirstSearch(Integer num) {
         marked = new boolean[num];
     }
 

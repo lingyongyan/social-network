@@ -50,14 +50,7 @@ public class ObjectPool {
 		objs[0] = gData.getEdges();
 		objs[1] = gData.getNodeSet();
 		objs[2] = directed;
-		try {
-			objectPool.put(name, objFactory.createObject(clsType,objs));
-		} catch (NoSuchMethodException | SecurityException
-				| InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
+		objectPool.put(name, objFactory.createObject(clsType,objs));
 		this.currentNum++;
 	}
 
@@ -70,7 +63,7 @@ public class ObjectPool {
 			props.load(fis);
 			for (String name : props.stringPropertyNames()) {
 				String s = props.getProperty(name);
-				String[] args = s.split(" ");
+				String[] args = s.split("\\s+");
 				String filePath = fileP+args[0];
 				//String fileType = args[1];
 				int paraMore = Integer.valueOf(args[2]);

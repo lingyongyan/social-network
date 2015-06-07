@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.graphanalysis.web.com.ClassNameFactory;
 import com.graphanalysis.web.com.ObjectPool;
 import com.graphanalysis.web.com.ObjectPoolFactory;
 import com.graphanalysis.web.com.ParameterObject;
+import com.graphanalysis.web.com.PoolObjectFactory;
 import com.graphanalysis.web.com.ServletsPreProcess;
 
 /**
@@ -38,12 +40,7 @@ public class GraphServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String deal = request.getProtocol()+"Request:";
-		Logger log = Logger.getLogger("serverlog"); 
-        
         String[] args = ServletsPreProcess.PreProcess(request,3);
-		log.info(deal+args[0]);	
-		log.info(deal+args[1]);
 		SolutionEntry.solve(args[0], args, response);
 	}
 
@@ -65,6 +62,8 @@ public class GraphServlet extends HttpServlet {
     	fileRootPath = this.getServletContext().getRealPath("/");
     	System.out.println(fileRootPath);
     	try {
+    		objectInstance = PoolObjectFactory.getInstance();
+    		classInstance = ClassNameFactory.getInstance(fileRootPath+"datasets/className");
     		objectPoolFacInstance = ObjectPoolFactory.getInstance();
     		objectPoolInstance = objectPoolFacInstance.createPool(pObj, Class.forName("com.graphanalysis.graphbase.implement.Graph"));
     		objectPoolInstance.getInstance().initPool(fileRootPath+"/datasets/datasets",fileRootPath+"/datasets/");
@@ -78,4 +77,6 @@ public class GraphServlet extends HttpServlet {
 	private static ObjectPoolFactory objectPoolFacInstance;
 	private static ObjectPool objectPoolInstance;
 	private static String fileRootPath;
+	private static PoolObjectFactory objectInstance;
+	private static ClassNameFactory classInstance;
 }

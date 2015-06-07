@@ -17,7 +17,7 @@ public class PoolObjectFactory {
        return factory;
     }
 
-    public Object createObject(Class<?> clsType,Object[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public Object createObject(Class<?> clsType,Object[] args) {
         Class<?> clazz = clsType;
         Class[] argsClass = new Class[args.length];   
 
@@ -26,7 +26,14 @@ public class PoolObjectFactory {
             argsClass[i] = args[i].getClass();   
 
         }
-        Constructor<?> cons = clazz.getConstructor(argsClass);
-        return cons.newInstance(args);
+		try {
+			Constructor<?> cons = clazz.getConstructor(argsClass);
+			return cons.newInstance(args);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		return null;
     }
 }

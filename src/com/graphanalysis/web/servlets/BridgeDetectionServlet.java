@@ -32,13 +32,7 @@ public class BridgeDetectionServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String deal = request.getProtocol()+"Request:";
-		Logger log = Logger.getLogger("serverlog"); 
-        log.setLevel(Level.INFO);
-        
         String[] args = ServletsPreProcess.PreProcess(request,3);
-		log.info(deal+args[0]);	
-		log.info(deal+args[1]);
 		SolutionEntry.solve(args[0], args, response);
 	}
 

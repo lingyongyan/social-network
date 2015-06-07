@@ -5,16 +5,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.graphanalysis.algorithm.implement.ExecParameter;
+import com.graphanalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.graphbase.commondefine.GraphReader;
-import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;
 import com.graphanalysis.graphbase.interfaces.GraphInterface;
-import com.graphanalysis.graphbase.interfaces.GraphReaderInterface;
 
 /**
  * Random walk Algorithm
@@ -49,7 +52,7 @@ public class RandomWalk implements RandomWalkInterface {
 	//private double[][] adjMatrix;
 	
 	//@SuppressWarnings("unchecked")
-	public RandomWalk(GraphInterface graph) {
+	public RandomWalk(RandomWalkGraph graph) {
 		this.gragh = graph;
 		if(this.gragh==null)
 			throw new NullPointerException("Graph must be not null.");
@@ -222,31 +225,35 @@ public class RandomWalk implements RandomWalkInterface {
 		    this.TPM.put(entry.getKey(), tmp);
 		}		
 	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+
+	@Override
+	public JSONArray exec(int step) {
 		// TODO Auto-generated method stub
-		//GraphReader reader = new GraphReader("test.txt", 1);
-		//System.out.println(GraphReader.readFromFile("test.txt", true).toString());
-		GraphInterface g = new RandomWalkGraph(GraphReader.readFromFile("tinyG.txt", 3));
-		RandomWalk r = new RandomWalk(g);
-		List<Integer> path = r.walk(1,6,10000);
-		System.out.println(path.toString());
-		System.out.println(path.size());
-		int n = path.size();
-		int s[] = {0,0,0,0,0,0};
-		for(int i=0; i<n; i++) {
-			if( path.get(i)==1) s[0]++;
-			else if( path.get(i)==2 ) s[1]++;
-			else if( path.get(i).intValue()==3 ) s[2]++;
-			else if( path.get(i).intValue()==4 ) s[3]++;
-			else if( path.get(i).intValue()==5 ) s[4]++;
-			else if( path.get(i).intValue()==6 ) s[5]++;
-			else System.out.println("error");
+		JSONArray jsonArray = new JSONArray();
+		List<Integer> path = this.walk(step);
+		for(int i=0; i<path.size()-1; i++) {
+			JSONObject object = new JSONObject();
+			try {
+				object.put("source", path.get(i)).put("target", path.get(i+1));
+				jsonArray.put(object);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		System.out.println(s[0]+" "+s[1]+" "+s[2]+" "+s[3]+" "+s[4]+" "+s[5]);
+		return jsonArray;
+	}
+
+	@Override
+	public ExecReturn exec(ExecParameter args) {
+		// TODO 自动生成的方法存根
+		if(args.size()!=1 ||  args.get(0).getClass()!=Integer.class)
+			return null;
+		int step = (int)args.get(0);
+		JSONArray jArray = this.exec(step);
+		ExecReturn res = new ExecReturn();
+		res.addResult(jArray);
+		return res;
 	}
 
 }
