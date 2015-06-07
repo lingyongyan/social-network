@@ -10,7 +10,7 @@ public class GraphReaderData {
 	private Vector<Edge> edges = new Vector<Edge>();
 	private Vector<Node> nodes = new Vector<Node>();
 	private HashMap<Integer,Node> nodeMap = new HashMap<Integer,Node>();
-	private HashMap<Integer,Integer> idMap = new HashMap<Integer,Integer>();
+	private HashMap<String,Integer> idMap = new HashMap<String,Integer>();
 	private boolean type = false;
 	private int id = 0;
 	public GraphReaderData(){
@@ -29,18 +29,18 @@ public class GraphReaderData {
 		return type;
 	}
 	
-	public void addNode(int nodeID){
-		if(!idMap.containsKey(nodeID)){
-			idMap.put(nodeID, id);
-			nodeMap.put(id, new Node(id,String.valueOf(nodeID)));
+	public void addNode(String nodeName){
+		if(!idMap.containsKey(nodeName)){
+			idMap.put(nodeName, id);
+			nodeMap.put(id, new Node(id,nodeName));
 			id++;
-			nodes.add(getNode(nodeID));
+			nodes.add(getNode(nodeName));
 		}
 	}
 	
-	public Node getNode(int nodeID){
-		if(idMap.containsKey(nodeID)){
-			return nodeMap.get(idMap.get(nodeID));
+	public Node getNode(String nodeName){
+		if(idMap.containsKey(nodeName)){
+			return nodeMap.get(idMap.get(nodeName));
 		}else{
 			return null;
 		}

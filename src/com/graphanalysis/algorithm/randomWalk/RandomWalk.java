@@ -56,7 +56,7 @@ public class RandomWalk implements RandomWalkInterface {
 		this.gragh = graph;
 		if(this.gragh==null)
 			throw new NullPointerException("Graph must be not null.");
-		this.alpha = 0.1;
+		this.alpha = 0;
 		this.defaultStep = 10000;		
 		
 		TPM = new HashMap<Integer, HashMap<Integer,Double>>();

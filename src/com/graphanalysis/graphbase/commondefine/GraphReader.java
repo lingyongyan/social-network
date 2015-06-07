@@ -116,14 +116,16 @@ public class GraphReader{
 				if(tempStr.charAt(0)=='#')
 					continue;
 				String[] arr = tempStr.trim().split("\\s+");
-				int fromID = Integer.parseInt(arr[0]);
-				int toID = Integer.parseInt(arr[1]);
+				if(weighted && arr.length!=3 || !weighted && arr.length!=2)
+					return null;
+				String from = arr[0];
+				String to = arr[1];
 				double weight = 1;
 				if(weighted)//如果是有权图
 					weight = Double.parseDouble(arr[2]);
-				gData.addNode(fromID);
-				gData.addNode(toID);
-				Edge edge = new Edge(gData.getNode(fromID),gData.getNode(toID),weight);
+				gData.addNode(from);
+				gData.addNode(to);
+				Edge edge = new Edge(gData.getNode(from),gData.getNode(to),weight);
 				gData.addEdge(edge);
 			}
 			reader.close();

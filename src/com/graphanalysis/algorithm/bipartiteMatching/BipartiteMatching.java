@@ -59,7 +59,8 @@ public class BipartiteMatching implements BipartiteMatchingInterface {
 		if (graph.getType() != GraphType.UNDirectedGraph) {
 			return false;
 		}
-		if (IsBipartiteGraph.isBipartite(graph.getAdjMatrix()) == false) {
+		IsBipartiteGraph isBiGraph = new IsBipartiteGraph(graph.getAdjMatrix().length);
+		if (isBiGraph.isBipartite(graph.getAdjMatrix()) == false) {
 			return false;
 		}
 		HungaryAlgorithm hungary = new HungaryAlgorithm(size, size);
@@ -74,11 +75,18 @@ public class BipartiteMatching implements BipartiteMatchingInterface {
 				hungary.setWeight(e.getToID(), e.getFromID(), e.getWeight());
 		}
 		int[] result = hungary.getMatching();
-		for (int i = 0; i < result.length / 2; i++) {
+		
+/*		for (int i = 0; i < result.length / 2; i++) {
 			if (result[i] != -1) {
 				map.put(i, result[i]);
 			}
-		}
+			上述代码有误，建议改成一下形式（Yan）
+		}*/
+		for (int i = 0; i < result.length; i++) {
+			if (result[i] != -1 && isBiGraph.colored[i] == isBiGraph.RED) {
+				map.put(i, result[i]);
+			}
+	}
 		return true;
 	}
 
@@ -88,7 +96,7 @@ public class BipartiteMatching implements BipartiteMatchingInterface {
 		JSONArray jsedges = new JSONArray();
 		Map<Integer, Integer> result = new HashMap<Integer, Integer>();
 		if (this.matching(result) == true) {
-			for (Map.Entry entry : result.entrySet()) {
+			for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
 				JSONObject jsedge = new JSONObject();
 				try {
 					jsedge.put("source", entry.getKey()).put("target",
@@ -104,6 +112,9 @@ public class BipartiteMatching implements BipartiteMatchingInterface {
 		return jsedges;
 	}
 
+	/**
+	 * 实现顶层接口的方法
+	 * **/
 	@Override
 	public ExecReturn exec(ExecParameter args) {
 		// TODO 自动生成的方法存根

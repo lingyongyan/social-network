@@ -12,24 +12,23 @@ import java.util.Random;
  * @date 2015/6/6
  */
 public class IsBipartiteGraph {
-	// private int numberOfVertices;
-	// private Queue<Integer> queue;
-
+	 private int numberOfVertices;
+	 private Queue<Integer> queue;
+	 int[] colored;
 	public static final int NO_COLOR = 0;
 	public static final int RED = 1;
 	public static final int BLUE = 2;
+	public IsBipartiteGraph(int numberOfVertices)
+	 {
+	 this.numberOfVertices = numberOfVertices;
+	 queue = new LinkedList<Integer>();
+	 colored = new int[numberOfVertices];
+	 }
 
-	// public IsBipartiteGraph(int numberOfVertices)
-	// {
-	// this.numberOfVertices = numberOfVertices;
-	// queue = new LinkedList<Integer>();
-	// }
-
-	public static boolean isBipartite(double[][] adjMat) {
-		int numberOfVertices = adjMat.length;
+	public  boolean isBipartite(double[][] adjMat) {
+		//int numberOfVertices = adjMat.length;
 		int source = new Random().nextInt(numberOfVertices);
-		Queue<Integer> queue = new LinkedList<Integer>();
-		int[] colored = new int[numberOfVertices];
+		//Queue<Integer> queue = new LinkedList<Integer>();
 		for (int vertex = 0; vertex < numberOfVertices; vertex++) {
 			colored[vertex] = NO_COLOR;
 		}
@@ -52,6 +51,10 @@ public class IsBipartiteGraph {
 				}
 				neighbour++;
 			}
+		}
+		for(int i=0;i<numberOfVertices;i++){
+			if(colored[i]==NO_COLOR)
+				return false;
 		}
 		return true;
 	}
