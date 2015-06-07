@@ -37,6 +37,11 @@ public class Edge implements EdgeInterface{
 		return this.toNode;
 	}
 	
+	public void setFlow(double flow) {
+		// TODO 自动生成的方法存根
+		this.flow = flow;
+	}
+	
 	/**
 	 * @return fromID
 	 */

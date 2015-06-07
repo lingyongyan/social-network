@@ -1,0 +1,6 @@
+com.graphanalysis.algorithm.bfsANDdfs.BreadFirstSearch		BFS,bfs,BreadFirstSearch
+com.graphanalysis.algorithm.bfsANDdfs.DepthFirstSearch	DFS,dfs,DepthFirstSearch
+com.graphanalysis.algorithm.bipartiteMatching.BipartiteMatching		P2P,BipartiteMatching
+com.graphanalysis.algorithm.bridgedetection.BridgeDetection	BRIDGE,bridge,BRIDGEDETECTION,bridgedetection
+com.graphanalysis.algorithm.randomWalk.RandomWalk		RANDOM,RANDOMWALK
+com.graphanalysis.algorithm.primmst.PrimMST		PRIM,PRIMMST
