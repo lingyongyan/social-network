@@ -42,6 +42,7 @@ var crntDataSet = null;
                 // 只用渲染第一个数据集
                 crntDataSet = dataSets[0];
                 // 加载指定数据集，指定深度范围[startDepth, endDepth)
+                crntGroup = 0;
                 loadDataSet(crntDataSet, 0, 3);
         });
         

@@ -314,6 +314,11 @@ function Dijkstra() {
                                 }
                                 // 取回结果后，给结点注册OVER和OUT事件函数
                                 gNodes.on("mouseover", function (nodeMouseOver) {
+                                        d3.select(this).attr("class", "nodeHighlight")
+                                                .attr("r", function (nodeData) {
+                                                        var radius = Math.log(nodeData.group) + minRadius + 2;
+                                                        return radius > maxRadius ? maxRadius : radius;
+                                                });
                                         // 滑到自己身上不用响应
                                         if (nodeMouseOver.index == index0)
                                                 return;
@@ -327,6 +332,11 @@ function Dijkstra() {
                                 })
                                         // 注册划出函数
                                         .on("mouseout", function (nodeMouseOut) {
+                                                d3.select(this).attr("class", "node")
+                                                        .attr("r", function (nodeData) {
+                                                                var radius = Math.log(nodeData.group) + minRadius;
+                                                                return radius > maxRadius ? maxRadius : radius;
+                                                        });
                                                 // 滑出自己不用响应
                                                 if (nodeMouseOut.index == index0)
                                                         return;
@@ -499,10 +509,24 @@ function search4() {
         var theNode = gNodes.select(function (nodeData, i) {
                 return nodeData.name == value ? this : null;
         })
+
+        if (theNode.empty())
+                warning("没有找到您需要的信息！");
+
+
         theNode.attr("r", function (nodeData) {
                 var radius = Math.log(nodeData.group) + minRadius + 6;
                 return radius > maxRadius ? maxRadius : radius;
         }).attr("class", "nodeHighlight");
+
+
+
+        setTimeout(function () {
+                theNode.attr("r", function (nodeData) {
+                        var radius = Math.log(nodeData.group) + minRadius;
+                        return radius > maxRadius ? maxRadius : radius;
+                }).attr("class", "node");
+        }, tipsLastTime);
 
         $("#search4").val('请输入您想查找的信息');
 }

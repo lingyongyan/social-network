@@ -207,7 +207,7 @@ function paintGraph(graphData, status) {
         function dragstarted(d) {
                 d3.event.sourceEvent.stopPropagation();
                 //d3.select(this).classed("dragging", true);
-                d3.select(this).classed("fixed", d.fixed = true);
+                //d3.select(this).classed("fixed", d.fixed = !d.fixed);
         }
         function dragged(d) {
                 d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
@@ -215,12 +215,43 @@ function paintGraph(graphData, status) {
         }
         function dragended(d) {
                 //d3.select(this).classed("dragging", false);
+                d3.select(this).classed("fixed", d.fixed = !d.fixed);
         }       
-        function dblclick(d) {
+        function dblclick(nodeData) {
                 clearTimeout(clickTimeDelay);
                 console.log("dblclicked");
-                d3.select(this).classed("fixed", d.fixed = false);
+                //d3.select(this).classed("fixed", nodeData.fixed = false);
+                if (nodeData.group == crntGroup)
+                        return;
+                loadSelection(nodeData.group);
         }
+        function loadSelection(nodeGroup) {
+                console.log(nodeGroup);
+                if (!svg_g.empty())
+                        svg_g.remove();
+                //if (!gEdges.empty())
+                //        gEdges.remove();
+                //if (gNodes.empty())
+                //        gNodes.remove();
+                //if (!gEdgeTexts.empty())
+                //        gEdgeTexts.remove();
+                function loadDataSet(theDataSet, startDepth, endDepth) {
+                        // 初始化一些全局变量
+                        crntDataSet = theDataSet;
+
+                        // 分三块加载渲染，
+                        // 之后分别设置一个就绪变量，图区是必须的；
+                        // 以便各子功能可以调用
+
+                        // 一、读入用户数据集之图JSON文件并渲染
+                        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json", root: startDepth, children: endDepth }, paintGraph);
+                        // 三、读入用户数据集之邻接矩阵邻接链表JSON文件并渲染
+                        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json", root: startDepth, children: endDepth }, paintTable);
+
+                }
+                loadDataSet(crntDataSet, nodeGroup, nodeGroup + 3);
+        }
+
 
         gReady = true;
         success("图数据加载完毕！");
@@ -246,13 +277,6 @@ function resetNodes() {
                                                 var radius = Math.log(nodeData.group) + minRadius;
                                                 return radius > maxRadius ? maxRadius : radius;
                                         });
-                        })
-                        .on("click", function (nodeData) {
-                                d3.select(this).attr("class", "nodeHighlight")
-                                        .attr("r", function (nodeData) {
-                                                var radius = Math.log(nodeData.group) + minRadius + 2;
-                                                return radius > maxRadius ? maxRadius : radius;
-                                        });
                         });
 }
 // 重置边
@@ -265,3 +289,6 @@ function resetWeights() {
         if (gEdgeTexts)
                 gEdgeTexts.text(function (theText) { return theText.weight; });
 }
+
+var crntGroup = undefined;
+
