@@ -51,6 +51,10 @@ public class GraphServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request,response);
 	}
+	
+	public static String getLocation(){
+		return projectLocation;
+	}
 
 	public void init() throws ServletException { 
 	   super.init(); 
@@ -60,6 +64,7 @@ public class GraphServlet extends HttpServlet {
         log.info("开始监听!");
     	ParameterObject pObj = new ParameterObject(50,5);
     	fileRootPath = this.getServletContext().getRealPath("/");
+    	projectLocation = fileRootPath;
     	System.out.println(fileRootPath);
     	try {
     		objectInstance = PoolObjectFactory.getInstance();
@@ -79,4 +84,5 @@ public class GraphServlet extends HttpServlet {
 	private static String fileRootPath;
 	private static PoolObjectFactory objectInstance;
 	private static ClassNameFactory classInstance;
+	private static String projectLocation = "";
 }
