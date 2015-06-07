@@ -10,6 +10,10 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.graphanalysis.algorithm.dijkstra.DijkstraGraph;
 import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
@@ -108,7 +112,8 @@ public class FordFulkerson {
 		return (visited[dst] == true);
 	}
 
-	public FlowResult exec(String fileName, int src, int dst) {
+	public JSONArray exec(String fileName, int src, int dst) {
+		JSONArray result = new JSONArray();
 		// TODO Auto-generated method stub
 		Vector<Edge> edges = GraphReader.readFromFile(fileName, 1);
 		// System.out.println(edges.size());
@@ -166,6 +171,17 @@ public class FordFulkerson {
 				}
 				if (isFind == false) {
 					flow.add(new Pair(f, t, pathFlow));
+					JSONObject tmpJson = new JSONObject();
+					try {
+						tmpJson.putOpt("source", f);
+						tmpJson.putOpt("target", t);
+						tmpJson.putOpt("weight", pathFlow);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					result.put(tmpJson);
 				}
 			}
 
@@ -177,6 +193,6 @@ public class FordFulkerson {
 
 			maxFLow += pathFlow;
 		}
-		return new FlowResult(flow,maxFLow);
+		return result;
 	}
 }

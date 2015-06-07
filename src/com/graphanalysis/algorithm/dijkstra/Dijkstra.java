@@ -8,15 +8,42 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Node;
+import com.graphanalysis.graphbase.implement.Path;
 
 public class Dijkstra {
 
-	public ArrayList<Integer> exec(String fileName, int src, int dst) {
+	public JSONObject exec(String fileName, int startPoint) {
+		JSONObject jo = new JSONObject();
 		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
-		// System.out.println(edges.size());
+		Set<Integer> vSet = new HashSet<Integer>();
+		for (int i = 0; i < edges.size(); i++) {
+			vSet.add(edges.get(i).getFromID());
+			vSet.add(edges.get(i).getToID());
+		}
+		for (int i = 0; i < vSet.size(); i++) {
+			if (i != startPoint) {
+				int src = startPoint;
+				int dst = i;
+				Path path = exec(fileName, src, dst);
+				try {
+					jo.append(i+"", path);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return jo;
+	}
+
+	public Path exec(String fileName, int src, int dst) {
+		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
 		DijkstraGraph graph = new DijkstraGraph(edges);
 		HashMap<Integer, Double> dist = new HashMap<Integer, Double>();
 		HashMap<Integer, Integer> prev = new HashMap<Integer, Integer>();
@@ -68,22 +95,20 @@ public class Dijkstra {
 		}
 
 		// Print path
-		ArrayList<Integer> path = new ArrayList<Integer>();
+		Path path = new Path();
 		int tmp = dst;
+		int tmp1 = dst;
+		Vector<Edge> es = graph.getEdgeSet();
 		while (tmp != src) {
-			path.add(tmp);
-			tmp = prev.get(tmp);
+			tmp1 = prev.get(tmp);
+			// An edge from tmp1 to tmp
+			for (int k = 0; k < es.size(); k++) {
+				if (es.get(k).getFromID() == tmp1 && es.get(k).getToID() == tmp) {
+					path.addPath(es.get(k));
+				}
+			}
+			tmp = tmp1;
 		}
-
-		path.add(src);
-
-		ArrayList<Integer> ret = new ArrayList<Integer>();
-
-		for (int i = 0; i < path.size(); i++) {
-			ret.add(path.get(path.size() - i - 1));
-			System.out.println(path.get(path.size() - i - 1));
-		}
-
-		return ret;
+		return path;
 	}
 }
