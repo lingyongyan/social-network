@@ -11,11 +11,11 @@ import java.util.Vector;
 
 import org.json.JSONArray;
 
-import com.graphAnalysis.algorithm.implement.ExecParameter;
-import com.graphAnalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.NodeForDetection;
-import com.graphanalysis.graphBase.commondefine.GraphType;
+import com.graphanalysis.algorithm.implement.ExecParameter;
+import com.graphanalysis.algorithm.implement.ExecReturn;
+import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.GraphException;
 

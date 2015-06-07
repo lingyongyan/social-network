@@ -3,7 +3,7 @@
  * Author:Yan Lingyong
  * Description: Class used　to describe the type of a Edge
  * */
-package com.graphanalysis.graphBase.commondefine;
+package com.graphanalysis.graphbase.commondefine;
 
 public enum EdgeType {
 	undirected,directed,pathroute,multiedge;

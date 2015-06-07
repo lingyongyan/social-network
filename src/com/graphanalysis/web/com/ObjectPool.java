@@ -13,8 +13,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.graphanalysis.graphBase.commondefine.GraphReader;
-import com.graphanalysis.graphBase.commondefine.GraphReaderData;
+import com.graphanalysis.graphbase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.commondefine.GraphReaderData;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 

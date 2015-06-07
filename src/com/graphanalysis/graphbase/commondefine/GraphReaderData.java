@@ -1,4 +1,4 @@
-package com.graphanalysis.graphBase.commondefine;
+package com.graphanalysis.graphbase.commondefine;
 
 import java.util.HashMap;
 import java.util.Vector;

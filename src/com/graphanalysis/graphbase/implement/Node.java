@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
-import com.graphanalysis.graphBase.commondefine.NodeColor;
+import com.graphanalysis.graphbase.commondefine.NodeColor;
 import com.graphanalysis.graphbase.interfaces.NodeInterface;
 
 public class Node implements NodeInterface{

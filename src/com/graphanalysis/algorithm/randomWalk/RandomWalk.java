@@ -9,7 +9,7 @@ import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.graphanalysis.graphBase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;

@@ -11,7 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.graphanalysis.graphBase.commondefine.GraphType;
+import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Node;
 import com.graphanalysis.graphbase.interfaces.GraphInterface;

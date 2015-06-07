@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 
 import org.json.JSONException;
 
-import com.graphanalysis.graphBase.commondefine.GraphType;
+import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;

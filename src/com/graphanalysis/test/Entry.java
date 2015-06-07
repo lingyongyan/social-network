@@ -10,7 +10,7 @@ import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.BridgeDetection;
 import com.graphanalysis.algorithm.bridgedetection.BridgeDetectionInterface;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
-import com.graphanalysis.graphBase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 

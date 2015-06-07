@@ -1,4 +1,4 @@
-package com.graphAnalysis.algorithm.implement;
+package com.graphanalysis.algorithm.implement;
 
 import java.util.Vector;
 

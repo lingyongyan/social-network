@@ -1,4 +1,4 @@
-package com.graphanalysis.graphBase.commondefine;
+package com.graphanalysis.graphbase.commondefine;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -113,7 +113,9 @@ public class GraphReader{
 			reader = new BufferedReader(new FileReader(file));
 			String tempStr = null;
 			while((tempStr=reader.readLine())!=null){
-				String[] arr = tempStr.split(" ");
+				if(tempStr.charAt(0)=='#')
+					continue;
+				String[] arr = tempStr.trim().split("\\s+");
 				int fromID = Integer.parseInt(arr[0]);
 				int toID = Integer.parseInt(arr[1]);
 				double weight = 1;

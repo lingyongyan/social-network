@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import com.graphanalysis.algorithm.dijkstra.DijkstraGraph;
-import com.graphanalysis.graphBase.commondefine.GraphReader;
+import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 
 class Pair {

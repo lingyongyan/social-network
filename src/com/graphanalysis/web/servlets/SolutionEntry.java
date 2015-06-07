@@ -9,13 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.graphAnalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.bfsANDdfs.BFSImpl;
 import com.graphanalysis.algorithm.bfsANDdfs.BreadFirstSearch;
 import com.graphanalysis.algorithm.bfsANDdfs.DFSImpl;
 import com.graphanalysis.algorithm.bfsANDdfs.DepthFirstSearch;
 import com.graphanalysis.algorithm.bridgedetection.BridgeDetection;
 import com.graphanalysis.algorithm.bridgedetection.BridgeDetectionInterface;
+import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.algorithm.primmst.PrimMST;
 import com.graphanalysis.algorithm.primmst.PrimMSTImpl;
@@ -27,6 +27,7 @@ public class SolutionEntry {
 	public static void solve(String method, String[] args,HttpServletResponse response) {//处理函数入口
 		if(method ==null)
 			return;
+		response.setContentType("text/json; charset=UTF-8");
 		method = method.toUpperCase();
 		String dataSets = args[1];
 		String localFile = args[2];
@@ -84,6 +85,5 @@ public class SolutionEntry {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
-		response.setContentType("text/json; charset=UTF-8");
 	}
 }
