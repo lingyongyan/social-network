@@ -1,33 +1,53 @@
-﻿// 主图区是否就绪
+﻿// 单击和双击之间的延迟
+var constMaxClickTimeDelay = 400;//毫秒
+var clickTimeDelay = null; // 对应的计时器
+
+////////////////////////////////////////////////////////
+//                             主图区                                    //
+////////////////////////////////////////////////////////
+// 主图区是否就绪
 var gReady = false;
+var gWidth = undefined; //主图区宽高
+var gHeight = undefined;
 
 var gType = undefined; // 有向无向
 var gWeight = undefined; // 有权无权
 
-var force = null; // 主图区的力导向图布局
+var gNodes = null; // 结点集
+var minRadius = 10; //最小结点半径
+var maxRadius = 30; // 最大结点圆半径
+var color = d3.scale.category20(); // 颜色集
+
 var gEdges = null; // 边集
 var gEdgeTexts = null; // 权重集
-var gNodes = null; // 结点集
+var minWidth = 1.5; // 最小边宽
+var maxWidth = 4.5; // 最大边宽
 
-var color = d3.scale.category20(); // 颜色集
-var constMaxRadius = 25; // 最大结点圆半径
-
-var gWidth = undefined; //主图区宽高
-var gHeight = undefined;
+var force = null; // 主图区的力导向图布局
 
 var zoomScale = 1; //缩放系数
 var zoomTranslate = [0, 0]; // 缩放平移
-var constMaxZoomScale = 3;
+var constMaxZoomScale = 5; //最大缩放系数
+
+var tipsLastTime = 2500; // 提示存在事件
+
+function tips(msg, tColor) {
+        $('#tips').text(msg).addClass(tColor);
+        setTimeout(function () {
+                $('#tips').text("").removeClass(tColor);
+        }, tipsLastTime);
+}
+function success(msg) { tips(msg, "green"); }
+function info(msg) { tips(msg, "blue"); }
+function warning(msg) { tips(msg, "yellow"); }
+function danger(msg) { tips(msg, "red"); }
 // 画图
 function paintGraph(graphData, status) {
         if (status != "success") {
                 ///////////////////////////////////////////////////////
                 //                  提醒用户没有加载成功                      //
-                ///////////////////////////////////////////////////////                
-                $('#tips').text("加载用户数据集图数据失败！").addClass('red');
-                setTimeout(function () {
-                        $('#tips').text("").removeClass('red');
-                }, 3000);
+                ///////////////////////////////////////////////////////     
+                warning("加载用户数据集图数据失败！");
                 return console.log(status);
         }
 
@@ -46,16 +66,17 @@ function paintGraph(graphData, status) {
                 var arrowMarker = defs.append("marker")
                         .attr("id", "arrow")
                         .attr("markerUnits", "strokeWidth")
-                        .attr("markerWidth", "6")
-                        .attr("markerHeight", "6")
-                        .attr("viewBox", "0 0 12 12")
-                        .attr("refX", 20)
-                        .attr("refY", 6)
+                        .attr("markerWidth", "4")
+                        .attr("markerHeight", "4")
+                        .attr("viewBox", "0 0 4 4")
+                        .attr("refX", 8)
+                        .attr("refY", 2)
                         .attr("orient", "auto");
-                var arrow_path = "M0,0 L12,6 L0,12 L8,6 L0,0";
+                var arrow_path = "M0,0 L4,2 L0,4 L1,2";//"M1,0 L8,4 L1,8 L3,6 L0,6.5 L3,4 L0,2.5 L3,2 L1,0"
                 arrowMarker.append("path")
-                                        .attr("d", arrow_path)
-                                        .style("fill", "#999");
+                        .attr("d", arrow_path)
+                        .style("fill", "#aaa")
+                        .style("opacity", "1.0");
         }
 
 
@@ -65,12 +86,34 @@ function paintGraph(graphData, status) {
                 .nodes(graphData.nodes) // 转换结点
                 .links(graphData.edges) // 转换边
                 .size([gWidth, gHeight]) // 用于设定力学图的作用范围
-                .linkDistance(80) // 指定结点连接线的距离
-                .charge(-800)
-                .friction(0.5) // 值为0，粗糙。值为1，无摩擦。
-                .gravity(0.3) // 0无重力 1 最大重力
+                .linkDistance(60) // 指定结点连接线的距离80
+                .charge(-360) // -800
+                //.friction(0.5) // 值为0，粗糙。值为1，无摩擦。
+                //.gravity(0.3) // 0无重力 1 最大重力
                 //.theta(0.1)
-                .on("tick", tickBase)
+                .on("tick", function () {
+                        //限制结点的边界
+                        gNodes.forEach(function (nodeData) {
+                                nodeData.x = nodeData.x - maxRadius < 0 ? maxRadius : nodeData.x;
+                                nodeData.x = nodeData.x + maxRadius > gWidth ? gWidth - maxRadius : nodeData.x;
+                                nodeData.y = nodeData.y - maxRadius < 0 ? maxRadius : nodeData.y;
+                                nodeData.y = nodeData.y + maxRadius > gHeight ? gHeight - maxRadius : nodeData.y;
+                        });
+                        //更新连接线的位置
+                        gEdges.attr("x1", function (edgeData) { return edgeData.source.x; })
+                                .attr("y1", function (edgeData) { return edgeData.source.y; })
+                                .attr("x2", function (edgeData) { return edgeData.target.x; })
+                                .attr("y2", function (edgeData) { return edgeData.target.y; });
+
+                        gNodes.attr("cx", function (nodeData) { return nodeData.x; })
+                                .attr("cy", function (nodeData) { return nodeData.y; });
+
+                        if (gWeight) {
+                                //更新连接线上文字的位置
+                                gEdgeTexts.attr("x", function (weightData) { return (weightData.source.x + weightData.target.x) / 2; })
+                                        .attr("y", function (weightData) { return (weightData.source.y + weightData.target.y) / 2; });
+                        }
+                })
                 .start();
 
         // 定义交互事件
@@ -83,6 +126,9 @@ function paintGraph(graphData, status) {
                         .on("dragstart", dragstarted)
                         .on("drag", dragged)
                         .on("dragend", dragended);
+
+        //var fisheye = d3.fisheye.circular()
+        //        .radius(120);
 
 
 
@@ -107,11 +153,11 @@ function paintGraph(graphData, status) {
                 .data(graphData.edges)
                 .enter()
                 .append("line")
-                .style("stroke", "#ccc")
-                .style("stroke-width", function (d) {
-                        return Math.log(d.weight)+2;
-                })
-                .attr("class", "edge");
+                .style("stroke-width", function (edgeData) {
+                        var width2 = Math.log(edgeData.weight) + minWidth;
+                        return width2 > maxWidth ? maxWidth : width2;
+                });
+        resetEdges();
         if (gType){
                 gEdges.attr("marker-end", "url(#arrow)");
         }                
@@ -124,28 +170,29 @@ function paintGraph(graphData, status) {
                         .data(graphData.edges)
                         .enter()
                         .append("text")
-                        .attr("class", "linetext")
-                        .text(function (d) { return d.weight; });
+                        .attr("class", "linetext");
+                resetWeights();
         }
 
 
-        // 4 绘制结点        
+        // 4 绘制结点 
         gNodes = container.selectAll(".node")
                 .data(graphData.nodes)
                 .enter()
                 .append("circle")
-                .attr("class", "node")
-                .attr("r", function (d, i) {
-                        return Math.log(d.group)+10;
+                .attr("r", function (nodeData) {
+                        var radius = Math.log(nodeData.group) + minRadius;
+                        return radius > maxRadius ? maxRadius : radius;
                 })
-                .style("fill", function (d, i) {
-                        return color(d.group);
+                .style("fill", function (nodeData) {
+                        return color(nodeData.group);
                 })
                 .on("dblclick", dblclick)
                 .call(dragN);
         // 悬浮鼠标结点信息
+        resetNodes();
         gNodes.append("title")
-                .text(function (d) { return d.name+ " "+ d.group; });
+                .text(function (nodeData) { return nodeData.name+ " "+ nodeData.group; });
 
 
         // zoomed 函数，
@@ -153,88 +200,95 @@ function paintGraph(graphData, status) {
         // d3.event.translate 是平移的坐标值，
         // d3.event.scale 是缩放的值。
         function zoomed() {
-                //console.log(d3.event.translate);
                 zoomScale = d3.event.scale;
                 zoomTranslate = d3.event.translate;
-                //zoomTranslate[0] = d3.event.translate[0] < -gWidth * zoomScale * 0.1 ? -gWidth * zoomScale * 0.1 : d3.event.translate[0];
-                //zoomTranslate[0] = d3.event.translate[0] > gWidth * zoomScale * 0.1 ? gWidth * zoomScale * 0.1 : d3.event.translate[0];
-                //zoomTranslate[1] = d3.event.translate[1] < -gHeight * zoomScale * 0.1 ? -gHeight * zoomScale * 0.1 : d3.event.translate[1];
-                //zoomTranslate[1] = d3.event.translate[1] > gHeight * zoomScale * 0.1 ? gHeight * zoomScale * 0.1 : d3.event.translate[1];
                 container.attr("transform", "translate(" + zoomTranslate + ")scale(" + zoomScale + ")");
         }
-
         function dragstarted(d) {
-                //console.log("dragstarted");
                 d3.event.sourceEvent.stopPropagation();
                 //d3.select(this).classed("dragging", true);
-                //d3.select(this).classed("fixed", d.fixed = true);
+                //d3.select(this).classed("fixed", d.fixed = !d.fixed);
         }
-        //var newWidth = gWidth / zoomScale, newHeight = gHeight / zoomScale;
-        //var newx = undefined, newy = undefined;
-
         function dragged(d) {
-                //console.log("dragged");
-                //newWidth = gWidth / zoomScale; newHeight =gHeight / zoomScale; // 
-                //newx = d3.event.x; newy = d3.event.y;
-                //newx = newx < constMaxRadius ? constMaxRadius : newx;
-                //newx = newx > newWidth - constMaxRadius ? newWidth - constMaxRadius : newx;
-                //newx = newy < constMaxRadius ? constMaxRadius : newy;
-                //newy = newy > newHeight - constMaxRadius ? newHeight - constMaxRadius : newy;
-
-                
-                //console.log(d3.event.x);
-                //console.log(d3.event.y);
                 d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
                 //d3.select(this).attr("cx", d.x = newx).attr("cy", d.y = newy);
         }
-
         function dragended(d) {
-
-                //console.log("dragended");
                 //d3.select(this).classed("dragging", false);
-                //newWidth = gWidth / zoomScale; newHeight = gHeight / zoomScale; // 
-
-                //newx = newx < constMaxRadius ? constMaxRadius : newx;
-                //newx = newx > newWidth - constMaxRadius ? newWidth - constMaxRadius : newx;
-                //newy = newy < constMaxRadius ? constMaxRadius : newy;
-                //newy = newy > newHeight - constMaxRadius ? newHeight - constMaxRadius : newy;
-                //d3.select(this).attr("cx", d.x = newx).attr("cy", d.y = newy);
-                d3.select(this).classed("fixed", d.fixed = true);
+                d3.select(this).classed("fixed", d.fixed = !d.fixed);
+        }       
+        function dblclick(nodeData) {
+                clearTimeout(clickTimeDelay);
+                console.log("dblclicked");
+                //d3.select(this).classed("fixed", nodeData.fixed = false);
+                if (nodeData.group == crntGroup)
+                        return;
+                loadSelection(nodeData.group);
         }
+        function loadSelection(nodeGroup) {
+                console.log(nodeGroup);
+                if (!svg_g.empty())
+                        svg_g.remove();
+                //if (!gEdges.empty())
+                //        gEdges.remove();
+                //if (gNodes.empty())
+                //        gNodes.remove();
+                //if (!gEdgeTexts.empty())
+                //        gEdgeTexts.remove();
+                function loadDataSet(theDataSet, startDepth, endDepth) {
+                        // 初始化一些全局变量
+                        crntDataSet = theDataSet;
 
-       
-        function dblclick(d) {
-                //d3.event.sourceEvent.stopPropagation();
-                d3.select(this).classed("fixed", d.fixed = false);
-        }
-        function tickBase() {
-                //限制结点的边界
-                gNodes.forEach(function (d, i) {
-                        d.x = d.x - constMaxRadius < 0 ? constMaxRadius : d.x;
-                        d.x = d.x + constMaxRadius > gWidth ? gWidth - constMaxRadius : d.x;
-                        d.y = d.y - constMaxRadius < 0 ? constMaxRadius : d.y;
-                        d.y = d.y + constMaxRadius > gHeight ? gHeight - constMaxRadius : d.y;
-                });
-                //更新连接线的位置
-                gEdges.attr("x1", function (d) { return d.source.x; })
-                        .attr("y1", function (d) { return d.source.y; })
-                        .attr("x2", function (d) { return d.target.x; })
-                        .attr("y2", function (d) { return d.target.y; });
+                        // 分三块加载渲染，
+                        // 之后分别设置一个就绪变量，图区是必须的；
+                        // 以便各子功能可以调用
 
-                gNodes.attr("cx", function (d) { return d.x; })
-                        .attr("cy", function (d) { return d.y; });
+                        // 一、读入用户数据集之图JSON文件并渲染
+                        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json", root: startDepth, children: endDepth }, paintGraph);
+                        // 三、读入用户数据集之邻接矩阵邻接链表JSON文件并渲染
+                        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json", root: startDepth, children: endDepth }, paintTable);
 
-                if (gWeight) {
-                        //更新连接线上文字的位置
-                        gEdgeTexts.attr("x", function (d) { return (d.source.x + d.target.x) / 2; })
-                                .attr("y", function (d) { return (d.source.y + d.target.y) / 2; });
                 }
+                loadDataSet(crntDataSet, nodeGroup, nodeGroup + 3);
         }
+
 
         gReady = true;
-        $('#tips').text("图数据加载完毕！").addClass('green');
-        setTimeout(function () {
-                $('#tips').text("").removeClass('green');
-        }, 3000);
+        success("图数据加载完毕！");
+
 }
+// 重置结点
+function resetNodes() {
+        if (gNodes)
+                gNodes.attr("class", "node")
+                        .style("fill", function (nodeData) {
+                                return color(nodeData.group);
+                        })
+                        .on("mouseover", function (nodeData) {
+                                d3.select(this).attr("class", "nodeHighlight")
+                                .attr("r", function (nodeData) {
+                                        var radius = Math.log(nodeData.group) + minRadius+2;
+                                        return radius > maxRadius ? maxRadius : radius;
+                                });
+                        })
+                        .on("mouseout", function (nodeData) {
+                                d3.select(this).attr("class", "node")
+                                        .attr("r", function (nodeData) {
+                                                var radius = Math.log(nodeData.group) + minRadius;
+                                                return radius > maxRadius ? maxRadius : radius;
+                                        });
+                        });
+}
+// 重置边
+function resetEdges() {
+        if (gEdges)
+                gEdges.attr("class", "edge");
+}
+//重置权重
+function resetWeights() {
+        if (gEdgeTexts)
+                gEdgeTexts.text(function (theText) { return theText.weight; });
+}
+
+var crntGroup = undefined;
 

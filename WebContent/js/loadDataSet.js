@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////
 // 当前数据集
 var crntDataSet = null;
-var tipsLastTime = 2000;
+
 
 ///////////////////////////////////////////////////////
 //                           Graph页入口                           //
@@ -31,10 +31,7 @@ var tipsLastTime = 2000;
                         ///////////////////////////////////////////////////////
                         //                  提醒用户没有加载成功                      //
                         ///////////////////////////////////////////////////////
-                        $('#tips').text("加载用户数据集失败！").addClass('red');
-                        setTimeout(function () {
-                                $('#tips').text("").removeClass('red');
-                        }, tipsLastTime);
+                        danger("加载用户数据集失败！");
                         return console.log(status);
                 }
                 ///////////////////////////////////////////////////////
@@ -44,33 +41,28 @@ var tipsLastTime = 2000;
 
                 // 只用渲染第一个数据集
                 crntDataSet = dataSets[0];
-                loadDataSet(crntDataSet);
+                // 加载指定数据集，指定深度范围[startDepth, endDepth)
+                crntGroup = 0;
+                loadDataSet(crntDataSet, 0, 3);
         });
         
 })()
 
 
 // 加载指定数据集
-function loadDataSet(theDataSet) {
+function loadDataSet(theDataSet, startDepth, endDepth) {
         // 初始化一些全局变量
         crntDataSet = theDataSet;
-
 
         // 分三块加载渲染，
         // 之后分别设置一个就绪变量，图区是必须的；
         // 以便各子功能可以调用
 
         // 一、读入用户数据集之图JSON文件并渲染
-        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json" }, paintGraph);
+        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json", root: startDepth, children: endDepth }, paintGraph);
         // 二、读入用户数据集之度分布图JSON文件并渲染
-        $.get("../json/degree.json", { whichDataSet: theDataSet, filename: "degree.json" }, paintDegree);
+        $.get("../json/degree.json", { whichDataSet: theDataSet, filename: "degree.json",root: startDepth, children: endDepth }, paintDegree);
         // 三、读入用户数据集之邻接矩阵邻接链表JSON文件并渲染
-        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json" }, paintTable);
+        $.get("../json/graph.json", { whichDataSet: theDataSet, filename: "graph.json", root: startDepth, children: endDepth }, paintTable);
 
 }
-
-
-
-
-
-

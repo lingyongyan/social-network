@@ -2,46 +2,64 @@
         width: 100px;
         height: 50px;
 }
-
-
-
-
-/*.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-
+/*普通结点*/
 .node {
-  font: 12px sans-serif;
+        stroke: #fff;
+        stroke-width: 1.5px;
+}
+/*选中或者查找到的点*/
+.nodeHighlight {
+        stroke: #f55;
+        stroke-width: 5px;
 }
 
-.link {
-  fill: none;
-  stroke: #aaa;
-  stroke-width: 1.5px;
-}*/
+/*普通边*/
+.edge {
+        stroke: #999;
+        stroke-opacity: .6;
+}
+/*高两边*/
+.edgeHighlight {
+        stroke: #f55;
+        stroke-opacity: .8;
+}
 
-/*有向图1普通状态0*/
-/*.line10 {
-        stroke: #ccc;
-        stroke-width: 2px;
-        /*marker-end:url(#arrow);*/
-}*/
-/*有向图1高亮状态1*/
-/*.line11 {
-        stroke: #f33;
-        stroke-width: 2.5px;
-        /*marker-end:url('#arrow');*/
-}*/
-/*无向图0普通状态0*/
-/*.line00 {
-        stroke: #ccc;
-        stroke-width: 2px;
-}*/
-/*无向图0高亮状态1*/
-/*.line01 {
-        stroke: #f33;
-        stroke-width: 2.5px;
-}*/
+d3-tip {
+        line-height: 1;
+        color: black;
+}
 
+.edge0 {
+        stroke: #d62728;
+        stroke-opacity: .6;
+}
+
+.edge1 {
+        stroke: #ff7f0e;
+        stroke-opacity: .6;
+}
+
+.edge2 {
+        stroke: #bcbd22;
+        stroke-opacity: .6;
+}
+
+.edge3 {
+        stroke: #2ca02c;
+        stroke-opacity: .6;
+}
+
+.edge4 {
+        stroke: #17becf;
+        stroke-opacity: .6;
+}
+
+.edge5 {
+        stroke: #1f77b4;
+        stroke-opacity: .6;
+}
+
+.edge6 {
+        stroke: #9467bd;
+        stroke-opacity: .6;
+}
