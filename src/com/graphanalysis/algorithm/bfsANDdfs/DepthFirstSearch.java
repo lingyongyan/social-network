@@ -7,13 +7,14 @@ import org.json.JSONArray;
 
 import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.implement.ExecReturn;
+import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.GraphException;
 import com.graphanalysis.graphbase.implement.Path;
 
-public class DepthFirstSearch  implements DFSImpl{
+public class DepthFirstSearch  implements AlgorithmInterface{
     private boolean[] marked;    // marked[v] = is there an s-v path?
     private int count;           // number of vertices connected to s
     File file = new File("dfsResult");

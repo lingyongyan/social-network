@@ -15,11 +15,12 @@ import com.graphanalysis.algorithm.bridgedetection.Bridge;
 import com.graphanalysis.algorithm.bridgedetection.NodeForDetection;
 import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.implement.ExecReturn;
+import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.GraphException;
 
-public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetectionNodeState{
+public class BridgeDetection  implements BridgeDetectionNodeState,AlgorithmInterface{
 	public BridgeDetection(){
 	}
 	
@@ -78,7 +79,7 @@ public class BridgeDetection  implements BridgeDetectionInterface, BridgeDetecti
 					currentNode.setLastSonState(LASTNODEISNOTNEW);
 					currentNode.setAncestor(currentNode.getAncestor()<sonNode.getAncestor()?currentNode.getAncestor():sonNode.getAncestor());
 					if(sonNode.getAncestor()>currentNode.getDepth())
-						res.AddBridge(current, in);
+						res.addPath(current, in,1);
 					continue;
 				}
 				

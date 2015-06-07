@@ -2,6 +2,10 @@ package com.graphanalysis.algorithm.implement;
 
 import java.util.Vector;
 
+/**
+ * @author Yan	Lingyong
+ *用于执行方法后保存参数
+ */
 public class ExecReturn {
 	private Vector<Object> returns;
 	public ExecReturn(){

@@ -6,29 +6,17 @@
 package com.graphanalysis.web.servlets;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.graphanalysis.algorithm.bfsANDdfs.BFSImpl;
-import com.graphanalysis.algorithm.bfsANDdfs.BreadFirstSearch;
-import com.graphanalysis.algorithm.bfsANDdfs.DFSImpl;
-import com.graphanalysis.algorithm.bfsANDdfs.DepthFirstSearch;
-import com.graphanalysis.algorithm.bridgedetection.BridgeDetection;
-import com.graphanalysis.algorithm.bridgedetection.BridgeDetectionInterface;
 import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
-import com.graphanalysis.algorithm.primmst.PrimMST;
-import com.graphanalysis.algorithm.primmst.PrimMSTImpl;
-import com.graphanalysis.algorithm.randomWalk.RandomWalkGraph;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.GraphException;
-import com.graphanalysis.graphbase.interfaces.GraphInterface;
 import com.graphanalysis.web.com.ClassNameFactory;
 import com.graphanalysis.web.com.ObjectPool;
 import com.graphanalysis.web.com.PoolObjectFactory;
@@ -74,8 +62,7 @@ public class SolutionEntry {
 			case "P2P":
 				obParameters = new Object[1];
 				paras.clear();
-				GraphInterface graphInterfP2P  = myGraph;
-				obParameters[0] = graphInterfP2P;//P2P建立新对象的时候需要参数GraphInterface
+				obParameters[0] = myGraph;//P2P建立新对象的时候需要参数GraphInterface
 				break;
 			case "RANDOM":
 				obParameters = new Object[1];

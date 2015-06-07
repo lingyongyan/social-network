@@ -2,6 +2,10 @@ package com.graphanalysis.algorithm.implement;
 
 import java.util.Vector;
 
+/**
+ * @author Yan	Lingyong
+ *用于在执行方法时填入参数
+ */
 public class ExecParameter {
 	private Vector<Object> parameters;
 	public ExecParameter(){

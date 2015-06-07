@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import com.graphanalysis.graphbase.interfaces.PathInteface;
 
 public class Path implements PathInteface {
-	private Vector<Edge> path;
+	protected Vector<Edge> path;
 	
 	public Path(){
 		this.path = new Vector<Edge>();

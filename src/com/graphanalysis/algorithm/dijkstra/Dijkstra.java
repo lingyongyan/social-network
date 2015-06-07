@@ -20,7 +20,6 @@ import com.graphanalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
-import com.graphanalysis.graphbase.implement.Node;
 import com.graphanalysis.graphbase.implement.Path;
 
 public class Dijkstra implements AlgorithmInterface{

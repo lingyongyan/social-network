@@ -71,6 +71,7 @@ public class GraphReader{
 		return new Vector<Edge>();
 	}
 
+	/*从文件中读入图信息并创建*/
 	public static Graph readGraphFromJson(String fileName){
 		Graph gra = null;
 		try {
@@ -100,6 +101,7 @@ public class GraphReader{
 		return gra;
 	}
 	
+	/*从文件中读入图信息*/
 	public static GraphReaderData readGraphFromFile(String filePath,int gtype){
 		File file = new File(filePath);
 		BufferedReader reader = null;
