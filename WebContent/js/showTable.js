@@ -4,7 +4,7 @@ var tableData = undefined;
 // 邻接链表/矩阵图区宽高
 var tWidth = parseInt(d3.select("#table").attr("width"));
 var tHeight = parseInt(d3.select("#table").attr("height"));
-
+var visSvg = null;
 
 // 画表
 function paintTable(tData, status) {
@@ -36,13 +36,12 @@ var opts = {
 //opts.height = height;
 
 // SVG 
-var zoom = d3.behavior.zoom()
-                        .scaleExtent([1, 10])
-                        .on("zoom", zoomed);
+var tZoom = d3.behavior.zoom()
+                        .scaleExtent([1, constMaxZoomScale])
+                        .on("zoom", tZoomed);
 
-function zoomed() {
-        d3.select(this).attr("transform",
-			 "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+function tZoomed() {
+        /*d3.select(this)*/visSvg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 }
 
 //$("#divTable").ready(function () { drawLinklist(); });
@@ -57,6 +56,7 @@ function matrix() {
         }
 
         var svgdiv = document.getElementById("divTable");
+        svgdiv.style.overflow = "hidden";
         svgdiv.innerHTML = "";
         populate(tableData);
         /*$.get("../json/graph.json", */function populate(data) {
@@ -132,13 +132,23 @@ function matrix() {
 
 
                         var svg = d3.select("#divTable").append("svg")
-	              .attr("width", tWidth)
-	              .attr("height", tHeight);
+                                .attr("width", tWidth)
+                                .attr("height", tHeight);
 
-                        var visSvg = svg.append('g')
-                                           .call(zoom)
-                                           .attr('class', 'vis-group')
-                                               .attr('transform', 'translate(' + opts.margins.left + ',' + opts.margins.top + ')');
+                        var svg_g = svg.append('g')
+                                .attr('transform', 'translate(' + opts.margins.left + ',' + opts.margins.top + ')')
+                                .call(tZoom)
+                                .on("dblclick.zoom", null)
+                                .attr('class', 'vis-group');
+
+                        // 放置一个阻止事件冒泡的隐形矩形框
+                        var rect = svg_g.append("rect")
+                                .attr("width", tWidth)
+                                .attr("height", tHeight)
+                                .style("fill", "none")
+                                .style("pointer-events", "all");
+
+                        /*var*/ visSvg = svg_g.append("g");
 
                         function exports(selection) {
                                 selection.each(function (dataset) {
@@ -260,107 +270,6 @@ function matrix() {
 
 }
 
-//svg 画链表
-function list() {
-
-        var svgdiv = document.getElementById("divTable");
-        svgdiv.innerHTML = "";
-
-        d3.json("../json/city.json", function (error, root) {
-
-                var list_height = 20;
-                var link_width = 80;
-                var n = root.children.length;
-                var list_width = tWidth;
-                var margin_left = 20;
-
-                if (list_height * n < tHeight) {
-                        list_height = tHeight / (n + 2);
-                }
-
-                if (link_width * n < tWidth) {
-                        list_width = link_width * n;
-                        margin_left = (tWidth - list_width) / 2 - 25;
-                }
-
-                var cluster = d3.layout.cluster()
-             .size([list_height, list_width]);
-
-                var diagonal = d3.svg.diagonal()
-                     .projection(function (d) { return [d.y, d.x]; });
-
-                var svg = d3.select("#divTable").append("svg")
-            .attr("width", tWidth)
-            .attr("height", list_height)
-            .append("g")
-                .call(zoom)
-            .attr('transform', 'translate(' + margin_left + ', 0)');
-
-                for (var k = 0; k < n; k++) {
-                        var nodes = cluster.nodes(root.children[k]);
-                        var links = cluster.links(nodes);
-
-                        var svg = d3.select("#divTable").append("svg")
-                         .attr("width", tWidth)
-                         .attr("height", list_height)
-                         .append("g")
-                             .call(zoom)
-                         .attr('transform', 'translate(' + margin_left + ', 0)');
-
-                        svg.append("defs").selectAll("marker")
-                              .data(links)
-                              //.data(["suit", "licensing", "resolved"])
-                              .enter()
-                              .append("marker")
-                              .attr("id", 'arrowhead')
-                              .attr("viewBox", "0 -5 10 10")
-                              .attr("refX", 15)
-                              .attr("refY", -1.5)
-                              .attr("markerWidth", 6)
-                              .attr("markerHeight", 6)
-                              .attr("orient", "auto")
-                              .append("path")
-                              .attr("d", "M0,-5L10,0L0,5");
-
-
-                        var link = svg.selectAll(".link")
-                                 .data(links)
-                                 .enter()
-                                 .append("path")
-                                 .attr("class", "link")
-                                                     .attr("marker-end", "url(#arrowhead)")
-                                 .attr("d", diagonal);
-
-
-                        var node = svg.selectAll(".node")
-                         .data(nodes)
-                          .enter()
-                          .append("g")
-                          .attr("class", "node")
-                          .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
-                        ;
-
-                        node.append("circle")
-                          .attr("r", 7);
-
-                        node.append("text")
-                            .attr("dx", function (d) { return d.children ? 3 : 8; })
-                            .attr("dy", -5)
-                            .style("text-anchor", function (d) { return "start"; })
-                            .text(function (d) { return "    " + d.name + (typeof (d.weight) == "undefined" ? "" : " : " + d.weight); });
-
-                }
-
-                var svg = d3.select("#divTable").append("svg")
-            .attr("width", tWidth)
-            .attr("height", list_height)
-            .append("g")
-                .call(zoom)
-            .attr('transform', 'translate(' + margin_left + ', 0)');
-        });
-
-}
-
 //canvas 画链表
 function drawLinklist() {
         if (!tableData) {
@@ -374,6 +283,7 @@ function drawLinklist() {
         //var matrix = document.getElementById('matrix'); 
         //matrix.style.display = "none";
         var tablediv = document.getElementById("divTable");
+        tablediv.style.overflow = "auto";
         tablediv.innerHTML = "";
 
         var a_canvas = document.createElement("canvas");
@@ -391,33 +301,11 @@ function drawLinklist() {
         var node_width = cell_width - offset_x;
         var node_height = cell_height - offset_y;
 
-        /* var winWidth, winHeight;
-         if (window.innerWidth){
-       winWidth = window.innerWidth;
-         }   
- else if ((document.body) && (document.body.clientWidth)){
-       winWidth = document.body.clientWidth;
-         }
- // 获取窗口高度
- if (window.innerHeight){
-      winHeight = window.innerHeight;
-         }
- else if ((document.body) && (document.body.clientHeight)){
-      winHeight = document.body.clientHeight;
-         }
- // 通过深入 Document 内部对 body 进行检测，获取窗口大小
- if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
-     winHeight = document.documentElement.clientHeight;
-     winWidth = document.documentElement.clientWidth;
- }
-          a_canvas.width = winWidth;
-          a_canvas.height = winHeight;*/
-
         a_canvas.width = tWidth - 10;
         a_canvas.height = tHeight - 15;
 
         populate(tableData);
-        /*$.get("../json/graph.json", */function populate(data) {
+        function populate(data) {
 
                 //节点个数      
                 var n = data.nodes.length;
@@ -469,11 +357,12 @@ function drawLinklist() {
                                         dataset.value[links[i].target][links[i].source] = 1;
                                 }
                         }
+                }
 
-                        if (dataset.value[links[i].source][links[i].target] != 0) {
-                                len_link[links[i].source]++;
-                                if (isdirected == 0) {
-                                        len_link[links[i].target]++;
+                for (var i = 0; i < n; i++) {
+                        for (var j = 0; j < n; j++) {
+                                if (dataset.value[i][j] != 0) {
+                                        len_link[i]++;
                                 }
                         }
                 }

@@ -23,7 +23,11 @@ function paintGraph(graphData, status) {
         if (status != "success") {
                 ///////////////////////////////////////////////////////
                 //                  提醒用户没有加载成功                      //
-                ///////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////                
+                $('#tips').text("加载用户数据集图数据失败！").addClass('red');
+                setTimeout(function () {
+                        $('#tips').text("").removeClass('red');
+                }, 3000);
                 return console.log(status);
         }
 
@@ -51,7 +55,7 @@ function paintGraph(graphData, status) {
                 var arrow_path = "M0,0 L12,6 L0,12 L8,6 L0,0";
                 arrowMarker.append("path")
                                         .attr("d", arrow_path)
-                                        .style("fill", "#333");
+                                        .style("fill", "#999");
         }
 
 
@@ -228,5 +232,9 @@ function paintGraph(graphData, status) {
         }
 
         gReady = true;
+        $('#tips').text("图数据加载完毕！").addClass('green');
+        setTimeout(function () {
+                $('#tips').text("").removeClass('green');
+        }, 3000);
 }
 

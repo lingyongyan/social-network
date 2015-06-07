@@ -21,12 +21,16 @@
         <link href="../css/graph.css" rel="stylesheet">
 </head>
 <body>
-
+        
         <div class="container">
                 <!--导航栏-->
                 <div class="row" id="navbar10">
                         <div class="col-md-1">
-
+                                <div class="navbar-left">
+                                        <a href="#graphText" style="position:fixed; top:250px; left:auto"><img src="../img/graph.png" style="width:50px;height:50px" /></a>
+                                        <a href ="#degreeText"style="position:fixed; top:320px; left:auto"><img src="../img/degree.png" style="width:50px;height:50px" /></a>
+                                        <a href ="#tableText"style="position:fixed; top:390px; left:auto"><img src="../img/table.png" style="width:50px;height:50px" /></a>
+                                </div>
                         </div>
                         <div class="col-md-1">
                                 <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
@@ -66,13 +70,41 @@
 
                 <!--图画布区-->
                 <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-1">
+                        </div>
+                        <div id ="graphText"class="col-md-2">
                                 <h2>图</h2>
                         </div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-6">
-                                <input id="search4" type="text" class="input-medium search-query" style="height:35px;">
-                                <button type="submit" class="btn" onclick="search()" style="height:35px;">Search</button>
+                        <div class="col-md-4">
+                                <style>
+                                        h3 {
+                                                font-weight:700;
+                                        }
+                                        .red {
+                                                color: #e21;
+                                        }
+                                        .green {
+                                                color:#2c2;
+                                        }
+                                        .yellow {
+                                                color:#ff6a00;
+                                        }
+                                </style>
+                                <h3 id="tips"></h3>
+                        </div>
+                        <div class="col-md-4">
+                                <style>
+                                        input {
+                                                height:35px;
+                                                position:relative;
+                                                top:20px;
+                                                left:100px;
+                                        }
+                                </style>
+                                <input id="search4" type="text" name="search4" value="请输入您想查找的信息" onfocus="$(this).val('');"/>
+                                <input type="submit" class="btn" onclick="search4()" value="搜索" />
+                        </div>
+                        <div class="col-md-1">
                         </div>
                 </div>
                 <div class="row">
@@ -107,7 +139,7 @@
                 </div>
 
                 <!--出度入度图区-->
-                <div class="row">
+                <div class="row" id="degreeText">
                         <div class="page-header">
                                 <h2>度分布</h2>
                         </div>
@@ -121,7 +153,7 @@
                 </div>
 
                 <!--邻接表邻接矩阵区-->
-                <div class="row">
+                <div class="row" id="tableText">
                         <div class="page-header">
                                 <h2>邻接链表/矩阵</h2>
                         </div>
@@ -129,8 +161,8 @@
                 <!--邻居图区-->
                 <div class="row">
                         <div class="col-md-1"></div>
-                        <div id="divTable" class="col-md-10"style="border:5px solid #ccc;">
-                                <svg id="table" width=1000 height=600 viewBox="0 0 1000 600" >
+                        <div id="divTable" class="col-md-10" style="width: 1000px; height: 600px; border:5px solid #ccc;padding:0;">
+                                <svg id="table" width=1000 height=600 viewBox="0 0 1000 600" style="position:initial;z-index:auto">
                                 </svg>
                         </div>
                         <div class="col-md-1"></div>
@@ -149,6 +181,7 @@
                         <div class="col-md-4"></div>
                 </div>
         </div>
+
 
         <footer class="bs-docs-footer" role="contentinfo">
                 <div class="container">
