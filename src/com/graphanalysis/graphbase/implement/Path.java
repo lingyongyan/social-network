@@ -26,6 +26,10 @@ public class Path implements PathInteface {
 		}
 	}
 	
+	public void addPath(int from,int to,int weight){
+		this.path.add(new Edge(from,to,weight));
+	}
+	
 	@Override
 	public Vector<Edge> getPath() {
 		return this.path;

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -14,10 +15,9 @@ import org.json.JSONObject;
 
 import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.implement.ExecReturn;
-import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;
-import com.graphanalysis.graphbase.interfaces.GraphInterface;
+import com.graphanalysis.graphbase.implement.Edge;
 
 /**
  * Random walk Algorithm
@@ -47,20 +47,20 @@ public class RandomWalk implements RandomWalkInterface {
 	
 	HashMap<Integer, RandomSelect<Integer>> randomList;
 	
-	private GraphInterface gragh; 
+	//private GraphInterface gragh; 
 	
 	//private double[][] adjMatrix;
 	
 	//@SuppressWarnings("unchecked")
-	public RandomWalk(RandomWalkGraph graph) {
-		this.gragh = graph;
-		if(this.gragh==null)
+	public RandomWalk(Graph graph) {
+		//this.gragh = graph;
+		if(graph==null)
 			throw new NullPointerException("Graph must be not null.");
 		this.alpha = 0;
 		this.defaultStep = 10000;		
 		
 		TPM = new HashMap<Integer, HashMap<Integer,Double>>();
-		this.computeTPM();
+		this.computeTPM(graph);
 
 		this.seed = new RandomSelect<Integer>( new ArrayList<Integer>( TPM.keySet() ) ).next();
 		
@@ -177,17 +177,28 @@ public class RandomWalk implements RandomWalkInterface {
 	 * TPM[i][j] = ( weight[i][j]/Sum(weight of edge adjacent to i) ) * (1-alpha) + this.alpha/n
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
-	private void computeTPM() {
+	//@SuppressWarnings("unchecked")
+	private void computeTPM(Graph graph) {
 		List<Integer> nodeList = new ArrayList<Integer>();
-		for(Node node:this.gragh.getNodeSet()) {
+		for(Node node:graph.getNodeSet()) {
 			nodeList.add(node.getID());
 		}
 		
-		Map<Integer, Map<Integer, Double>> adj = ((RandomWalkGraph) this.gragh).getWeightAdjList(); 
+		Map<Integer,Map<Integer, Double>> adj = new HashMap<Integer, Map<Integer, Double>>();//((RandomWalkGraph) this.gragh).getWeightAdjList(); 
 		Map<Integer, Double> tmpmap = new HashMap<Integer, Double>();
+		//Iterator<Integer,Vector<Edges>> adjEdges = tgraph.getAdjEdgeList(nodeID)
+		//for()
+		
 		for(int k : nodeList) {
 			tmpmap.put(k, 0.0);
+			if(!adj.containsKey(k)){
+				Vector<Edge> edges = graph.getAdjEdgeList(k);
+				HashMap<Integer, Double> maps = new HashMap<Integer, Double>();
+				for(int i=0;i<edges.size();i++){
+					maps.put(edges.get(i).getToID(), edges.get(i).getWeight());
+				}
+				adj.put(k, maps);
+			}
 		}
 		for(int k : nodeList) {
 			if(!adj.containsKey(k)) {

@@ -4,111 +4,118 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.graphanalysis.graphbase.commondefine.GraphReader;
+import com.graphanalysis.algorithm.implement.ExecParameter;
+import com.graphanalysis.algorithm.implement.ExecReturn;
+import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;
 import com.graphanalysis.graphbase.implement.Path;
 
-public class Dijkstra {
+public class Dijkstra implements AlgorithmInterface{
+	private class Results{
+		public double[] distTo;
+		public int[] edgeTo;
+		public boolean state = false;
+	}
+	private Results result = new Results();
 
-	public JSONObject exec(String fileName, int startPoint) {
-		JSONObject jo = new JSONObject();
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
-		Set<Integer> vSet = new HashSet<Integer>();
-		for (int i = 0; i < edges.size(); i++) {
-			vSet.add(edges.get(i).getFromID());
-			vSet.add(edges.get(i).getToID());
-		}
-		for (int i = 0; i < vSet.size(); i++) {
+	public JSONObject exec(Graph graph, int startPoint) {
+		JSONObject jObj = new JSONObject();
+		if(!this.result.state)
+			bfs(graph, startPoint);
+
+		for (int i = 0; i < graph.getNodeNum(); i++) {
 			if (i != startPoint) {
-				int src = startPoint;
-				int dst = i;
-				Path path = exec(fileName, src, dst);
 				try {
-					jo.append(i+"", path);
+					jObj.put(String.valueOf(i), exec(graph, startPoint, i));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
-		return jo;
+		return jObj;
+	}
+	/**
+	 * 修改说明：Dijkstra算法用bfs的方式进行遍历，然后不断更新节点的信息，执行完后得到的就是各点的最短路径长度
+	 * 而在中途记录下的到达该点途径的上一个节点（edgeTo保存）就是最短路径中到达该点经过的最后一个节点
+	 * 所以只需要执行一次算法即可
+	 * **/
+	public void bfs(Graph G, int s) {
+		int nodeNum =  G.getNodeNum();
+		result.distTo = new double[nodeNum];
+		result.edgeTo = new int[nodeNum];
+		Queue<Integer> q = new LinkedList<Integer>();
+		for (int v = 0; v < G.getNodeNum(); v++) {
+			result.distTo[v] = Double.MAX_VALUE;
+			result.edgeTo[v] = -1;
+		}
+		result.distTo[s] = 0;
+
+		q.offer(s);
+		while (!q.isEmpty()) {
+			int v = q.poll();
+			//Iterator<Pair> it = G.getWeiAdjList().get(v).iterator();
+			Iterator<Edge> it = G.getAdjEdgeList(v).iterator();
+			while(it.hasNext()){
+				Edge edge = it.next();
+				int w = edge.getToID();
+				if (result.distTo[v] + edge.getWeight()< result.distTo[w]) {
+					result.edgeTo[w] = v;
+					result. distTo[w] = result.distTo[v] + edge.getWeight();
+					q.offer(w);
+				}
+			}
+		}
+		result.state = true;
 	}
 
-	public Path exec(String fileName, int src, int dst) {
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, 2);
-		DijkstraGraph graph = new DijkstraGraph(edges);
-		HashMap<Integer, Double> dist = new HashMap<Integer, Double>();
-		HashMap<Integer, Integer> prev = new HashMap<Integer, Integer>();
 
-		Vector<Node> nodes = graph.getNodeSet();
-
-		Iterator iter = nodes.iterator();
-		while (iter.hasNext()) {
-			Node node = (Node) iter.next();
-			dist.put(node.getID(), (double) 9999999);
-			prev.put(node.getID(), 9999999);
-		}
-
-		dist.put(src, (double) 0);
-		Set<Integer> vSet = new HashSet<Integer>();
-
-		while (true) {
-			iter = dist.entrySet().iterator();
-			double minVal = 99999999;
-			int keyIdx = -1;
-			while (iter.hasNext()) {
-				Map.Entry entry = (Map.Entry) iter.next();
-				Integer key = (Integer) entry.getKey();
-				double val = (double) entry.getValue();
-				if (val < minVal) {
-					minVal = val;
-					keyIdx = key;
-				}
-			}
-			// System.out.println(minVal);
-			if (keyIdx == dst) {
-				break;
-			}
-
-			vSet.add(keyIdx);
-
-			double du = minVal;
-
-			dist.remove(keyIdx);
-
-			for (int i = 0; i < graph.getWeiAdjList().get(keyIdx).size(); i++) {
-				int v = graph.getWeiAdjList().get(keyIdx).get(i).getDst();
-				double mtr = graph.getWeiAdjList().get(keyIdx).get(i).getDist();
-				if (!vSet.contains(v) && dist.get(v) > du + mtr) {
-					dist.put(v, du + mtr);
-					prev.put(v, keyIdx);
-				}
-			}
-		}
-
-		// Print path
+	/**
+	 * 直接从保存的路径长度以及路径信息恢复路径
+	 * **/
+	private JSONArray exec(Graph G,int src, int dst){
+		if(!result.state)
+			this.bfs(G,src);
 		Path path = new Path();
-		int tmp = dst;
-		int tmp1 = dst;
-		Vector<Edge> es = graph.getEdgeSet();
-		while (tmp != src) {
-			tmp1 = prev.get(tmp);
-			// An edge from tmp1 to tmp
-			for (int k = 0; k < es.size(); k++) {
-				if (es.get(k).getFromID() == tmp1 && es.get(k).getToID() == tmp) {
-					path.addPath(es.get(k));
-				}
-			}
-			tmp = tmp1;
+		int v = dst;
+		int u = result.edgeTo[v];
+		Vector<Edge> res = new Vector<Edge>();
+		while(v!=src){
+			if(u==-1)
+				return path.packetToJson();
+			res.add(new Edge(u,v,G.getAdjMatrix()[u][v]));
+			v = u;
+			u = result.edgeTo[u];
 		}
-		return path;
+		for(int i=res.size()-1;i>=0;i--){
+			path.addPath(res.get(i));
+		}
+		return path.packetToJson();
+	}
+
+	@Override
+	public ExecReturn exec(ExecParameter args) {
+		// TODO 自动生成的方法存根
+		if(args.size()!=2 || args.get(0).getClass()!=Graph.class || args.get(1).getClass()!=Integer.class)
+			return null;
+		Graph myGraph =  ((Graph) args.get(0));
+		int startNode = (int) args.get(1);
+		JSONObject jObject = this.exec(myGraph,startNode);
+		ExecReturn res = new ExecReturn();
+		res.addResult(jObject);
+		return res;
 	}
 }

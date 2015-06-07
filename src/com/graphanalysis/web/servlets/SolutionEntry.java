@@ -81,13 +81,26 @@ public class SolutionEntry {
 				obParameters = new Object[1];
 				paras.clear();
 				
-				GraphInterface graphInterf = new RandomWalkGraph(myGraph.getEdgeSet());
-				obParameters[0] = graphInterf;//Randomwalk建立新对象的时候需要参数GraphInterface
+				//GraphInterface graphInterf = new RandomWalkGraph(myGraph.getEdgeSet());
+				obParameters[0] = myGraph;//Randomwalk建立新对象的时候需要参数GraphInterface
 				int steps =5;
 				if(args.length>4)
 					steps= Integer.valueOf(args[4]);
 				paras.addParameter(Integer.valueOf(id));//Randomwalk需要一个起点
 				paras.addParameter(Integer.valueOf(steps));//Randomwalk执行时需要参数:执行步数(steps)
+				break;
+			case "DIJKSTRA":
+				obParameters = new Object[0];
+				paras.addParameter(Integer.valueOf(id));
+				break;
+			case	"FORDFULKERSON":
+			case "MAXFLOW":
+				obParameters = new Object[0];
+				paras.addParameter(Integer.valueOf(id));
+				int endID =0;
+				if(args.length>4)
+					endID= Integer.valueOf(args[4]);
+				paras.addParameter(Integer.valueOf(endID));
 				break;
 /*
  * 

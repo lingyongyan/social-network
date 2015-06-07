@@ -4,3 +4,5 @@ com.graphanalysis.algorithm.bipartiteMatching.BipartiteMatching		P2P,BipartiteMa
 com.graphanalysis.algorithm.bridgedetection.BridgeDetection	BRIDGE,bridge,BRIDGEDETECTION,bridgedetection
 com.graphanalysis.algorithm.randomWalk.RandomWalk		RANDOM,RANDOMWALK
 com.graphanalysis.algorithm.primmst.PrimMST		PRIM,PRIMMST
+com.graphanalysis.algorithm.dijkstra.Dijkstra		Dijkstra,DIJKSTRA,dijkstra
+com.graphanalysis.algorithm.maxflow.FordFulkerson		FordFulkerson,FORDFULKERSON,fordfulkerson,maxFlow,MAXFLOW,maxflow

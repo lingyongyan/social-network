@@ -2,10 +2,7 @@ package com.graphanalysis.algorithm.maxflow;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Vector;
@@ -14,9 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.graphanalysis.algorithm.dijkstra.DijkstraGraph;
-import com.graphanalysis.graphbase.commondefine.GraphReader;
-import com.graphanalysis.graphbase.implement.Edge;
+import com.graphanalysis.algorithm.implement.ExecParameter;
+import com.graphanalysis.algorithm.implement.ExecReturn;
+import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
+import com.graphanalysis.graphbase.implement.Graph;
 
 class Pair {
 	public Pair(int src, int dst, double flow) {
@@ -83,11 +81,14 @@ class FlowResult {
 	}
 }
 
-public class FordFulkerson {
+public class FordFulkerson implements AlgorithmInterface{
 
-	double[][] graph = null;
-	double[][] rGraph = null;
+	private double[][] graph = null;
+	private double[][] rGraph = null;
 	ArrayList<Pair> flow = new ArrayList<Pair>();
+	
+	public FordFulkerson(){
+	}
 
 	private boolean bfs(double[][] G, int src, int dst, int[] parent) {
 		boolean[] visited = new boolean[G.length];
@@ -95,11 +96,11 @@ public class FordFulkerson {
 		q.add(src);
 		visited[src] = true;
 		parent[src] = -1;
-
+		for(int i=0;i<parent.length;i++)
+			parent[i] = -1;
 		while (q.size() != 0) {
 			int u = q.peek();
 			q.poll();
-
 			for (int v = 0; v < G.length; v++) {
 				if (visited[v] == false && rGraph[u][v] > 0) {
 					q.add(v);
@@ -112,43 +113,25 @@ public class FordFulkerson {
 		return (visited[dst] == true);
 	}
 
-	public JSONArray exec(String fileName, int src, int dst) {
+	public JSONArray exec(Graph tGraph, int src, int dst) {
 		JSONArray result = new JSONArray();
 		// TODO Auto-generated method stub
-		Vector<Edge> edges = GraphReader.readFromFile(fileName, 1);
-		// System.out.println(edges.size());
-		DijkstraGraph g = new DijkstraGraph(edges);
-		Set<Integer> vSet = new HashSet<Integer>();
-		int maxId = -1000;
-		for (int i = 0; i < edges.size(); i++) {
-			vSet.add(edges.get(i).getFromID());
-			vSet.add(edges.get(i).getToID());
-			if (edges.get(i).getFromID() > maxId) {
-				maxId = edges.get(i).getFromID();
+		int len = tGraph.getAdjMatrix().length;
+		graph = new double[len][len];
+		rGraph = new double[len][len];
+		for (int i = 0; i < len; i++) {
+			for(int j=0;j<len;j++){
+			graph[i][j] = tGraph.getAdjMatrix()[i][j];
+			rGraph[i][j] = tGraph.getAdjMatrix()[i][j];
 			}
-			if (edges.get(i).getToID() > maxId) {
-				maxId = edges.get(i).getToID();
-			}
-		}
-		graph = new double[maxId + 1][maxId + 1];
-		rGraph = new double[maxId + 1][maxId + 1];
-
-		for (int i = 0; i < edges.size(); i++) {
-			int from = edges.get(i).getFromID();
-			int to = edges.get(i).getToID();
-			double dist = edges.get(i).getWeight();
-			graph[from][to] = dist;
-			rGraph[from][to] = dist;
 		}
 
 		int u, v;
-
 		int[] parent = new int[graph.length];
-
 		int maxFLow = 0;
 		while (bfs(rGraph, src, dst, parent)) {
 
-			double pathFlow = 9999999;
+			double pathFlow = Double.MAX_VALUE;
 			ArrayList<Integer> from = new ArrayList<Integer>();
 			ArrayList<Integer> to = new ArrayList<Integer>();
 			for (v = dst; v != src; v = parent[v]) {
@@ -194,5 +177,19 @@ public class FordFulkerson {
 			maxFLow += pathFlow;
 		}
 		return result;
+	}
+
+	@Override
+	public ExecReturn exec(ExecParameter args) {
+		// TODO 自动生成的方法存根
+		if(args.size()!=3 || args.get(0).getClass()!=Graph.class || args.get(1).getClass()!=Integer.class || args.get(2).getClass()!=Integer.class)
+			return null;
+		Graph myGraph =  ((Graph) args.get(0));
+		int startNode = (int) args.get(1);
+		int endNode = (int) args.get(2);
+		JSONArray jArray = this.exec(myGraph,startNode,endNode);
+		ExecReturn res = new ExecReturn();
+		res.addResult(jArray);
+		return res;
 	}
 }
