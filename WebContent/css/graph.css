@@ -3,20 +3,26 @@
         height: 50px;
 }
 /*普通结点*/
-.node {
+.node{
         stroke: #fff;
-        stroke-width: 1.5px;
+        stroke-width: 1.5px;        
 }
 /*选中或者查找到的点*/
 .nodeHighlight {
         stroke: #f55;
         stroke-width: 5px;
 }
-
+.node:hover {
+        stroke: #f55;
+        stroke-width: 5px;
+}
 /*普通边*/
 .edge {
         stroke: #999;
-        stroke-opacity: .6;
+        stroke-opacity: .5;
+}
+.edge:hover {
+        stroke-opacity: .8;
 }
 /*高两边*/
 .edgeHighlight {

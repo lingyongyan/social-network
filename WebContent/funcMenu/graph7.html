@@ -15,21 +15,20 @@
         <!--[if lt IE 9]>
           <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->      
-
+        <![endif]-->
         <!--自定义JavaScript-->
         <link href="../css/graph.css" rel="stylesheet">
 </head>
 <body>
-        
+
         <div class="container">
                 <!--导航栏-->
                 <div class="row" id="navbar10">
                         <div class="col-md-1">
                                 <div class="navbar-left">
                                         <a href="#graphText" style="position:fixed; top:250px; left:auto"><img src="../img/graph.png" style="width:50px;height:50px" /></a>
-                                        <a href ="#degreeText"style="position:fixed; top:320px; left:auto"><img src="../img/degree.png" style="width:50px;height:50px" /></a>
-                                        <a href ="#tableText"style="position:fixed; top:390px; left:auto"><img src="../img/table.png" style="width:50px;height:50px" /></a>
+                                        <a href="#degreeText" style="position:fixed; top:320px; left:auto"><img src="../img/degree.png" style="width:50px;height:50px" /></a>
+                                        <a href="#tableText" style="position:fixed; top:390px; left:auto"><img src="../img/table.png" style="width:50px;height:50px" /></a>
                                 </div>
                         </div>
                         <div class="col-md-1">
@@ -42,7 +41,7 @@
                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph.html"; })()'>图秀</button>
                         </div>
                         <div class="col-md-1">
-                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph7.html"; })()'>网络测量<!--Network<br />Measures--></button>
+                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络测量<!--Network<br />Measures--></button>
                         </div>
                         <div class="col-md-1">
                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络模型<!--Network<br />Models--></button>
@@ -68,29 +67,60 @@
 
                 </div>
 
+                <!--文件选择选项卡-->
+                <div class="row">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-4">
+                                <style>
+                                        #files {
+                                                /*width: 650px;*/
+                                                float: none;
+                                                list-style: none;
+                                                position: relative;
+                                                margin: 10px 0 0 0;
+                                                text-align: left;
+                                        }
+
+                                                #files li {
+                                                        float: left;
+                                                        display: block;
+                                                }
+                                </style>
+                                <ul id="files">
+                                        <li class="active"><a href="#">userData0</a><a style="background-image:url('../img/logos.png');background-size:auto"></a></li>
+                                        <li>userData1</li>
+                                </ul>
+                        </div>
+                </div>
+                <hr />
                 <!--图画布区-->
                 <div class="row">
                         <div class="col-md-1">
                         </div>
-                        <div id ="graphText"class="col-md-2">
+                        <div id="graphText" class="col-md-2">
                                 <h2>图</h2>
                         </div>
                         <div class="col-md-4">
                                 <style>
                                         h3 {
-                                                font-weight:700;
+                                                font-weight: 700;
                                         }
+
                                         .red {
                                                 color: #d9534f;
                                         }
+
                                         .green {
-                                                color:#5cb85c;
+                                                color: #5cb85c;
                                         }
+
                                         .yellow {
-                                                color:#f0ad4e;
+                                                color: #f0ad4e;
                                         }
+
                                         .blue {
-                                                color:#5bc0de;
+                                                color: #5bc0de;
                                         }
                                 </style>
                                 <h3 id="tips"></h3>
@@ -98,13 +128,13 @@
                         <div class="col-md-4">
                                 <style>
                                         input {
-                                                height:35px;
-                                                position:relative;
-                                                top:20px;
-                                                left:100px;
+                                                height: 35px;
+                                                position: relative;
+                                                top: 20px;
+                                                left: 100px;
                                         }
                                 </style>
-                                <input id="search4" type="text" name="search4" value="请输入您想查找的信息" onfocus="$(this).val('');"/>
+                                <input id="search4" type="text" name="search4" value="请输入您想查找的信息" onfocus="$(this).val('');" />
                                 <input type="submit" class="btn" onclick="search4()" value="搜索" />
                         </div>
                         <div class="col-md-1">
@@ -113,7 +143,7 @@
                 <div class="row">
                         <div class="col-md-1">
                         </div>
-                        <div class="col-md-10">                                
+                        <div class="col-md-10">
                                 <svg id="graph" width=1000 height=600 viewBox="0 0 1000 600" style="border:5px solid #ccc;">
                                 </svg>
                         </div>
@@ -141,11 +171,14 @@
                         <div class="col-md-2"></div>
                 </div>
 
-                <!--出度入度图区-->
+                <!--出度入度图区--><hr />
                 <div class="row" id="degreeText">
-                        <div class="page-header">
+                        <div class="col-md-1">
+                        </div>
+                        <div id="graphText" class="col-md-2">
                                 <h2>度分布</h2>
                         </div>
+
                 </div>
                 <div class="row">
                         <div class="col-md-1"></div>
@@ -154,10 +187,12 @@
                         </div>
                         <div class="col-md-1"></div>
                 </div>
-
+                <hr />
                 <!--邻接表邻接矩阵区-->
                 <div class="row" id="tableText">
-                        <div class="page-header">
+                        <div class="col-md-1">
+                        </div>
+                        <div id="graphText" class="col-md-4">
                                 <h2>邻接链表/矩阵</h2>
                         </div>
                 </div>
@@ -188,6 +223,7 @@
 
         <footer class="bs-docs-footer" role="contentinfo">
                 <div class="container">
+                        <hr />
                         <div class="row">
                                 <div class="col-md-12">
                                         <h2 class="text-left">出品人：</h2>
@@ -200,7 +236,7 @@
                         </div>
                 </div>
         </footer>
-        
+
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="../js/jquery-2.1.4.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -209,13 +245,15 @@
         <script src="../js/d3.min.js" charset="utf-8"></script>
         <!--<script src="../js/fisheye.js"></script>-->
         <!--自定义JavaScript-->
-        <script src="../js/loadDataSet.js"></script><!--加载数据集-->
 
-        <script src="../js/showGraph.js"></script><!--主图区绘制-->
-        <script src="../js/graph8.js"></script><!--8个图算法功能函数-->
+
+        <script src="../js/showGraph7.js"></script><!--主图区绘制-->
+        <script src="../js/graph87.js"></script><!--8个图算法功能函数-->
         <script src="../js/showDegree.js"></script>  <!--度分布-->
-        <script src="../js/showTable.js"> </script>  <!--表和矩阵-->        
-        
-        <script src="../js/main.js"></script><!--graph页入口-->
+        <script src="../js/showTable.js"> </script>  <!--表和矩阵-->
+
+        <script src="../js/loadDataSet7.js"></script><!--加载数据集-->
+        <script src="../js/main7.js"></script><!--graph页入口-->
+
 </body>
 </html>
