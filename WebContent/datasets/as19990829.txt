@@ -1,7 +1,6 @@
-# Undirected graph (each pair of nodes is saved twice):as19990829.txt
-# Autonomous systems (from the BGP logs) - 08 29 1999 
-# Nodes:103	Edges: 243
-# FromNodeId	ToNodeId
+#graphname:as1990829.txt
+#type:false
+#weight:false
 1	701
 1	1673
 1	1800

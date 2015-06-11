@@ -1,3 +1,6 @@
+#graphname:weightedGraph.txt
+#type:false
+#weight:true
 0 14 2
 1 0 1
 1 2 6

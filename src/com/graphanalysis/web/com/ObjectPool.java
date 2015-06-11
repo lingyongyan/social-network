@@ -7,11 +7,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.commondefine.GraphReaderData;
@@ -29,6 +34,7 @@ public class ObjectPool {
 	private int currentNum = 0; // 该对象池当前已创建的对象数目
 	private Map<String, Object> objectPool = new HashMap<String, Object>();//管理对象的结构
 	private static ObjectPool factory = null;
+	private Vector<String> dataSets = new  Vector<String>();
 
 	public static ObjectPool getInstance(){
 		return factory;
@@ -42,17 +48,23 @@ public class ObjectPool {
 		factory = this;
 	}
 	//从文件中读入图，并建立相应的对象
-	private void addFromFile(String name,String filePath,int graphType){
+	private boolean addFromFile(String name,String filePath,int graphType){
 		PoolObjectFactory objFactory = PoolObjectFactory.getInstance();
 		Object objs[]= new Object[3];
 
 		GraphReaderData gData = GraphReader.readGraphFromFile(filePath,graphType);
+		if(gData==null || gData.getNodeSet().size()==0){
+			System.out.println(gData.getError());
+			return false;
+		}
 		boolean directed = (graphType & 1)>0?true:false;
 		objs[0] = gData.getEdges();
 		objs[1] = gData.getNodeSet();
 		objs[2] = directed;
 		objectPool.put(name, objFactory.createObject(clsType,objs));
+		dataSets.add(name);
 		this.currentNum++;
+		return true;
 	}
 
 	//初始化对象池
@@ -92,8 +104,10 @@ public class ObjectPool {
 		if(objectPool.containsKey(name))
 			return objectPool.get(name);
 		else if(this.currentNum<paraObj.getMaxCount()){
-			addFromFile(name,filePath,0);
-			return objectPool.get(name);
+			if(addFromFile(name,filePath,0))
+				return objectPool.get(name);
+			else
+				return null;
 		}
 		else
 			return null;
@@ -109,5 +123,15 @@ public class ObjectPool {
 		Graph o = (Graph)ob.getObject("userdata0","/");
 		System.out.println(o.getNodeNum());
 
+	}
+	
+	public JSONArray packetToJson(){
+		JSONArray ret = new JSONArray();
+		Iterator<String> it = this.dataSets.iterator();
+		while(it.hasNext()){
+			String data = it.next();
+			ret.put(data);
+		}
+		return ret;
 	}
 }

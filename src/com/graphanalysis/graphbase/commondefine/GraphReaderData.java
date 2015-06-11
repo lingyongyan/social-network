@@ -13,6 +13,7 @@ public class GraphReaderData {
 	private HashMap<String,Integer> idMap = new HashMap<String,Integer>();
 	private boolean type = false;
 	private int id = 0;
+	private String error_info="";
 	public GraphReaderData(){
 	}
 	
@@ -48,5 +49,12 @@ public class GraphReaderData {
 	
 	public Vector<Node> getNodeSet(){
 		return nodes;
+	}
+	
+	public void setError(String error){
+		this.error_info = error;
+	}	
+	public String getError(){
+		return this.error_info;
 	}
 }

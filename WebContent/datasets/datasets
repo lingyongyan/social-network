@@ -3,4 +3,4 @@ userdata1	tinyG.txt txt 2
 userdata2	bridge.txt txt 0
 userdata3	weightedGraph.txt txt 3
 userdata0	as19990829.txt txt 0
-userdata4	biGraph.txt txt 0
+userdata4	biGraph.txt txt 1

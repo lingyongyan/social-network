@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+import javafx.util.Pair;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,6 +103,13 @@ public class GraphReader{
 		return gra;
 	}
 	
+	private static Pair<String,String> readProperty(String info){
+		info = info.substring(1,info.length());
+		String kV[] = info.split(":");
+		Pair<String,String> ret = new Pair<String,String>(kV[0],kV[1]);
+		return ret;
+	}
+	
 	/*从文件中读入图信息*/
 	public static GraphReaderData readGraphFromFile(String filePath,int gtype){
 		File file = new File(filePath);
@@ -108,18 +117,27 @@ public class GraphReader{
 		boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
 		boolean weighted = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
 		GraphReaderData gData = new GraphReaderData();
-		gData.setType(directed);
 		String[] fileName = filePath.split("/");
 		System.out.println("从文件"+fileName[fileName.length-1]+"中新建graph");
 		try{
 			reader = new BufferedReader(new FileReader(file));
 			String tempStr = null;
+			int lineCount = 0;
 			while((tempStr=reader.readLine())!=null){
-				if(tempStr.charAt(0)=='#')
+				lineCount++;
+				if(tempStr.charAt(0)=='#'){
+					Pair<String,String> info = readProperty(tempStr);
+					if(lineCount==2)
+						directed = Boolean.valueOf(info.getValue());
+					if(lineCount==3)
+						weighted = Boolean.valueOf(info.getValue());
 					continue;
+				}
 				String[] arr = tempStr.trim().split("\\s+");
-				if(weighted && arr.length!=3 || !weighted && arr.length!=2)
-					return null;
+				if(weighted && arr.length!=3 || !weighted && arr.length!=2){
+					gData.setError("Format Error");
+					return gData;
+				}
 				String from = arr[0];
 				String to = arr[1];
 				double weight = 1;
@@ -130,6 +148,7 @@ public class GraphReader{
 				Edge edge = new Edge(gData.getNode(from),gData.getNode(to),weight);
 				gData.addEdge(edge);
 			}
+			gData.setType(directed);
 			reader.close();
 			return gData;
 		}catch (IOException e){

@@ -2,7 +2,7 @@ package com.graphanalysis.web.com;
 
 public class PoolObject {
     Object objection = null;// 对象     
-    boolean busy = false; // 此对象是否正在使用的标志，默认没有正在使用     
+    boolean busy = false; // 此对象是否正在使用的标志，默认没有正在使用 
 
     // 构造函数，根据一个 Object 构告一个 PooledObject 对象     
     public PoolObject(Object objection) {

@@ -1,3 +1,6 @@
+#graphname:facebook_combined.txt
+#type:false
+#weight:false
 0 1
 0 2
 0 3

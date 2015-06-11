@@ -34,8 +34,8 @@ public class SolutionEntry {
 		response.setContentType("text/json; charset=UTF-8");
 		try {
 			method = method.toUpperCase();//将方法名全部转成大写
-			String dataSets = args[1];//获取数据集名称
-			String localFile = args[2];//如果找不到数据集，则根据这个地址读入新图
+			String dataSets= args[1];//获取数据集名称
+			String	localFile=args[2];//如果找不到数据集，则根据这个地址读入新图
 			Graph myGraph =  (Graph)ObjectPool.getInstance().getObject(dataSets, localFile);//从池中得到对应的graph类
 			ExecParameter paras = new ExecParameter();//用于保存执行时的参数
 			paras.addParameter(myGraph);
@@ -45,10 +45,12 @@ public class SolutionEntry {
 			if(args.length>3)
 				id= Integer.valueOf(args[3]);
 			
-			if(myGraph == null)
-				throw new GraphException("Graph Should Be Null!");
+			if(myGraph == null){
+				response.sendError(HttpServletResponse.SC_NO_CONTENT, "WE DON'T HAVE THIS DATASET");
+				return;
+			}
 			
-			switch(method){
+switch(method){
 			case "DFS":
 			case "BFS":
 				paras.addParameter(Integer.valueOf(id));//DFS,BFS 都需要一个起点，如果用户不输入则从0开始
@@ -66,11 +68,10 @@ public class SolutionEntry {
 				break;
 			case "RANDOM":
 				obParameters = new Object[1];
-				paras.clear();
-				
+				paras.clear();				
 				//GraphInterface graphInterf = new RandomWalkGraph(myGraph.getEdgeSet());
 				obParameters[0] = myGraph;//Randomwalk建立新对象的时候需要参数GraphInterface
-				int steps =5;
+				int steps =8;
 				if(args.length>4)
 					steps= Integer.valueOf(args[4]);
 				paras.addParameter(Integer.valueOf(id));//Randomwalk需要一个起点
@@ -89,9 +90,7 @@ public class SolutionEntry {
 					endID= Integer.valueOf(args[4]);
 				paras.addParameter(Integer.valueOf(endID));
 				break;
-/*
- * 
- * 如果是获取图信息以及相应的度信息，则直接从graph中获取
+/*如果是获取图信息以及相应的度信息，则直接从graph中获取
  * */
 			case "GRAPH":
 				JSONObject graphJson =  myGraph.packToJson();
@@ -102,7 +101,6 @@ public class SolutionEntry {
 				JSONArray degreeJson =  myGraph.getDegreeJson();
 				response.getOutputStream().write(degreeJson.toString().getBytes("UTF-8"));
 				return;
-
 			default: nondefault = false;break;
 			}
 			
@@ -113,7 +111,7 @@ public class SolutionEntry {
 				ExecReturn dealResult  = doSolve(method,obParameters,paras);
 				response.getOutputStream().write(dealResult.get(0).toString().getBytes("UTF-8"));
 			}
-		} catch (IOException | GraphException | JSONException e ) {
+		} catch (IOException | JSONException e ) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
