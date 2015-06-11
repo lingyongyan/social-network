@@ -44,11 +44,11 @@ var dOption = {
         toolbox: {
                 show: true,
                 feature: {
-                        mark: { show: true },
+                        //mark: { show: true },
                         dataZoom: { show: true },
                         dataView: { show: true },
                         //magicType: { show: true, type: ['line'] },
-                        restore: { show: true },
+                        //restore: { show: true },
                         saveAsImage: { show: true }
                 }
         },

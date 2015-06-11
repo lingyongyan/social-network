@@ -41,7 +41,7 @@
                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph.html"; })()'>图秀</button>
                         </div>
                         <div class="col-md-1">
-                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络测量<!--Network<br />Measures--></button>
+                                <button type="button" class="btn btn-default" onclick='(function () { window.location = "graph7.html"; })()'>网络测量<!--Network<br />Measures--></button>
                         </div>
                         <div class="col-md-1">
                                 <button type="button" class="btn btn-default" onclick='(function () { window.location = "../index.html"; })()'>网络模型<!--Network<br />Models--></button>
@@ -67,39 +67,15 @@
 
                 </div>
 
-                <!--文件选择选项卡-->
-                <div class="row">
-                        <div class="col-md-1">
-                        </div>
-                        <div class="col-md-4">
-                                <style>
-                                        #files {
-                                                /*width: 650px;*/
-                                                float: none;
-                                                list-style: none;
-                                                position: relative;
-                                                margin: 10px 0 0 0;
-                                                text-align: left;
-                                        }
-
-                                                #files li {
-                                                        float: left;
-                                                        display: block;
-                                                }
-                                </style>
-                                <ul id="files">
-                                        <li class="active"><a href="#">userData0</a><a style="background-image:url('../img/logos.png');background-size:auto"></a></li>
-                                        <li>userData1</li>
-                                </ul>
-                        </div>
-                </div>
-                <hr />
                 <!--图画布区-->
                 <div class="row">
                         <div class="col-md-1">
                         </div>
-                        <div id="graphText" class="col-md-2">
+                        <div id="graphText" class="col-md-1">
                                 <h2>图</h2>
+                        </div>
+                        <div class="col-md-2">
+                                <select id="Select1" style="margin-top:25px"></select>
                         </div>
                         <div class="col-md-4">
                                 <style>
@@ -141,6 +117,13 @@
                         </div>
                 </div>
                 <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                                <hr />
+                        </div>
+                        <div class="col-md-1"></div>
+                </div>
+                <div class="row">
                         <div class="col-md-1">
                         </div>
                         <div class="col-md-10">
@@ -153,7 +136,9 @@
 
                 <!--图功能菜单区-->
                 <div class="row" id="g8">
-                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+
+                        </div>
                         <style>
                                 #g8 button {
                                         width: 100px;
@@ -171,29 +156,32 @@
                         <div class="col-md-2"></div>
                 </div>
 
-                <!--出度入度图区--><hr />
-                <div class="row" id="degreeText">
-                        <div class="col-md-1">
-                        </div>
-                        <div id="graphText" class="col-md-2">
-                                <h2>度分布</h2>
-                        </div>
-
-                </div>
+                <!--出度入度图区-->
                 <div class="row">
                         <div class="col-md-1"></div>
                         <div class="col-md-10">
+
+                                <h2>度分布</h2><hr />
+                        </div>
+                        <div class="col-md-1"></div>
+                </div>
+                <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10" id="degreeC">
                                 <div id="degree2" style="width:1000px;height:600px;border:5px solid #ccc;"></div>
                         </div>
                         <div class="col-md-1"></div>
                 </div>
-                <hr />
+
                 <!--邻接表邻接矩阵区-->
                 <div class="row" id="tableText">
-                        <div class="col-md-1">
-                        </div>
-                        <div id="graphText" class="col-md-4">
-                                <h2>邻接链表/矩阵</h2>
+                        <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
+
+                                        <h2>邻接链表/矩阵</h2><hr />
+                                </div>
+                                <div class="col-md-1"></div>
                         </div>
                 </div>
                 <!--邻居图区-->
@@ -218,42 +206,41 @@
                         <div class="col-md-2"><button type="button" class="btn btn-default" onclick="matrix()">矩阵</button></div>
                         <div class="col-md-4"></div>
                 </div>
-        </div>
 
 
-        <footer class="bs-docs-footer" role="contentinfo">
-                <div class="container">
-                        <hr />
-                        <div class="row">
-                                <div class="col-md-12">
-                                        <h2 class="text-left">出品人：</h2>
-                                </div>
+
+                <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+
+                                <h2 class="text-left">出品人：</h2><hr />
                         </div>
-                        <div class="row">
-                                <div class="col-md-12">
-                                        <h3 class="text-center">随旭东 王庆全 孙家栋 颜令勇 王建平 陈晓旭 高伟</h3>
-                                </div>
-                        </div>
+                        <div class="col-md-1"></div>
                 </div>
-        </footer>
+                <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                                <h3 class="text-center">随旭东 王庆全 孙家栋 颜令勇 王建平 陈晓旭 高伟</h3>
+                        </div>
+                        <div class="col-md-1"></div>
+                </div>
+        </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="../js/jquery-2.1.4.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="../js/bootstrap.min.js"></script>
         <script src="../js/echarts.js"></script>
-        <script src="../js/d3.js" charset="utf-8"></script>
+        <script src="../js/d3.min.js" charset="utf-8"></script>
         <!--<script src="../js/fisheye.js"></script>-->
         <!--自定义JavaScript-->
-
+        <script src="../js/loadDataSet7.js"></script><!--加载数据集-->
 
         <script src="../js/showGraph7.js"></script><!--主图区绘制-->
         <script src="../js/graph87.js"></script><!--8个图算法功能函数-->
         <script src="../js/showDegree.js"></script>  <!--度分布-->
         <script src="../js/showTable.js"> </script>  <!--表和矩阵-->
 
-        <script src="../js/loadDataSet7.js"></script><!--加载数据集-->
         <script src="../js/main7.js"></script><!--graph页入口-->
-
 </body>
 </html>
