@@ -12,6 +12,7 @@ public class GraphReaderData {
 	private HashMap<Integer,Node> nodeMap = new HashMap<Integer,Node>();
 	private HashMap<String,Integer> idMap = new HashMap<String,Integer>();
 	private boolean type = false;
+	private boolean weighted = false;
 	private int id = 0;
 	private String error_info="";
 	public GraphReaderData(){
@@ -28,6 +29,13 @@ public class GraphReaderData {
 	}
 	public boolean type(){
 		return type;
+	}
+	
+	public void setWeight(boolean weight){
+		this.weighted = weight;
+	}
+	public boolean weight(){
+		return this.weighted;
 	}
 	
 	public void addNode(String nodeName){

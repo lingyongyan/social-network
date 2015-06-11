@@ -46,17 +46,17 @@ public class ObjectPool {
 	//从文件中读入图，并建立相应的对象
 	private boolean addFromFile(String name,String filePath,int graphType){
 		PoolObjectFactory objFactory = PoolObjectFactory.getInstance();
-		Object objs[]= new Object[3];
+		Object objs[]= new Object[4];
 
 		GraphReaderData gData = GraphReader.readGraphFromFile(filePath,graphType);
 		if(gData==null || gData.getNodeSet().size()==0){
 			System.out.println(gData.getError());
 			return false;
 		}
-		boolean directed = (graphType & 1)>0?true:false;
 		objs[0] = gData.getEdges();
 		objs[1] = gData.getNodeSet();
-		objs[2] = directed;
+		objs[2] = gData.type();
+		objs[3] = gData.weight();
 		objectPool.put(name, objFactory.createObject(clsType,objs));
 		dataSets.add(name);
 		this.currentNum++;

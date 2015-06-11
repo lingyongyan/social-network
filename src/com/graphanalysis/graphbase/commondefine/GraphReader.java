@@ -83,7 +83,7 @@ public class GraphReader{
 			jsonObj = new JSONObject(strJson);
 
 			//jsonObj =  new JSONObject(strJson);
-			//boolean weighted =Boolean.valueOf( jsonObj.get("weight").toString());
+			boolean weighted =Boolean.valueOf( jsonObj.get("weight").toString());
 			boolean directed = Boolean.valueOf( jsonObj.get("type").toString());
 			Vector<Edge> edges = new Vector<Edge>();
 			JSONArray jsonAr = jsonObj.getJSONArray("edges");
@@ -94,7 +94,7 @@ public class GraphReader{
 				double weight = Double.valueOf( jo.get("weight").toString());
 				Edge edge = new Edge(from,to,weight);
 				edges.add(edge);
-				gra = new Graph(edges,directed);
+				gra = new Graph(edges,directed,weighted);
 			}
 		} catch (JSONException e) {
 			// TODO 自动生成的 catch 块
@@ -103,14 +103,14 @@ public class GraphReader{
 		System.out.println("Reader OK");
 		return gra;
 	}
-	
+
 	private static Pair<String,String> readProperty(String info){
 		info = info.substring(1,info.length());
 		String kV[] = info.split(":");
 		Pair<String,String> ret = new Pair<String,String>(kV[0],kV[1]);
 		return ret;
 	}
-	
+
 	/*从文件中读入图信息*/
 	public static GraphReaderData readGraphFromFile(String filePath,int gtype){
 		File file = new File(filePath);
@@ -123,22 +123,21 @@ public class GraphReader{
 		try{
 			reader = new BufferedReader(new FileReader(file));
 			String tempStr = null;
-			int lineCount = 0;
 			while((tempStr=reader.readLine())!=null){
-				lineCount++;
 				if(tempStr.charAt(0)=='#'){
 					Pair<String,String> info = readProperty(tempStr);
-					if(lineCount==2)
-						directed = Boolean.valueOf(info.getValue());
-					if(lineCount==3)
-						weighted = Boolean.valueOf(info.getValue());
+					switch(info.getKey().toUpperCase()){
+					case "TYPE":directed = Boolean.valueOf(info.getValue());break;
+					case "WEIGHT":weighted = Boolean.valueOf(info.getValue());;break;
+					default:break;
+					}
 					continue;
 				}
 				String[] arr = tempStr.trim().split("\\s+");
-				if(weighted && arr.length!=3 || !weighted && arr.length!=2){
+				if(weighted && arr.length!=3){//除非显式定义，否则认为是无权图
 					gData.setError("Format Error");
 					return gData;
-				}
+				}				
 				String from = arr[0];
 				String to = arr[1];
 				double weight = 1;
@@ -150,6 +149,7 @@ public class GraphReader{
 				gData.addEdge(edge);
 			}
 			gData.setType(directed);
+			gData.setWeight(weighted);;
 			reader.close();
 			return gData;
 		}catch (IOException e){

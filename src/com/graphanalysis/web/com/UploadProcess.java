@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.graphanalysis.graphbase.implement.Graph;
+
 public class UploadProcess {
 	public static boolean Process(String filePath,String dataSets,String fileName,int type) throws IOException{   
 		String fileType = "none";
@@ -15,7 +17,7 @@ public class UploadProcess {
 			fileType = args[args.length-1];
 		}
 		fileSet = args[0];       
-		Object newGraph = ObjectPool.getInstance().getObject(fileSet, filePath+fileName);     
+		Graph newGraph = (Graph)ObjectPool.getInstance().getObject(fileSet, filePath+fileName);     
 		if(newGraph==null){
 			return false;
 		}  
@@ -24,6 +26,11 @@ public class UploadProcess {
 		FileInputStream fis = new FileInputStream(filePath+dataSets);// 属性文件输入流  
 		prop.load(fis);// 将属性文件流装载到Properties对象中  
 		fis.close();// 关闭流 
+		
+		if(newGraph.getBooleanType())
+			type |=1;
+		if(newGraph.getWeight())
+			type |=2;
 
 		String comment = fileName+" "+fileType+" "+String.valueOf(type);
 		prop.setProperty(fileSet, comment);  

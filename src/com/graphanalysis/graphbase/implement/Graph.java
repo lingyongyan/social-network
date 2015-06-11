@@ -23,6 +23,7 @@ import com.graphanalysis.web.json.JsonDeal;
  */
 public class Graph implements GraphInterface{
 	protected GraphType type =GraphType. UNDirectedGraph;//图类型
+	protected boolean weight = true;
 	protected double [][] adjMatrix;//邻接矩阵
 	protected HashMap<Integer,Vector<Integer>>adjList = new HashMap<Integer,Vector<Integer>>();//邻接链表
 	protected HashMap<Integer,Vector<Edge>> adjEdgeList = new HashMap<Integer,Vector<Edge>>();//邻接链表
@@ -62,14 +63,15 @@ public class Graph implements GraphInterface{
 	 * 根据已有的边集构建图
 	 */
 	public Graph(Vector<Edge> edges) {
-		this(edges,false);
+		this(edges,false,true);
 	}
 	
-	public Graph(Vector<Edge> edges,Boolean t) {
+	public Graph(Vector<Edge> edges,Boolean t,Boolean w) {
 		if(t)
 			this.type = GraphType. DirectedGraph;
 		else
 			this.type = GraphType.UNDirectedGraph;
+		this.weight = w;
 		setEdges(edges);
 		if(this.edges.size()==0)
 			return;
@@ -79,11 +81,12 @@ public class Graph implements GraphInterface{
 		setNodeDegree();
 	}
 	
-	public Graph(Vector<Edge> edges,Vector<Node> nodes,Boolean t) {
+	public Graph(Vector<Edge> edges,Vector<Node> nodes,Boolean t,Boolean w) {
 		if(t)
 			this.type = GraphType. DirectedGraph;
 		else
 			this.type = GraphType.UNDirectedGraph;
+		this.weight = w;
 		setEdges(edges);
 		setNodes(nodes);
 		if(this.edges.size()==0 || this.nodes.size() == 0)
@@ -257,6 +260,12 @@ public class Graph implements GraphInterface{
 		return this.type;
 	}
 	
+	public boolean getBooleanType(){
+		return this.type==GraphType.DirectedGraph;
+	}
+	public boolean getWeight(){
+		return this.weight;
+	}
 	@Override
 	public double[][] getAdjMatrix() {
 		// TODO 自动生成的方法存根
