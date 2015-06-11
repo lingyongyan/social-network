@@ -22,6 +22,7 @@
 元素的长度是一样的，一一对应
 
 */
+var echarts = null;
 var degree2 = null; // 度图分布实例
 
 // 度分布图模板
@@ -93,44 +94,27 @@ function paintDegree(degreeData, status) {
                 return console.log(status);
         }
         // TODO
-        // Step:3 conifg ECharts's path, link to echarts.js from current page.
-        // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
-        require.config({
-                paths: {
-                        echarts: '../js'
-                }
-        });
+        
+                    
+        degree2 = echarts.init(document.getElementById('degree2'));
+        // 接下来是将后台返回的度分布图数据
+        // 组装成echats支持的格式
 
-        // Step:4 require echarts and use it in the callback.
-        // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
-        require(
-            [
-                'echarts',
-                'echarts/chart/line',
-            ],
-            function (ec) {
-                    //echarts = ec;
-                    degree2 = ec.init(document.getElementById('degree2'));
-                    // 接下来是将后台返回的度分布图数据
-                    // 组装成echats支持的格式
+        if (degreeData.length == 3) {//有向图
+                dOption.legend.data[0] = "出度";
+                dOption.legend.data.push("入度");
 
-                    if (degreeData.length == 3) {//有向图
-                            dOption.legend.data[0] = "出度";
-                            dOption.legend.data.push("入度");
+                dOption.series[0].data = degreeData[1];
+                dOption.series[0].name = '出度';
+                dOption.series[1].data = degreeData[2];
+        }
+        else {//无向图
+                dOption.series[0].data = degreeData[1];
+                dOption.series.pop(1);
+        }
 
-                            dOption.series[0].data = degreeData[1];
-                            dOption.series[0].name = '出度';
-                            dOption.series[1].data = degreeData[2];
-                    }
-                    else {//无向图
+        dOption.xAxis[0].data = degreeData[0];
+        degree2.setOption(dOption);
 
-                            dOption.series[0].data = degreeData[1];
-                            dOption.series.pop(1);
-                    }
-
-                    dOption.xAxis[0].data = degreeData[0];
-                    degree2.setOption(dOption);
-            }//回调函数
-        );
 
 }
