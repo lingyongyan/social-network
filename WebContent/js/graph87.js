@@ -26,12 +26,16 @@ function initGraphFunction8() {
 
 // 重绘边集，条数
 function reDrawEdges(subEdges, ne) {
-        if (subEdges)
-                if (gEdges)
-                        gEdges.attr("class", function (theEdge) {
+        if (subEdges.length !=0)
+                if (!oEdges.empty())
+                        oEdges.attr("class", function (theEdge) {
                                 for (var edgeIndex = 0; edgeIndex < ne; edgeIndex++) {
-                                        if (theEdge.source.index == subEdges[edgeIndex].source && theEdge.target.index == subEdges[edgeIndex].target
-                                                || (!gType && (theEdge.source.index == subEdges[edgeIndex].target && theEdge.target.index == subEdges[edgeIndex].source)))
+                                        if (theEdge.source.unique == subEdges[edgeIndex].source
+                                                && theEdge.target.unique == subEdges[edgeIndex].target
+                                                ||
+                                                (!gType &&
+                                                (theEdge.source.unique == subEdges[edgeIndex].target
+                                                 && theEdge.target.unique == subEdges[edgeIndex].source)))
                                                 return "edgeHighlight";
                                 }
                                 return "edge";
@@ -39,12 +43,16 @@ function reDrawEdges(subEdges, ne) {
 }
 // 绘制彩虹桥路径
 function reDrawRainbow(subEdges, ne) {
-        if (subEdges)
-                if (gEdges)
-                        gEdges.attr("class", function (theEdge, i) {
+        if (subEdges.length != 0)
+                if (!oEdges.empty())
+                        oEdges.attr("class", function (theEdge, i) {
                                 for (var edgeIndex = 0; edgeIndex < ne; edgeIndex++) {
-                                        if (theEdge.source.index == subEdges[edgeIndex].source && theEdge.target.index == subEdges[edgeIndex].target
-                                                || (!gType && (theEdge.source.index == subEdges[edgeIndex].target && theEdge.target.index == subEdges[edgeIndex].source)))
+                                        if (theEdge.source.unique == subEdges[edgeIndex].source
+                                                && theEdge.target.unique == subEdges[edgeIndex].target
+                                                ||
+                                                (!gType &&
+                                                (theEdge.source.unique == subEdges[edgeIndex].target
+                                                && theEdge.target.unique == subEdges[edgeIndex].source)))
                                                 return "edge" + i % 7;
                                 }
                                 return "edge";
@@ -52,27 +60,31 @@ function reDrawRainbow(subEdges, ne) {
 }
 // 重绘结点 只有最大二分图匹配需要
 function reDrawNodes(max2match) {
-        if (max2match)
-                if (gNodes)
-                        gNodes.style("fill", function (theNode) {
+        if (max2match.length!=0)
+                if (!oEdges.empty())
+                        oNodes.style("fill", function (theNode) {
                                 for (var pair in max2match) {
-                                        if (theNode.index == max2match[pair].source)
+                                        if (theNode.unique == max2match[pair].source)
                                                 return "#d22";
-                                        if (theNode.index == max2match[pair].target)
+                                        if (theNode.unique == max2match[pair].target)
                                                 return "#22d";
                                 }
-                                return color(theNode.group);
+                                return control.color(theNode.group);
                                 //return "#eee";
                         })
 }
 // 重绘权重 只有网络最大流需要
 function reDrawWeights(maxFlow) {
-        if (maxFlow)
-                if (gEdgeTexts)
+        if (maxFlow.length!=0)
+                if (!gEdgeTexts.empty)
                         gEdgeTexts.text(function (theText) {
                                 for (var weightIndex in maxFlow) {
-                                        if (theText.source.index == maxFlow[weightIndex].source && theText.target.index == maxFlow[weightIndex].target
-                                                || (!gType && (theText.source.index == maxFlow[weightIndex].target && theText.target.index == maxFlow[weightIndex].source)))
+                                        if (theText.source.unique == maxFlow[weightIndex].source
+                                                && theText.target.unique == maxFlow[weightIndex].target
+                                                ||
+                                                (!gType &&
+                                                (theText.source.unique == maxFlow[weightIndex].target
+                                                && theText.target.unique == maxFlow[weightIndex].source)))
                                                 return maxFlow[weightIndex].weight + " / " + theText.weight;
                                 }
                                 return theText.weight;
@@ -91,7 +103,7 @@ function play(subEdges, ne) {
                         return;
         }
         //-------------------------分界线-----------------------------
-        reDrawRainbow(subEdges, cnt);
+        reDrawEdges(subEdges, cnt);
 }
 
 // 响应Random功能
@@ -109,14 +121,15 @@ function Random() {
 
         info("请选择一个起点：");
         // 为结点绑定独有的事件响应函数
-        gNodes.on("click", function (nodeClicked) {
+        oNodes.on("click", function (nodeClicked) {
                 //console.log("before");
                 if (d3.event.defaultPrevented) return;
-                clearTimeout(clickTimeDelay);
-                clickTimeDelay = setTimeout(function () {
+                clearTimeout(control.clickTimer);
+                control.clickTimer = setTimeout(function () { 
+
                         console.log("click");
                         if (index0 >= 0) {
-                                if (nodeClicked.index == index0) {//点击了同一个
+                                if (nodeClicked.unique == index0) {//点击了同一个
                                         warning("？点击了同一个？");
                                         return;
                                 }
@@ -125,7 +138,7 @@ function Random() {
                                 resetEdges();
                         }
 
-                        index0 = nodeClicked.index;
+                        index0 = nodeClicked.unique;
                         $.get("../json/Random.json", { whichDataSet: crntDataSet, filename: "Random.json", id: index0 }, function (randomPaths, status) {
                                 if (status != "success") {
                                         ///////////////////////////////////////////////////////
@@ -145,7 +158,7 @@ function Random() {
 
                         });
 
-                }, constMaxClickTimeDelay);
+                }, control.clickHack);
 
 
         });
@@ -166,12 +179,12 @@ function BFS() {
 
         info("请选择一个起点：");
         // 为结点绑定独有的事件响应函数
-        gNodes.on("click", function (nodeClicked) {
+        oNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
-                clearTimeout(clickTimeDelay);
-                clickTimeDelay = setTimeout(function () {
+                clearTimeout(control.clickTimer);
+                control.clickTimer = setTimeout(function () {
                         if (index0 >= 0) {
-                                if (nodeClicked.index == index0) {//点击了同一个
+                                if (nodeClicked.unique == index0) {//点击了同一个
                                         warning("？点击了同一个？");
                                         return;
                                 }
@@ -180,7 +193,7 @@ function BFS() {
                                 resetEdges();
                         }
 
-                        index0 = nodeClicked.index;
+                        index0 = nodeClicked.unique;
                         $.get("../json/BFS.json", { whichDataSet: crntDataSet, filename: "BFS.json", id: index0 }, function (bfsPaths, status) {
                                 if (status != "success") {
                                         ///////////////////////////////////////////////////////
@@ -200,7 +213,7 @@ function BFS() {
                                 setTimeout(function () { success("您还可以选择其他点：") }, 1000);
                         });
 
-                }, constMaxClickTimeDelay);
+                }, control.clickHack);
 
         });
 
@@ -222,12 +235,12 @@ function DFS() {
         }, tipsLastTime);
 
         // 为结点绑定独有的事件响应函数
-        gNodes.on("click", function (nodeClicked) {
+        oNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
-                clearTimeout(clickTimeDelay);
-                clickTimeDelay = setTimeout(function () {
+                clearTimeout(control.clickTimer);
+                control.clickTimer = setTimeout(function () {
                         if (index0 >= 0) {
-                                if (index0 == nodeClicked.index) {//点击了同一个
+                                if (index0 == nodeClicked.unique) {//点击了同一个
                                         $('#tips').text("？点击了同一个？").addClass('yellow');
                                         setTimeout(function () {
                                                 $('#tips').text("").removeClass('yellow');
@@ -239,7 +252,7 @@ function DFS() {
                                 resetEdges();
                         }
 
-                        index0 = nodeClicked.index;
+                        index0 = nodeClicked.unique;
                         $.get("../json/dfs.json", { whichDataSet: crntDataSet, filename: "DFS.json", id: index0 }, function (dfsPaths, status) {
                                 if (status != "success") {
                                         ///////////////////////////////////////////////////////
@@ -259,7 +272,7 @@ function DFS() {
                                 setTimeout(function () { success("您还可以选择其他点：") }, 1000);
                         });
 
-                }, constMaxClickTimeDelay);
+                }, control.clickHack);
 
         });
 
@@ -282,16 +295,16 @@ function Dijkstra() {
         }, tipsLastTime);
 
         // 重新为结点绑定点击事件
-        gNodes.on("click", function (nodeClicked) {
+        oNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
-                clearTimeout(clickTimeDelay);
-                clickTimeDelay = setTimeout(function () {
+                clearTimeout(control.clickTimer);
+                control.clickTimer = setTimeout(function () {
                         $('#tips').text("滑动到其他点查看最短路径：").addClass('green');
                         setTimeout(function () {
                                 $('#tips').text("").removeClass('green');
                         }, tipsLastTime);
 
-                        if (nodeClicked.index == index0) {//点击了同一个
+                        if (nodeClicked.unique == index0) {//点击了同一个
                                 $('#tips').text("？点击了同一个？").addClass('yellow');
                                 setTimeout(function () {
                                         $('#tips').text("").removeClass('yellow');
@@ -299,7 +312,7 @@ function Dijkstra() {
                                 return;
                         }
 
-                        index0 = nodeClicked.index;
+                        index0 = nodeClicked.unique;
                         // 向服务器发送包含选择点的Dijkstra请求
                         //$.post("IO.html", { node: 5 }, function () {
                         //后台准备好Dijkstra.json就可以画了
@@ -313,17 +326,17 @@ function Dijkstra() {
                                         return;
                                 }
                                 // 取回结果后，给结点注册OVER和OUT事件函数
-                                gNodes.on("mouseover", function (nodeMouseOver) {
+                                oNodes.on("mouseover", function (nodeMouseOver) {
                                         d3.select(this).attr("class", "nodeHighlight")
                                                 .attr("r", function (nodeData) {
                                                         var radius = Math.log(nodeData.group) + minRadius + 2;
                                                         return radius > maxRadius ? maxRadius : radius;
                                                 });
                                         // 滑到自己身上不用响应
-                                        if (nodeMouseOver.index == index0)
+                                        if (nodeMouseOver.unique == index0)
                                                 return;
 
-                                        index1 = nodeMouseOver.index;
+                                        index1 = nodeMouseOver.unique;
                                         var path = minPaths[index1];
                                         // 先把符合条件的边找出来放到一个集合中
                                         if (path)
@@ -338,15 +351,15 @@ function Dijkstra() {
                                                                 return radius > maxRadius ? maxRadius : radius;
                                                         });
                                                 // 滑出自己不用响应
-                                                if (nodeMouseOut.index == index0)
+                                                if (nodeMouseOut.unique == index0)
                                                         return;
-                                                //gEdges.style("stroke", "#ccc");
+                                                //oEdges.style("stroke", "#ccc");
                                                 resetEdges();
 
                                         })
                         });
 
-                }, constMaxClickTimeDelay);
+                }, control.clickHack);
 
 
         });
@@ -429,24 +442,24 @@ function FordFulkerson() {
         // 当选中两个不同结点时，
         // 向后台发送请求
         // 成功后回调处理边特效的函数
-        gNodes.on("click", function (nodeClicked) {
+        oNodes.on("click", function (nodeClicked) {
                 if (d3.event.defaultPrevented) return;
-                clearTimeout(clickTimeDelay);
-                clickTimeDelay = setTimeout(function () {
+                clearTimeout(control.clickTimer);
+                control.clickTimer = setTimeout(function () {
                         if (index0 < 0) {
-                                index0 = nodeClicked.index;
+                                index0 = nodeClicked.unique;
                                 resetEdges();
                                 resetWeight();
                                 // 提示用户选第二个点
                                 success("请选择==>汇点：");
                         }
                         else {
-                                if (nodeClicked.index == index0) {
+                                if (nodeClicked.unique == index0) {
                                         // 提示用户选第二个点
                                         warning("？点击了同一个？请选择==>汇点：");
                                         return;
                                 }
-                                index1 = nodeClicked.index;
+                                index1 = nodeClicked.unique;
 
                                 $.get("../json/FordFulkerson.json", { whichDataSet: crntDataSet, filename: "maxFlow.json", id0: index0, id1: index1 }, function (maxFlow, status) {
                                         if (status != "success") {
@@ -465,7 +478,7 @@ function FordFulkerson() {
                                 });
                         }
 
-                }, constMaxClickTimeDelay);
+                }, control.clickHack);
 
         });
 }
@@ -490,7 +503,7 @@ function Bridge() {
                         danger("网络不好，请重新请求！");
                         return console.log(status);
                 }
-                reDrawRainbow(bridges, bridges.length);
+                reDrawEdges(bridges, bridges.length);
         });
 
 }
@@ -506,7 +519,7 @@ function search4() {
         // console.log(parseInt( $("#search4").val()));
         var value = $("#search4").val();
 
-        var theNode = gNodes.select(function (nodeData, i) {
+        var theNode = oNodes.select(function (nodeData, i) {
                 return nodeData.name == value ? this : null;
         })
 
