@@ -49,13 +49,24 @@
                 //                    使用返回的dataSets                       //
                 //             !!更新用户数据集选项卡区域!!                //
                 ///////////////////////////////////////////////////////
+                //for (var op in dataSets)
+                //        $("#Select1").append("<option value='" + dataSets[op] + "'>" + dataSets[op]+"</option>");
+                //$("#Select1").change(function () {
+                //        $("#graph").empty();
+                //        $("#degree2").remove();
+                //        $("#degreeC").append("<div id='degree2' style='width:1000px;height:600px;border:5px solid #ccc;'></div>");
+                //                //.attr("id", "degree2")
+                //                //.attr("style", "width:1000px;height:600px;border:5px solid #ccc;");
+                //        $("#table").empty();
+                //        console.log($("#Select1").val());
+                //        loadDataSet($("#Select1").val());
+
+                //})
 
                 // 只用渲染第一个数据集
                 crntDataSet = dataSets[0];
-                // 加载指定数据集，指定深度范围[startDepth, endDepth)
-                crntGroup = 0;
-                loadDataSet(crntDataSet, 0, 3);
-        });
 
+                loadDataSet(crntDataSet);
+        });
 
 })()

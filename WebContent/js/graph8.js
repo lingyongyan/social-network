@@ -26,8 +26,8 @@ function initGraphFunction8() {
 
 // 重绘边集，条数
 function reDrawEdges(subEdges, ne) {
-        if (subEdges)
-                if (gEdges)
+        if (subEdges.length!=0)
+                if (!gEdges.empty())
                         gEdges.attr("class", function (theEdge) {
                                 for (var edgeIndex = 0; edgeIndex < ne; edgeIndex++) {
                                         if (theEdge.source.index == subEdges[edgeIndex].source && theEdge.target.index == subEdges[edgeIndex].target
@@ -39,21 +39,21 @@ function reDrawEdges(subEdges, ne) {
 }
 // 绘制彩虹桥路径
 function reDrawRainbow(subEdges, ne) {
-        if (subEdges)
-                if (gEdges)
+        if (subEdges.length != 0)
+                if (!gEdges.empty())
                         gEdges.attr("class", function (theEdge, i) {
                                 for (var edgeIndex = 0; edgeIndex < ne; edgeIndex++) {
                                         if (theEdge.source.index == subEdges[edgeIndex].source && theEdge.target.index == subEdges[edgeIndex].target
                                                 || (!gType && (theEdge.source.index == subEdges[edgeIndex].target && theEdge.target.index == subEdges[edgeIndex].source)))
-                                                return "edge" + i % 7;
+                                                return "edgeHighlight" /*+ i % 7*/;
                                 }
                                 return "edge";
                         })
 }
 // 重绘结点 只有最大二分图匹配需要
 function reDrawNodes(max2match) {
-        if (max2match)
-                if (gNodes)
+        if (max2match.length!=0)
+                if (!gNodes.empty())
                         gNodes.style("fill", function (theNode) {
                                 for (var pair in max2match) {
                                         if (theNode.index == max2match[pair].source)
