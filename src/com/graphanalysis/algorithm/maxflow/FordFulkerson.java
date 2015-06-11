@@ -2,6 +2,8 @@ package com.graphanalysis.algorithm.maxflow;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Queue;
 
 import org.json.JSONArray;
@@ -82,6 +84,7 @@ public class FordFulkerson implements AlgorithmInterface{
 
 	private double[][] graph = null;
 	private double[][] rGraph = null;
+	private double[][] mFlows = null;
 	ArrayList<Pair> flow = new ArrayList<Pair>();
 	
 	public FordFulkerson(){
@@ -116,14 +119,16 @@ public class FordFulkerson implements AlgorithmInterface{
 		int len = tGraph.getAdjMatrix().length;
 		graph = new double[len][len];
 		rGraph = new double[len][len];
+		mFlows = new double[len][len];
 		for (int i = 0; i < len; i++) {
 			for(int j=0;j<len;j++){
 			graph[i][j] = tGraph.getAdjMatrix()[i][j];
 			rGraph[i][j] = tGraph.getAdjMatrix()[i][j];
+			mFlows[i][j]=0;
 			}
 		}
 
-		int u, v;
+		int u=0, v=0;
 		int[] parent = new int[graph.length];
 		int maxFLow = 0;
 		while (bfs(rGraph, src, dst, parent)) {
@@ -147,21 +152,11 @@ public class FordFulkerson implements AlgorithmInterface{
 						isFind = true;
 						double tmpFlow = flow.get(j).getFlow();
 						flow.get(j).setFlow(pathFlow + tmpFlow);
+						break;
 					}
 				}
 				if (isFind == false) {
 					flow.add(new Pair(f, t, pathFlow));
-					JSONObject tmpJson = new JSONObject();
-					try {
-						tmpJson.putOpt("source", f);
-						tmpJson.putOpt("target", t);
-						tmpJson.putOpt("weight", pathFlow);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					result.put(tmpJson);
 				}
 			}
 
@@ -173,6 +168,21 @@ public class FordFulkerson implements AlgorithmInterface{
 
 			maxFLow += pathFlow;
 		}
+		
+		for(Iterator<Pair> it = flow.iterator();it.hasNext();){
+			Pair temp = it.next();
+			JSONObject tmpJson = new JSONObject();
+			try {
+				tmpJson.putOpt("source", temp.getSrc());
+				tmpJson.putOpt("target", temp.getDst());
+				tmpJson.putOpt("weight", temp.getFlow());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			result.put(tmpJson);
+		}
+		
 		return result;
 	}
 

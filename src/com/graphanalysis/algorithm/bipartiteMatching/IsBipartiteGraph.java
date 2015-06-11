@@ -40,11 +40,11 @@ public class IsBipartiteGraph {
 			element = queue.remove();
 			neighbour = 0;
 			while (neighbour < numberOfVertices) {
-				if (adjMat[element][neighbour] == 1
+				if (adjMat[element][neighbour] > 0
 						&& colored[element] == colored[neighbour]) {
 					return false;
 				}
-				if (adjMat[element][neighbour] == 1
+				if (adjMat[element][neighbour] > 0
 						&& colored[neighbour] == NO_COLOR) {
 					colored[neighbour] = (colored[element] == RED) ? BLUE : RED;
 					queue.add(neighbour);

@@ -1,5 +1,5 @@
 #graphname:weightedGraph.txt
-#type:false
+#type:true
 #weight:true
 0 14 2
 1 0 1

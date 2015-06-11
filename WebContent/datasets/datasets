@@ -1,5 +1,5 @@
 #facebookGraph=facebook_combined.txt txt 0
-#userdata1=tinyG.txt txt 2
+tinyG=tinyG.txt txt 2
 bridgeGraph=bridge.txt txt 0
 weightGraph=weightedGraph.txt txt 3
 biGraph=biGraph.txt txt 0

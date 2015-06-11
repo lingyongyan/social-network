@@ -328,7 +328,7 @@ public class Graph implements GraphInterface{
 		boolean gtype = (this.type==GraphType. UNDirectedGraph)? false:true;
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("type", gtype);
-		jsonObj.put("weight", true);
+		jsonObj.put("weight", this.weight);
 		jsonObj.put("N", this.adjMatrix.length);
 		jsonObj.put("E", this.edges.size());
 		JSONArray nodesJs = new JSONArray();
@@ -349,7 +349,8 @@ public class Graph implements GraphInterface{
 			JSONObject edgeObj = new JSONObject();
 			edgeObj.put("source",now.getFromID());
 			edgeObj.put("target",now.getToID());
-			edgeObj.put("weight", now.getWeight());
+			if(this.weight)
+				edgeObj.put("weight", now.getWeight());
 			edgesJs.put(edgeObj);
 		}
 		jsonObj.put("edges", edgesJs);
