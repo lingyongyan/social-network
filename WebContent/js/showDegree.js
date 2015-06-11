@@ -26,7 +26,7 @@ var echarts = null;
 var degree2 = null; // 度图分布实例
 
 // 度分布图模板
-var dOption = {
+var optionT = {
         title: {
                 text: '度数分布图',
                 subtext: '孙家栋',
@@ -99,6 +99,8 @@ function paintDegree(degreeData, status) {
         degree2 = echarts.init(document.getElementById('degree2'));
         // 接下来是将后台返回的度分布图数据
         // 组装成echats支持的格式
+
+        var dOption = $.extend({}, optionT);
 
         if (degreeData.length == 3) {//有向图
                 dOption.legend.data[0] = "出度";

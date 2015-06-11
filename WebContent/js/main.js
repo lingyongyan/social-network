@@ -24,7 +24,9 @@
             ],
             function (ec) {
                     echarts = ec;
+                    //degree2 = echarts.init(document.getElementById('degree2'));
             });
+        
         // 首次加载graph页，
         // 先问问后台有哪些数据集{ Array }：
         /*     零：用户没有上传，后台返回 [ 默认测试集名 ]         
@@ -53,11 +55,13 @@
                         $("#Select1").append("<option value='" + dataSets[op] + "'>" + dataSets[op]+"</option>");
                 $("#Select1").change(function () {
                         $("#graph").empty();
+                        degree2.clear();
+                        degree2.dispose();
                         $("#degreeC").empty();
                         $("#degreeC").append("<div id='degree2' style='width:1000px;height:600px;border:5px solid #ccc;'></div>");
                                 //.attr("id", "degree2")
                                 //.attr("style", "width:1000px;height:600px;border:5px solid #ccc;");
-                        $("#table").empty();
+                        $("#divTable").empty();
                         console.log($("#Select1").val());
                         loadDataSet($("#Select1").val());
 
