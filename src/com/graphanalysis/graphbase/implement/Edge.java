@@ -1,5 +1,8 @@
 package com.graphanalysis.graphbase.implement;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.graphanalysis.graphbase.interfaces.EdgeInterface;
 
 public class Edge implements EdgeInterface{
@@ -82,5 +85,10 @@ public class Edge implements EdgeInterface{
 	public double getFlow() {
 		// TODO 自动生成的方法存根
 		return flow;
+	}
+	@Override
+	public JSONArray packToJson() throws JSONException {
+		// TODO 自动生成的方法存根
+		return null;
 	}
 }

@@ -2,10 +2,7 @@ package com.graphanalysis.algorithm.maxflow;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Queue;
-import java.util.Set;
-import java.util.Vector;
 
 import org.json.JSONArray;
 import org.json.JSONException;

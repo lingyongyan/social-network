@@ -5,7 +5,6 @@ package com.graphanalysis.algorithm.bipartiteMatching;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import org.json.JSONArray;
@@ -14,8 +13,6 @@ import org.json.JSONObject;
 
 import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.implement.ExecReturn;
-import com.graphanalysis.algorithm.randomWalk.RandomWalkGraph;
-import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
@@ -83,7 +80,7 @@ public class BipartiteMatching implements BipartiteMatchingInterface {
 			上述代码有误，建议改成一下形式（Yan）
 		}*/
 		for (int i = 0; i < result.length; i++) {
-			if (result[i] != -1 && isBiGraph.colored[i] == isBiGraph.RED) {
+			if (result[i] != -1 && isBiGraph.colored[i] == IsBipartiteGraph.RED) {
 				map.put(i, result[i]);
 			}
 	}

@@ -1,15 +1,9 @@
 package com.graphanalysis.algorithm.randomWalk;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.Vector;
 
-import org.json.JSONException;
-
-import com.graphanalysis.graphbase.commondefine.GraphType;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;

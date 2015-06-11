@@ -1,18 +1,18 @@
 package com.graphanalysis.graphbase.implement;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import com.graphanalysis.graphbase.commondefine.NodeColor;
 import com.graphanalysis.graphbase.interfaces.NodeInterface;
 
 public class Node implements NodeInterface{
-	private int ID;//点ID
+	private Integer ID;//点ID
 	private NodeColor color;//点的颜色
-	private int indegree = 0;//点的入度
-	private int outdegree = 0;//点的出度
+	private Integer indegree = 0;//点的入度
+	private Integer outdegree = 0;//点的出度
 	private String name = "";//点的名称
+	private Integer group = 1;
 	
 	public Node(int ID, NodeColor color, String name){
 		this.ID = ID;
@@ -63,6 +63,14 @@ public class Node implements NodeInterface{
 		return this.color;
 	}
 	
+	public void setGroup(Integer newGroup){
+		this.group = newGroup;
+	}
+	
+	public Integer getGroup(){
+		return this.group;
+	}
+	
 	@Override
 	public int getInDegree() {
 		return this.indegree;
@@ -71,5 +79,11 @@ public class Node implements NodeInterface{
 	@Override
 	public int getOutDegree() {
 		return this.outdegree;
+	}
+
+	@Override
+	public JSONArray packToJson() throws JSONException {
+		// TODO 自动生成的方法存根
+		return null;
 	}
 }

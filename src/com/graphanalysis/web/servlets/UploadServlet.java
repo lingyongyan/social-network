@@ -1,16 +1,10 @@
 package com.graphanalysis.web.servlets;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.ServletException;
@@ -19,14 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.RequestContext;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-
-import com.graphanalysis.web.com.ObjectPool;
 import com.graphanalysis.web.com.UploadProcess;
 
 /**
@@ -61,7 +48,7 @@ public class UploadServlet extends HttpServlet {
 			parameters.add( parameterNames.nextElement());
 		}
 		if(parameters.size()!=1){
-			response.sendError(response.SC_NO_CONTENT, "请正确选择上传文件");
+			response.sendError(HttpServletResponse.SC_NO_CONTENT, "请正确选择上传文件");
 			return;
 		}
 		String fileName = request.getParameter(parameters.firstElement());
@@ -69,14 +56,7 @@ public class UploadServlet extends HttpServlet {
 		//Part part = request.getPart("txt");
 		//Collection<Part> parts = request.getParts();
 		String filePath = GraphServlet.getLocation()+"/datasets/";
-		//part.write(filePath);
-		/*		BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream())); 
-		   StringBuffer buffer = new StringBuffer(); 
-		   String line = ""; 
-		   while ((line = in.readLine()) != null){ 
-		     buffer.append(line); 
-		   } 
-		   String result = buffer.toString();*/
+
 		BufferedReader in = request.getReader();
 		FileWriter fw = new FileWriter(filePath+fileName);
 		PrintWriter out = new PrintWriter(fw);  
@@ -96,13 +76,6 @@ public class UploadServlet extends HttpServlet {
 			UploadProcess.delete(filePath+fileName);
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
 		}
-
-		/*        String args[]  = new String[3];
-        args[0] = "graph";
-        args[1] = fileName;
-        args[2] =  filePath+fileName;*/
-		//SolutionEntry.solve(args[0], args, response);暂时不需要将上传的图返回用户
-
 	}
 
 	/**

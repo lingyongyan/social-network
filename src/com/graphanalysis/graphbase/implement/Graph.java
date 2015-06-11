@@ -3,7 +3,7 @@ package com.graphanalysis.graphbase.implement;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.Vector;
 
@@ -280,7 +280,11 @@ public class Graph implements GraphInterface{
 	}
 	
 	public int getNodeGroup(int nodeId){
-		return 1;
+		if(this.nodeMap.containsKey(nodeId)){
+			return this.nodeMap.get(nodeId).getGroup();
+		}else{
+			return 1;
+		}
 	}
 	
 	@Override
@@ -311,6 +315,7 @@ public class Graph implements GraphInterface{
 	@Override
 	public JSONObject packToJson() throws JSONException{
 		// TODO 自动生成的方法存根
+		Random random = new Random();
 		boolean gtype = (this.type==GraphType. UNDirectedGraph)? false:true;
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("type", gtype);
@@ -323,7 +328,7 @@ public class Graph implements GraphInterface{
 			Node now = nodeite.next();
 			JSONObject nodeObj = new JSONObject();
 			nodeObj.put("name", now.getName());
-			nodeObj.put("group",getNodeGroup(now.getID()));
+			nodeObj.put("group",Math.abs(random.nextInt())%10+1);
 			nodesJs.put(nodeObj);
 		}
 		jsonObj.put("nodes", nodesJs);

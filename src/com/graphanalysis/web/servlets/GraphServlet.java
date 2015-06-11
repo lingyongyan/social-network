@@ -67,11 +67,11 @@ public class GraphServlet extends HttpServlet {
     	projectLocation = fileRootPath;
     	System.out.println(fileRootPath);
     	try {
-    		objectInstance = PoolObjectFactory.getInstance();
-    		classInstance = ClassNameFactory.getInstance(fileRootPath+"datasets/className");
+    		PoolObjectFactory.getInstance();
+    		ClassNameFactory.getInstance(fileRootPath+"datasets/className");
     		objectPoolFacInstance = ObjectPoolFactory.getInstance();
-    		objectPoolInstance = objectPoolFacInstance.createPool(pObj, Class.forName("com.graphanalysis.graphbase.implement.Graph"));
-    		objectPoolInstance.getInstance().initPool(fileRootPath+"/datasets/datasets",fileRootPath+"/datasets/");
+    		objectPoolFacInstance.createPool(pObj, Class.forName("com.graphanalysis.graphbase.implement.Graph"));
+    		ObjectPool.getInstance().initPool(fileRootPath+"/datasets/datasets",fileRootPath+"/datasets/");
     		 log.info("读图成功:D");
 		} catch (ClassNotFoundException e) {
 			// TODO 自动生成的 catch 块
@@ -80,9 +80,6 @@ public class GraphServlet extends HttpServlet {
 		}
 	}
 	private static ObjectPoolFactory objectPoolFacInstance;
-	private static ObjectPool objectPoolInstance;
 	private static String fileRootPath;
-	private static PoolObjectFactory objectInstance;
-	private static ClassNameFactory classInstance;
 	private static String projectLocation = "";
 }

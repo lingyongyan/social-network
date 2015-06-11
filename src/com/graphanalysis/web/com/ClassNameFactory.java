@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClassNameFactory {
 
 	private static ClassNameFactory factory = null;
-	private Map<String,Class> classMap = new HashMap<String,Class>();
+	private Map<String,Class<?>> classMap = new HashMap<String,Class<?>>();
 
 	private ClassNameFactory(){
 		
@@ -80,7 +78,7 @@ public class ClassNameFactory {
 	/**
 	 * 一下函数用于利用方法名得到对应的处理类
 	 * */
-	public Class getClassFromName(String name) {
+	public Class<?> getClassFromName(String name) {
 		if(this.classMap.containsKey(name)){
 			Class<?> className = this.classMap.get(name);
 			return className;

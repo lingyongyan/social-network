@@ -5,10 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Vector;
-
 import javafx.util.Pair;
 
 import org.json.JSONArray;
@@ -18,7 +15,6 @@ import org.json.JSONObject;
 import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 import com.graphanalysis.graphbase.implement.Node;
-import com.graphanalysis.graphbase.interfaces.GraphReaderInterface;
 import com.graphanalysis.web.json.JsonDeal;
 
 public class GraphReader{
@@ -26,12 +22,12 @@ public class GraphReader{
 	 * @param fileName
 	 * @param gtype  gtype使用说明如下，如果gtype的二进制表示的最低位为1，则是有向图，否则为无向图；二进制表示的第二位为1是有权图
 	 * @return
-	 * 
+	 * @deprecated
 	 */
 	public static Vector<Edge> readFromFile(String filePath,int gtype){
 		File file = new File(filePath);
 		BufferedReader reader = null;
-		boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
+		//boolean directed = (gtype&1)!=0?true:false;//表明图是否有向，true表示有向，如果是无向图，则默认将读入的边在逆向写一次
 		boolean weighted = (gtype&2)!=0?true:false;//表明图是否有权，true表示有权，如果是有权图，则继续读入第三列的值
 		String[] fileName = filePath.split("/");
 		System.out.println("从文件"+fileName[fileName.length-1]+"中新建graph");
@@ -73,7 +69,12 @@ public class GraphReader{
 		return new Vector<Edge>();
 	}
 
-	/*从文件中读入图信息并创建*/
+	/**
+	 * @param fileName
+	 * @return
+	 * @deprecated
+	 * 从文件中读入图信息并创建
+	 */
 	public static Graph readGraphFromJson(String fileName){
 		Graph gra = null;
 		try {
@@ -82,7 +83,7 @@ public class GraphReader{
 			jsonObj = new JSONObject(strJson);
 
 			//jsonObj =  new JSONObject(strJson);
-			boolean weighted =Boolean.valueOf( jsonObj.get("weight").toString());
+			//boolean weighted =Boolean.valueOf( jsonObj.get("weight").toString());
 			boolean directed = Boolean.valueOf( jsonObj.get("type").toString());
 			Vector<Edge> edges = new Vector<Edge>();
 			JSONArray jsonAr = jsonObj.getJSONArray("edges");

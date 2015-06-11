@@ -16,7 +16,6 @@ import com.graphanalysis.algorithm.implement.ExecParameter;
 import com.graphanalysis.algorithm.implement.ExecReturn;
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
 import com.graphanalysis.graphbase.implement.Graph;
-import com.graphanalysis.graphbase.implement.GraphException;
 import com.graphanalysis.web.com.ClassNameFactory;
 import com.graphanalysis.web.com.ObjectPool;
 import com.graphanalysis.web.com.PoolObjectFactory;

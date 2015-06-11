@@ -7,16 +7,16 @@
         "nodes": [
 
                 { "id": "0", "name": "钢铁侠","img": "img/1.jpg" },
-                { "id": "1", "name": "美国队长","img": "img/美国队长.jpg"},
-                { "id": "2", "name": "鹰眼","img": "img/鹰眼.jpg" },
-                { "id": "3", "name": "雷神","img": "img/雷神.jpg" },
-                { "id": "4", "name": "黑寡妇","img": "img/黑寡妇.jpg"  },
-                { "id": "5", "name": "绿巨人","img": "img/绿巨人.jpg"  },
-                { "id": "6", "name": "奥创" ,"img": "img/奥创.jpg" },
-                { "id": "7", "name": "红女巫","img": "img/红女巫.jpg"  },
-                { "id": "8", "name": "快银","img": "img/快银.jpg"  },
-                { "id": "9", "name": "尼克·弗瑞" ,"img": "img/尼克·弗瑞.jpg" },
-                { "id": "10", "name": "幻视","img": "img/幻视.jpg"  }
+                { "id": "1", "name": "美国队长","img": "img/2.jpg"},
+                { "id": "2", "name": "鹰眼","img": "img/3.jpg" },
+                { "id": "3", "name": "雷神","img": "img/4.jpg" },
+                { "id": "4", "name": "黑寡妇","img": "img/5.jpg"  },
+                { "id": "5", "name": "绿巨人","img": "img/6.jpg"  },
+                { "id": "6", "name": "奥创" ,"img": "img/7.jpg" },
+                { "id": "7", "name": "红女巫","img": "img/8.jpg"  },
+                { "id": "8", "name": "快银","img": "img/9.jpg"  },
+                { "id": "9", "name": "尼克·弗瑞" ,"img": "img/10.jpg" },
+                { "id": "10", "name": "幻视","img": "img/11.jpg"  }
 
         ],
         "edges": [

@@ -5,7 +5,6 @@ package com.graphanalysis.web.com;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,12 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.graphanalysis.graphbase.commondefine.GraphReader;
 import com.graphanalysis.graphbase.commondefine.GraphReaderData;
-import com.graphanalysis.graphbase.implement.Edge;
 import com.graphanalysis.graphbase.implement.Graph;
 
 /**

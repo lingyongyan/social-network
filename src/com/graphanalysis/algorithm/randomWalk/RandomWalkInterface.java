@@ -3,8 +3,6 @@
  */
 package com.graphanalysis.algorithm.randomWalk;
 
-import java.util.List;
-
 import org.json.JSONArray;
 
 import com.graphanalysis.algorithm.interfaces.AlgorithmInterface;
