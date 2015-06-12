@@ -35,6 +35,12 @@ public class ServletsPreProcess {
 		    parameters.add( parameterNames.nextElement());
 		}
 		
+		if(request.getParameter("whichDataSet")==null){//防止出现没有datasets的情况
+			String[] res = new String[1];
+			res[0]=null;
+			return res;
+		}
+		
 		String[] res = new String[num<(parameters.size()+1)?num:(parameters.size()+1)];
 		String fileName = request.getParameter(parameters.get(1));//第二个参数是用户请求的json文件全名
 		String[] methods = fileName.split(".json");//取出上述文件名（去除json，定义为用户请求的处理方法，如DFS，BFS等

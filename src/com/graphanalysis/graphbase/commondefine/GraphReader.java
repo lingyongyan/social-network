@@ -152,8 +152,9 @@ public class GraphReader{
 			gData.setWeight(weighted);;
 			reader.close();
 			return gData;
-		}catch (IOException e){
+		}catch (IOException | NumberFormatException e){
 			e.printStackTrace();
+			return null;
 		}finally{
 			if(reader!=null){
 				try{
@@ -162,6 +163,5 @@ public class GraphReader{
 				}
 			}
 		}
-		return gData;
 	}
 }

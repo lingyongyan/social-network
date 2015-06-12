@@ -5,11 +5,9 @@
  * */
 package com.graphanalysis.web.servlets;
 
-import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.graphanalysis.algorithm.implement.ExecParameter;
@@ -25,13 +23,14 @@ public class SolutionEntry {
 	 * @param method	处理方法的名称
 	 * @param args	用户请求处理过得到的参数
 	 * @param response	
+	 * @throws  
 	 */
-	public static void solve(String method, String[] args,HttpServletResponse response) {//处理函数入口
-
-		if(method ==null)
-			return;
+	public static void solve(String method, String[] args,HttpServletResponse response){//处理函数入口
 		response.setContentType("text/json; charset=UTF-8");
 		try {
+			if(method ==null||method=="null"){
+				throw new Exception("method is none");
+			}
 			method = method.toUpperCase();//将方法名全部转成大写
 			String dataSets= args[1];//获取数据集名称
 			String	localFile=args[2];//如果找不到数据集，则根据这个地址读入新图
@@ -39,7 +38,6 @@ public class SolutionEntry {
 			ExecParameter paras = new ExecParameter();//用于保存执行时的参数
 			paras.addParameter(myGraph);
 			Object[] obParameters = null;//在新建处理类的对象的时候所需要的构造函数参数
-			boolean nondefault = true;
 			int id=0;
 			if(args.length>3)
 				id= Integer.valueOf(args[3]);
@@ -100,19 +98,18 @@ switch(method){
 				JSONArray degreeJson =  myGraph.getDegreeJson();
 				response.getOutputStream().write(degreeJson.toString().getBytes("UTF-8"));
 				return;
-			default: nondefault = false;break;
+			default: return;
 			}
 			
 /*
  * 如果是需要处理请求的则执行doSolve
  **/
-			if(nondefault){
 				ExecReturn dealResult  = doSolve(method,obParameters,paras);
 				response.getOutputStream().write(dealResult.get(0).toString().getBytes("UTF-8"));
-			}
-		} catch (IOException | JSONException e ) {
+		} catch (Exception e ) {
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
 		}
 	}
 	

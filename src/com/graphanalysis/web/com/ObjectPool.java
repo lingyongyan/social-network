@@ -50,7 +50,8 @@ public class ObjectPool {
 
 		GraphReaderData gData = GraphReader.readGraphFromFile(filePath,graphType);
 		if(gData==null || gData.getNodeSet().size()==0){
-			System.out.println(gData.getError());
+			if(gData!=null)
+				System.out.println(gData.getError());
 			return false;
 		}
 		objs[0] = gData.getEdges();
