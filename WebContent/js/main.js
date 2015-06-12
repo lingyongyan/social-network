@@ -63,6 +63,9 @@
                                 //.attr("style", "width:1000px;height:600px;border:5px solid #ccc;");
                         $("#divTable").empty();
                         console.log($("#Select1").val());
+
+
+                        initGraphFunction8();
                         loadDataSet($("#Select1").val());
 
                 })

@@ -30,7 +30,7 @@
 
                         </div>
                         <div class="col-md-1">
-                                <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
+                                <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png" style="width:42px;height:42px;"></button>
                         </div>
                         <div class="col-md-1">
                                 <button type="button" class="btn btn-default" onclick='(function(){window.location="IO.html";})()'>数据上传</button>
@@ -103,8 +103,29 @@
                 </div>
                 <div class="row">
                         <div class="col-md-1"></div>
-                        <div class="col-md-10 jumbotron">
-                                <h1>
+                        <div class="col-md-10">
+                                <style>
+                                        h3 {
+                                                font-weight: 700;
+                                        }
+
+                                        .red {
+                                                color: #d9534f;
+                                        }
+
+                                        .green {
+                                                color: #5cb85c;
+                                        }
+
+                                        .yellow {
+                                                color: #f0ad4e;
+                                        }
+
+                                        .blue {
+                                                color: #5bc0de;
+                                        }
+                                </style>
+                                <h1 id="msg">
                                         请上传您要分析的数据
                                 </h1>
                         </div>
@@ -128,10 +149,9 @@
                         </div>
                         <div class="col-md-4">
                                 <h3>数据头：</h3>
-                                <p><strong>有向/无向</strong>  分别用<strong>1/0</strong>表示</p>
-                                <p><strong>有权/无权</strong>  分别用<strong>1/0</strong>表示</p>
-                                <p>结点数</p>
-                                <p>边数</p>
+                                <p>#graphname: 数据集名称</p>
+                                <p>#type:<strong>有向/无向</strong>  分别用<strong>true/false</strong>表示</p>
+                                <p>#weight:<strong>有权/无权</strong>  分别用<strong>true/false</strong>表示</p>
                                 <h3>数  据：</h3>
                                 <p>起点id  终点id  [权重w]</p>
                                 <p>起点id  终点id  [权重w]</p>
@@ -140,10 +160,9 @@
                         </div>
                         <div class="col-md-4">
                                 <h3>无向有权图图示例：</h3>
-                                <p><strong>0</strong></p>
-                                <p><strong>1</strong></p>
-                                <p>250</p>
-                                <p>1000</p>
+                                <p>#graphname: as1990829.txt</p>
+                                <p>#type:<strong>false</strong></p>
+                                <p>#weight:<strong>true</strong></p>
                                 <h3>数  据：</h3>
                                 <p>1  0  2.3</p>
                                 <p>2  7  2.9</p>

@@ -32,7 +32,7 @@
                                 </div>
                         </div>
                         <div class="col-md-1">
-                                <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png"></button>
+                                <button type="button" class="btn btn-default" onclick='(function(){window.location="../index.html";})()'><img alt="Brand" src="../img/logos.png" style="width:42px;height:42px;"></button>
                         </div>
                         <div class="col-md-1">
                                 <button type="button" class="btn btn-default" onclick='(function(){window.location="IO.html";})()'>数据上传</button>
@@ -141,23 +141,23 @@
                         </div>
                         <style>
                                 #g8 button {
-                                        width: 100px;
+                                        width: 98px;
                                         height: 35px;
                                 }
                         </style>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Random()">Random</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="BFS()">BFS</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="DFS()">DFS</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Dijkstra()">Dijkstra</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Prim()">Prim</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Bipartite()">Bipartite</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="FordFulkerson()">Ford-Fulkerson</button></div>
-                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Bridge()">Bridge</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Random()">随机漫步</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="BFS()">广度优先搜索</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="DFS()">深度优先搜索</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Dijkstra()">最短路径</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Prim()">最小生成树</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Bipartite()">二分匹配</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="FordFulkerson()">最大流</button></div>
+                        <div class="col-md-1"><button type="button" class="btn btn-default" onclick="Bridge()">桥边检测</button></div>
                         <div class="col-md-2"></div>
                 </div>
 
                 <!--出度入度图区-->
-                <div class="row">
+                <div class="row" id="degreeText">
                         <div class="col-md-1"></div>
                         <div class="col-md-10">
 
