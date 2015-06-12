@@ -436,7 +436,7 @@ function FordFulkerson() {
                         if (index0 < 0) {
                                 index0 = nodeClicked.index;
                                 resetEdges();
-                                resetWeight();
+                                resetWeights();
                                 // 提示用户选第二个点
                                 success("请选择==>汇点：");                                       
                         }
