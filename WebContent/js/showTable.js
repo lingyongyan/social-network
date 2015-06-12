@@ -1,4 +1,5 @@
-﻿var constMaxZoomScale = 5; //最大缩放系数 
+﻿var constMaxZoomScale = 5; //最大缩放系数
+
 // 邻接链表邻接矩阵数据
 var tableData = undefined;
 // 邻接链表/矩阵图区宽高

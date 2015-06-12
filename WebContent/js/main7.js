@@ -17,14 +17,14 @@
 
         // Step:4 require echarts and use it in the callback.
         // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
-        //require(
-        //    [
-        //        'echarts',
-        //        'echarts/chart/line',
-        //    ],
-        //    function (ec) {
-        //            echarts = ec;
-        //    });
+        require(
+            [
+                'echarts',
+                'echarts/chart/line',
+            ],
+            function (ec) {
+                    echarts = ec;
+            });
         // 首次加载graph页，
         // 先问问后台有哪些数据集{ Array }：
         /*     零：用户没有上传，后台返回 [ 默认测试集名 ]         
@@ -55,12 +55,14 @@
                         $("#graph").empty();
                         degree2.clear();
                         degree2.dispose();
-
                         $("#degreeC").empty();
                         $("#degreeC").append("<div id='degree2' style='width:1000px;height:600px;border:5px solid #ccc;'></div>");
-
+                        //.attr("id", "degree2")
+                        //.attr("style", "width:1000px;height:600px;border:5px solid #ccc;");
                         $("#divTable").empty();
                         console.log($("#Select1").val());
+
+                        initGraphFunction8();
                         loadDataSet($("#Select1").val());
 
                 })

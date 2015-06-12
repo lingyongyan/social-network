@@ -71,7 +71,7 @@ function paintGraph(graphData, status) {
                         .attr("markerWidth", "4")
                         .attr("markerHeight", "4")
                         .attr("viewBox", "0 0 4 4")
-                        .attr("refX", 8)
+                        .attr("refX", 16)
                         .attr("refY", 2)
                         .attr("orient", "auto");
                 var arrow_path = "M0,0 L4,2 L0,4 L1,2";//"M1,0 L8,4 L1,8 L3,6 L0,6.5 L3,4 L0,2.5 L3,2 L1,0"
@@ -120,7 +120,7 @@ function paintGraph(graphData, status) {
 
         // 定义交互事件
         var gZoom = d3.behavior.zoom()
-                .scaleExtent([1, constMaxZoomScale])
+                .scaleExtent([0.2, constMaxZoomScale])
                 .on("zoom", zoomed);
         // 拖拽响应
         var dragN = force.drag()
@@ -156,7 +156,7 @@ function paintGraph(graphData, status) {
                 .enter()
                 .append("line")
                 .style("stroke-width", function (edgeData) {
-                        var width2 = Math.log(edgeData.weight) + minWidth;
+                        var width2 = Math.sqrt(edgeData.weight) + minWidth;
                         return width2 > maxWidth ? maxWidth : width2;
                 });
         resetEdges();
@@ -183,7 +183,7 @@ function paintGraph(graphData, status) {
                 .enter()
                 .append("circle")
                 .attr("r", function (nodeData) {
-                        var radius = Math.log(nodeData.group) + minRadius;
+                        var radius = Math.sqrt(nodeData.group) + minRadius;
                         return radius > maxRadius ? maxRadius : radius;
                 })
                 .style("fill", function (nodeData) {
@@ -223,9 +223,9 @@ function paintGraph(graphData, status) {
                 clearTimeout(clickTimeDelay);
                 console.log("dblclicked");
                 //d3.select(this).classed("fixed", nodeData.fixed = false);
-                if (nodeData.group == crntGroup)
-                        return;
-                loadSelection(nodeData.group);
+                //if (nodeData.group == crntGroup)
+                //        return;
+                //loadSelection(nodeData.group);
         }
         function loadSelection(nodeGroup) {
                 console.log(nodeGroup);
@@ -263,14 +263,14 @@ function resetNodes() {
                         .on("mouseover", function (nodeData) {
                                 d3.select(this)//.attr("class", "nodeHighlight")
                                 .attr("r", function (nodeData) {
-                                        var radius = Math.log(nodeData.group) + minRadius + 2;
+                                        var radius = Math.sqrt(nodeData.group) + minRadius + 2;
                                         return radius > maxRadius ? maxRadius : radius;
                                 });
                         })
                         .on("mouseout", function (nodeData) {
                                 d3.select(this)//.attr("class", "node")
                                         .attr("r", function (nodeData) {
-                                                var radius = Math.log(nodeData.group) + minRadius;
+                                                var radius = Math.sqrt(nodeData.group) + minRadius;
                                                 return radius > maxRadius ? maxRadius : radius;
                                         });
                         });
